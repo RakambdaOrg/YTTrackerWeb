@@ -18,7 +18,7 @@ if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
     <script type="text/javascript" src="js/tablesorter/jquery.tablesorter.js"></script>
     <script type="text/javascript" src="js/script.js"></script>
     <meta charset="UTF-8">
-    <title>YTTracker</title>
+    <title>aYTTracker</title>
 </head>
 <body>
     <div>
