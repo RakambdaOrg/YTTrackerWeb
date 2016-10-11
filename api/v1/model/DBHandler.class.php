@@ -12,28 +12,39 @@ class DBHandler
     {
     }
 
-    function addStat($conn, $uuid, $type, $stat, $videoID){
-        if(!$this->createUserTable($conn, $uuid))
-            return array('code'=>500, 'result'=>'err', 'error'=>'E1');
-        if(!$conn->query('INSERT INTO `' . $uuid . '`(`Type`, `VideoID`, `Stat`) VALUES(' . $type . ',"' . $videoID . '",' . $stat . ');'))
+    function addStat($conn, $uuid, $type, $stat, $videoID, $date){
+        if(!$conn->query('INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`) VALUES("' . $uuid . '", ' . $type . ',"' . $videoID . '",' . $stat . ', ' . $this->getTimestamp($date) . ');'))
             return array('code'=>400, 'result'=>'err', 'error'=>'E2');
         return array('code'=>200, 'result'=>'OK');
     }
 
-    function createUserTable($conn, $uuid)
+    private static function formatTime($time)
     {
-        return $conn->query('CREATE TABLE IF NOT EXISTS `' . $uuid . '`(`UID` INT PRIMARY KEY NOT NULL AUTO_INCREMENT, `Type` INT NOT NULL, `VideoID` TINYTEXT NOT NULL, `Stat` BIGINT SIGNED DEFAULT 0 NOT NULL, `Time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP() NOT NULL);');
+        $time = $time / 1000;
+        $sec = $time % 60;
+        $min = $time / 60;
+        $hour = $min / 60;
+        $min = $min % 60;
+        return ((int)$hour) . 'H' . $min . 'M' . $sec . 'S';
+    }
+
+    function getTimestamp($date)
+    {
+        if (!$date) {
+            return 'CURRENT_TIMESTAMP()';
+        }
+        return 'UNIX_TIMESTAMP(STR_TO_DATE("' . $date . '", "%Y-%m-%d %H:%i:%s"))';
     }
 
     public function getStats($conn, $uuid)
     {
-        $query = $conn->query('SELECT * FROM  `' . $uuid . '` ORDER BY `UID` ASC;');
+        $query = $conn->query('SELECT * FROM  `YTTRecords` WHERE `UUID` IS "' . $uuid . '" ORDER BY `ID` ASC;');
         if(!$query)
             return array('code'=>500, 'result'=>'err', 'error'=>'E3');
         $stats = array();
         if($query->num_rows > 0)
             while($row = $query->fetch_assoc())
-                $stats[$row['UID']] = array('uid'=>$row['UID'], 'type'=>$row['Type'], 'videoid'=>$row['VideoID'], 'Stat'=>$row['Stat'], 'time'=>$row['Time']);
+                $stats[$row['ID']] = array('id'=>$row['ID'], 'type'=>$row['Type'], 'typeStr' => $row['Type'] == 2 ? 'Opened' : 'Watched', 'videoid'=>$row['VideoID'], 'Stat'=>$row['Stat'], 'Fstats' => DBHandler::formatTime($row['Stat']), 'time'=>$row['Time']);
         if(count($stats) > 0)
             return array('code'=>200, 'result'=>'OK', 'stats'=>$stats);
         return array('code'=>400, 'result'=>'No entry');
@@ -41,7 +52,7 @@ class DBHandler
 
     public function setUsername($conn, $uuid, $username)
     {
-        $query = $conn->query('INSERT INTO `usernames`(`UUID`, `Username`) VALUES("' . $uuid . '","' . $conn->real_escape_string($username) . '") ON DUPLICATE KEY UPDATE `Username`="' . $conn->real_escape_string($username) . '";');
+        $query = $conn->query('INSERT INTO `YTTUsers`(`UUID`, `Username`) VALUES("' . $uuid . '","' . $conn->real_escape_string($username) . '") ON DUPLICATE KEY UPDATE `Username`="' . $conn->real_escape_string($username) . '";');
         if(!$query)
             return array('code'=>500, 'result'=>'err', 'error'=>'E4');
         return array('code'=>200, 'result'=>'OK');
