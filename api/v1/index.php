@@ -147,7 +147,7 @@ function processRequest($methodName, $params)
 function addStats($conn, $params)
 {
     $dbHandler = new DBhandler();
-    $result = $dbHandler->addStat($conn, $params['uuid'], $params['type'], $params['stats'], $params['videoID']);
+    $result = $dbHandler->addStat($conn, $params['uuid'], $params['type'], $params['stats'], $params['videoID'], isset($params['date']) ? $params['date'] : null);
     sendResponse($result['code'], json_encode($result));
     return true;
 }

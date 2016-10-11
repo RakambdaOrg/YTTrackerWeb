@@ -14,14 +14,14 @@ class DBHandlerSite
 
     public function getUUIDS($conn)
     {
-        $query = $conn->query('SHOW TABLES LIKE "________-____-____-____-____________";');
+        $query = $conn->query('SELECT DISTINCT UUID FROM YTTRecords;');
         if(!$query)
             return array('code'=>500, 'result'=>'err', 'error'=>'E0');
         $i = 0;
         $uuids = array();
         if($query->num_rows > 0)
             while($row = $query->fetch_assoc())
-                $uuids[$i++] = $row['Tables_in_mrcraftcggytt (________-____-____-____-____________)'];
+                $uuids[$i++] = $row['UUID'];
         if(count($uuids) > 0)
             return array('code'=>200, 'result'=>'OK', 'uuids'=>$uuids);
         return array('code'=>400, 'result'=>'No entry');
@@ -29,14 +29,14 @@ class DBHandlerSite
 
     public function getUserInfos($conn, $uuid)
     {
-        $query = $conn->query('SELECT * FROM  `' . $uuid . '` ORDER BY `UID` ASC;');
+        $query = $conn->query('SELECT * FROM  `YTTRecords` WHERE `UUID` IS "' . $uuid . '" ORDER BY `ID` ASC;');
         if(!$query)
             return array('code'=>500, 'result'=>'err', 'error'=>'E1');
         $stats = array();
         if($query->num_rows > 0)
             while($row = $query->fetch_assoc())
-                $stats[$row['UID']] = array('uid'=>$row['UID'], 'type'=>$row['Type'], 'videoid'=>$row['VideoID'], 'Stat'=>$row['Stat'], 'time'=>$row['Time']);
-        $query = $conn->query('SELECT `Username` FROM  `usernames` WHERE `UUID`="' . $uuid . '";');
+                $stats[$row['ID']] = array('id'=>$row['UID'], 'type'=>$row['Type'], 'videoid'=>$row['VideoID'], 'Stat'=>$row['Stat'], 'time'=>$row['Time']);
+        $query = $conn->query('SELECT `Username` FROM  `YTTUsers` WHERE `UUID` IS "' . $uuid . '";');
         if($query)
         {
             if($query->num_rows > 0)
@@ -50,14 +50,14 @@ class DBHandlerSite
 
     public function getTodayStats($conn, $uuid)
     {
-        $query = $conn->query('SELECT * FROM `' . $uuid . '` WHERE `Time` >= CURDATE();');
+        $query = $conn->query('SELECT * FROM `YTTRecords` WHERE `UUID` IS "' . $uuid . '" AND `Time` >= CURDATE();');
         if(!$query)
             return array('code'=>500, 'result'=>'err', 'error'=>'E2');
         $stats = array();
         if($query->num_rows > 0)
             while($row = $query->fetch_assoc())
                 $stats[$row['UID']] = array('uid'=>$row['UID'], 'type'=>$row['Type'], 'videoid'=>$row['VideoID'], 'Stat'=>$row['Stat'], 'time'=>$row['Time']);
-        $query = $conn->query('SELECT `Username` FROM  `usernames` WHERE `UUID`="' . $uuid . '";');
+        $query = $conn->query('SELECT `Username` FROM  `YTTUsers` WHERE `UUID`="' . $uuid . '";');
         if($query)
         {
             if($query->num_rows > 0)
