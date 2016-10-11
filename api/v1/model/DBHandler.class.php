@@ -13,9 +13,10 @@ class DBHandler
     }
 
     function addStat($conn, $uuid, $type, $stat, $videoID, $date){
-        if(!$conn->query('INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`) VALUES("' . $uuid . '", ' . $type . ',"' . $videoID . '",' . $stat . ', ' . $this->getTimestamp($date) . ');'))
-            return array('code'=>400, 'result'=>'err', 'error'=>'E2');
-        return array('code'=>200, 'result'=>'OK');
+        $red = 'INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`) VALUES("' . $uuid . '", ' . $type . ',"' . $videoID . '",' . $stat . ', ' . $this->getTimestamp($date) . ');';
+        if(!$conn->query($red))
+            return array('code'=>400, 'result'=>'err', 'error'=>'E2', 'req'=>$red);
+        return array('code'=>200, 'result'=>'OK', 'req'=>$red);
     }
 
     private static function formatTime($time)
@@ -33,7 +34,7 @@ class DBHandler
         if (!$date) {
             return 'CURRENT_TIMESTAMP()';
         }
-        return 'UNIX_TIMESTAMP(STR_TO_DATE("' . $date . '", "%Y-%m-%d %H:%i:%s"))';
+        return 'STR_TO_DATE("' . $date . '", "%Y-%m-%d %H:%i:%s")';
     }
 
     public function getStats($conn, $uuid)

@@ -29,14 +29,14 @@ class DBHandlerSite
 
     public function getUserInfos($conn, $uuid)
     {
-        $query = $conn->query('SELECT * FROM  `YTTRecords` WHERE `UUID` IS "' . $uuid . '" ORDER BY `ID` ASC;');
+        $query = $conn->query('SELECT * FROM  `YTTRecords` WHERE `UUID`="' . $uuid . '" ORDER BY `ID` ASC;');
         if(!$query)
             return array('code'=>500, 'result'=>'err', 'error'=>'E1');
         $stats = array();
         if($query->num_rows > 0)
             while($row = $query->fetch_assoc())
                 $stats[$row['ID']] = array('id'=>$row['UID'], 'type'=>$row['Type'], 'videoid'=>$row['VideoID'], 'Stat'=>$row['Stat'], 'time'=>$row['Time']);
-        $query = $conn->query('SELECT `Username` FROM  `YTTUsers` WHERE `UUID` IS "' . $uuid . '";');
+        $query = $conn->query('SELECT `Username` FROM  `YTTUsers` WHERE `UUID`="' . $uuid . '";');
         if($query)
         {
             if($query->num_rows > 0)
@@ -50,7 +50,7 @@ class DBHandlerSite
 
     public function getTodayStats($conn, $uuid)
     {
-        $query = $conn->query('SELECT * FROM `YTTRecords` WHERE `UUID` IS "' . $uuid . '" AND `Time` >= CURDATE();');
+        $query = $conn->query('SELECT * FROM `YTTRecords` WHERE `UUID`="' . $uuid . '" AND `Time` >= CURDATE();');
         if(!$query)
             return array('code'=>500, 'result'=>'err', 'error'=>'E2');
         $stats = array();
