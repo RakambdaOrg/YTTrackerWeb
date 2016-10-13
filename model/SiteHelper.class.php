@@ -11,25 +11,25 @@ class SiteHelper
     public function decodeInfosFromDB($infos, $periodStart, $periodEnd)
     {
         $periodCalc = $periodStart != 'NULL' && $periodEnd != 'NULL';
-        $newInfos = array('TotalCount'=>0, 'TotalWatched'=>0, 'TotalOpened'=>0, 'TodayCount'=>0, 'TodayWatched'=>0, 'TodayOpened'=>0, 'PeriodCount'=>0, 'PeriodWatched'=>0, 'PeriodOpened'=>0);
-        foreach($infos as $UID=>$info) {
-            if($info['type'] === '2'){
+        $newInfos = array('TotalCount' => 0, 'TotalWatched' => 0, 'TotalOpened' => 0, 'TodayCount' => 0, 'TodayWatched' => 0, 'TodayOpened' => 0, 'PeriodCount' => 0, 'PeriodWatched' => 0, 'PeriodOpened' => 0);
+        foreach ($infos as $UID => $info) {
+            if ($info['type'] === '2') {
                 $newInfos['TotalCount'] += 1;
                 $newInfos['TotalOpened'] += $info['Stat'];
-                if($this->isToday($info['time'])) {
+                if ($this->isToday($info['time'])) {
                     $newInfos['TodayCount'] += 1;
                     $newInfos['TodayOpened'] += $info['Stat'];
                 }
-                if($periodCalc && $this->isBetween($info['time'], $periodStart, $periodEnd)) {
+                if ($periodCalc && $this->isBetween($info['time'], $periodStart, $periodEnd)) {
                     $newInfos['PeriodCount'] += 1;
                     $newInfos['PeriodOpened'] += $info['Stat'];
                 }
             } else {
                 $newInfos['TotalWatched'] += $info['Stat'];
-                if($this->isToday($info['time'])) {
+                if ($this->isToday($info['time'])) {
                     $newInfos['TodayWatched'] += $info['Stat'];
                 }
-                if($periodCalc && $this->isBetween($info['time'], $periodStart, $periodEnd)) {
+                if ($periodCalc && $this->isBetween($info['time'], $periodStart, $periodEnd)) {
                     $newInfos['PeriodWatched'] += $info['Stat'];
                 }
             }
@@ -61,8 +61,8 @@ class SiteHelper
         $hours = floor($seconds / 3600);
         $mins = floor($seconds / 60 % 60);
         $secs = floor($seconds % 60);
-        if($hours > 0)
-            return $hours . 'h' . $mins . 'm' . $secs . 's';
+        if ($hours > 0)
+            return sprintf("%02d", $hours) . 'h' . sprintf("%02d", $mins) . 'm' . sprintf("%02d", $secs) . 's';
         elseif ($mins > 0)
             return $mins . 'm' . $secs . 's';
         return $secs . 's';
