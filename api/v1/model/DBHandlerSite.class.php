@@ -66,21 +66,19 @@ class DBHandlerSite
         if ($query->num_rows > 0)
             while ($row = $query->fetch_assoc())
                 $stats[$row['UID']] = array('uid' => $row['UID'], 'type' => $row['Type'], 'videoid' => $row['VideoID'], 'Stat' => $row['Stat'], 'time' => $row['Time']);
-        $query = $conn->query('SELECT `Username` FROM  `YTTUsers` WHERE `UUID`="' . $uuid . '";');
-        if ($query) {
-            if ($query->num_rows > 0)
-                while ($row = $query->fetch_assoc())
-                    $stats['username'] = $row['Username'];
+        $username = $this->getUsername($conn, $uuid);
+        if($username){
+            $stats['username'] = $username;
         }
         if (count($stats) > 0)
             return array('code' => 200, 'result' => 'OK', 'stats' => $stats);
         return array('code' => 400, 'result' => 'No entry');
     }
 
-    public function getTotalWatched($conn, $UUID)
+    public function getSumRecordType($conn, $UUID, $type)
     {
         $result = 0;
-        $query = $conn->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=1 AND `UUID`="' . $UUID . '";');
+        $query = $conn->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=' . $type . ' AND `UUID`="' . $UUID . '";');
         if($query)
         {
             if($query->num_rows > 0)
@@ -88,5 +86,15 @@ class DBHandlerSite
                     $result = $row['Total'];
         }
         return $result;
+    }
+
+    public function getTotalWatched($conn, $UUID)
+    {
+        return $this->getSumRecordType($conn, $UUID, 1);
+    }
+
+    public function getTotalOpened($conn, $UUID)
+    {
+        return $this->getSumRecordType($conn, $UUID, 2);
     }
 }

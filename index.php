@@ -68,7 +68,6 @@ if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
                 </tr>
             </thead>
             <tbody>
-                <tr>
                 <?php
                 $uuids = $handler->getUUIDS($conn);
                 if($uuids['code'] === 200)
@@ -86,12 +85,12 @@ if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
                             </td>
                             <td class="totalOpenedCell leftVerticalLine">
                                 <?php
-                                echo $siteHelper->millisecondsToTimeString($handler->getTotalWatched($conn, $UUID));
+                                echo $siteHelper->millisecondsToTimeString($handler->getTotalOpened($conn, $UUID));
                                 ?>
                             </td>
                             <td class="totalWatchedCell lightVerticalLine">
                                 <?php
-                                echo $siteHelper->secondsToTimeString($infos['TotalWatched']);
+                                echo $siteHelper->millisecondsToTimeString($handler->getTotalWatched($conn, $UUID));
                                 ?>
                             </td>
                             <td class="totalCountCell lightVerticalLine">
