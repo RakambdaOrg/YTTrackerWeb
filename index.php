@@ -100,17 +100,17 @@ if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
                             </td>
                             <td class="todayOpenedCell leftVerticalLine">
                                 <?php
-                                echo $siteHelper->secondsToTimeString($infos['TodayOpened']);
+                                echo $siteHelper->millisecondsToTimeString($handler->getTodayOpened($conn, $UUID));
                                 ?>
                             </td>
                             <td class="todayWatchedCell lightVerticalLine">
                                 <?php
-                                echo $siteHelper->secondsToTimeString($infos['TodayWatched']);
+                                echo $siteHelper->millisecondsToTimeString($handler->getTodayWatched($conn, $UUID));
                                 ?>
                             </td>
                             <td class="todayCountCell lightVerticalLine">
                                 <?php
-                                echo $infos['TodayCount'];
+                                echo $handler->getTodayOpenedCount($conn, $UUID);
                                 ?>
                             </td>
                             <?php

@@ -75,7 +75,7 @@ class DBHandlerSite
         return array('code' => 400, 'result' => 'No entry');
     }
 
-    public function getSumRecordType($conn, $UUID, $type)
+    private function getSumRecordType($conn, $UUID, $type)
     {
         $result = 0;
         $query = $conn->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=' . $type . ' AND `UUID`="' . $UUID . '";');
@@ -102,6 +102,42 @@ class DBHandlerSite
     {
         $result = 0;
         $query = $conn->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=2 AND `UUID`="' . $UUID . '";');
+        if($query)
+        {
+            if($query->num_rows > 0)
+                while($row = $query->fetch_assoc())
+                    $result = $row['Total'];
+        }
+        return $result;
+    }
+
+    public function getSumRecordTypeToday($conn, $UUID, $type)
+    {
+        $result = 0;
+        $query = $conn->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=' . $type . ' AND `UUID`="' . $UUID . '" AND `Time` >= CURDATE();');
+        if($query)
+        {
+            if($query->num_rows > 0)
+                while($row = $query->fetch_assoc())
+                    $result = $row['Total'];
+        }
+        return $result;
+    }
+
+    public function getTodayWatched($conn, $UUID)
+    {
+        return $this->getSumRecordTypeToday($conn, $UUID, 1);
+    }
+
+    public function getTodayOpened($conn, $UUID)
+    {
+        return $this->getSumRecordTypeToday($conn, $UUID, 2);
+    }
+
+    public function getTodayOpenedCount($conn, $UUID)
+    {
+        $result = 0;
+        $query = $conn->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=2 AND `UUID`="' . $UUID . '" AND `Time` >= CURDATE();');
         if($query)
         {
             if($query->num_rows > 0)
