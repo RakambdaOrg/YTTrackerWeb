@@ -22,9 +22,9 @@ class DBHandlerSite
         if($query->num_rows > 0)
             while($row = $query->fetch_assoc())
                 $uuids[$i++] = $row['UUID'];
-        if(count($uuids) > 0)
-            return array('code'=>200, 'result'=>'OK', 'uuids'=>$uuids);
-        return array('code'=>400, 'result'=>'No entry');
+        if (count($uuids) > 0)
+            return array('code' => 200, 'result' => 'OK', 'uuids' => $uuids);
+        return array('code' => 400, 'result' => 'No entry');
     }
 
     public function getUsername($conn, $UUID)
@@ -42,8 +42,8 @@ class DBHandlerSite
     public function getUserInfos($conn, $uuid)
     {
         $query = $conn->query('SELECT * FROM  `YTTRecords` WHERE `UUID`="' . $uuid . '" ORDER BY `ID` ASC;');
-        if(!$query)
-            return array('code'=>500, 'result'=>'err', 'error'=>'E1');
+        if (!$query)
+            return array('code' => 500, 'result' => 'err', 'error' => 'E1');
         $stats = array();
         if($query->num_rows > 0)
             while($row = $query->fetch_assoc())
@@ -52,30 +52,29 @@ class DBHandlerSite
         if($username){
             $stats['username'] = $username;
         }
-        if(count($stats) > 0)
-            return array('code'=>200, 'result'=>'OK', 'stats'=>$stats);
-        return array('code'=>400, 'result'=>'No entry');
+        if (count($stats) > 0)
+            return array('code' => 200, 'result' => 'OK', 'stats' => $stats);
+        return array('code' => 400, 'result' => 'No entry');
     }
 
     public function getTodayStats($conn, $uuid)
     {
         $query = $conn->query('SELECT * FROM `YTTRecords` WHERE `UUID`="' . $uuid . '" AND `Time` >= CURDATE();');
-        if(!$query)
-            return array('code'=>500, 'result'=>'err', 'error'=>'E2');
+        if (!$query)
+            return array('code' => 500, 'result' => 'err', 'error' => 'E2');
         $stats = array();
-        if($query->num_rows > 0)
-            while($row = $query->fetch_assoc())
-                $stats[$row['UID']] = array('uid'=>$row['UID'], 'type'=>$row['Type'], 'videoid'=>$row['VideoID'], 'Stat'=>$row['Stat'], 'time'=>$row['Time']);
+        if ($query->num_rows > 0)
+            while ($row = $query->fetch_assoc())
+                $stats[$row['UID']] = array('uid' => $row['UID'], 'type' => $row['Type'], 'videoid' => $row['VideoID'], 'Stat' => $row['Stat'], 'time' => $row['Time']);
         $query = $conn->query('SELECT `Username` FROM  `YTTUsers` WHERE `UUID`="' . $uuid . '";');
-        if($query)
-        {
-            if($query->num_rows > 0)
-                while($row = $query->fetch_assoc())
+        if ($query) {
+            if ($query->num_rows > 0)
+                while ($row = $query->fetch_assoc())
                     $stats['username'] = $row['Username'];
         }
-        if(count($stats) > 0)
-            return array('code'=>200, 'result'=>'OK', 'stats'=>$stats);
-        return array('code'=>400, 'result'=>'No entry');
+        if (count($stats) > 0)
+            return array('code' => 200, 'result' => 'OK', 'stats' => $stats);
+        return array('code' => 400, 'result' => 'No entry');
     }
 
     public function getTotalWatched($conn, $UUID)

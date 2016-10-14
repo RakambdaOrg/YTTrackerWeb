@@ -65,8 +65,7 @@ function sendResponse($status = 200, $body = '')
     header('Content-type:' . 'application/json');
     header('Access-Control-Allow-Methods:' . 'POST,PUT,GET,DELETE,OPTIONS');
     $http_origin = $_SERVER['HTTP_ORIGIN'];
-    if ($http_origin == "http://*.mrcraftcod.fr" || $http_origin == "chrome-extension://moboafdnejnjnppicfiadaalobjeemec" || $http_origin == "chrome-extension://knnlnielflnfhdohmihofhdelgahgjdb/*")
-    {
+    if ($http_origin == "http://*.mrcraftcod.fr" || $http_origin == "chrome-extension://moboafdnejnjnppicfiadaalobjeemec" || $http_origin == "chrome-extension://knnlnielflnfhdohmihofhdelgahgjdb/*") {
         header("Access-Control-Allow-Origin: $http_origin");
     }
     if ($body != '') {
@@ -130,7 +129,7 @@ function processRequest($methodName, $params)
 {
     $conn = DBConnection::getConnection();
     if ($conn->connect_error) {
-        sendResponse(500, json_encode(array('code' => '500', 'result' => 'err', 'error'=>'E0')));
+        sendResponse(500, json_encode(array('code' => '500', 'result' => 'err', 'error' => 'E0')));
         return;
     }
     if (!$methodName($conn, $params)) {
