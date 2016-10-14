@@ -3,11 +3,6 @@ require_once('model/DBConnection.class.php');
 require_once('model/DBHandler.class.php');
 
 $http_origin = $_SERVER['HTTP_ORIGIN'];
-if (!($http_origin == "http://*.mrcraftcod.fr" || $http_origin == "chrome-extension://moboafdnejnjnppicfiadaalobjeemec" || $http_origin == "chrome-extension://knnlnielflnfhdohmihofhdelgahgjdb/*"))
-{
-    header('HTTP/1.0 403 Forbidden');
-    exit;
-}
 
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'POST':

@@ -73,19 +73,20 @@ if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
                 $uuids = $handler->getUUIDS($conn);
                 if($uuids['code'] === 200)
                 {
-                    foreach($uuids['uuids'] as $UIDIndex=>$UID) {
-                        $rawInfos = $handler->getUserInfos($conn, $UID)['stats'];
+                    foreach($uuids['uuids'] as $UUIDIndex=>$UUID) {
+                        $rawInfos = $handler->getUserInfos($conn, $UUID)['stats'];
                         $infos = $siteHelper->decodeInfosFromDB($rawInfos, $customPeriodDisplayed ? $_GET['startPeriod'] : 'NULL', $customPeriodDisplayed ? $_GET['endPeriod'] : 'NULL');
-                        echo '<tr id="' . $UIDIndex . '">'
+                        echo '<tr id="' . $UUIDIndex . '">'
                         ?>
                             <td class="userCell">
                                 <?php
-                                echo $rawInfos['username'] ? $rawInfos['username'] : $UIDIndex;
+                                $username = $handler->getUsername($conn, $UUID);
+                                echo $username ? $username : $UUIDIndex;
                                 ?>
                             </td>
                             <td class="totalOpenedCell leftVerticalLine">
                                 <?php
-                                echo $siteHelper->secondsToTimeString($infos['TotalOpened']);
+                                echo $siteHelper->millisecondsToTimeString($handler->getTotalWatched($conn, $UUID));
                                 ?>
                             </td>
                             <td class="totalWatchedCell lightVerticalLine">

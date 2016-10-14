@@ -56,6 +56,11 @@ class SiteHelper
         return $test >= $start && $test <= $end;
     }
 
+    public function millisecondsToTimeString($milliseconds)
+    {
+        return $this->secondsToTimeString($milliseconds / 1000);
+    }
+
     public function secondsToTimeString($seconds)
     {
         $hours = floor($seconds / 3600);
