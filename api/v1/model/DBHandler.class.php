@@ -14,10 +14,9 @@ class DBHandler
 
     function addStat($conn, $uuid, $type, $stat, $videoID, $date)
     {
-        $red = 'INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`) VALUES("' . $uuid . '", ' . $type . ',"' . $videoID . '",' . $stat . ', ' . $this->getTimestamp($date) . ');';
-        if (!$conn->query($red))
-            return array('code' => 400, 'result' => 'err', 'error' => 'E2', 'req' => $red);
-        return array('code' => 200, 'result' => 'OK', 'req' => $red);
+        if (!$conn->query('INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`) VALUES("' . $uuid . '", ' . $type . ',"' . $videoID . '",' . $stat . ', ' . $this->getTimestamp($date) . ');'))
+            return array('code' => 400, 'result' => 'err', 'error' => 'E2');
+        return array('code' => 200, 'result' => 'OK');
     }
 
     private static function formatTime($time)
