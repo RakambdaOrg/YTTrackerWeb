@@ -95,7 +95,7 @@ if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
                             </td>
                             <td class="totalCountCell lightVerticalLine">
                                 <?php
-                                echo $infos['TotalCount'];
+                                echo $handler->getTotalOpenedCount($conn, $UUID);
                                 ?>
                             </td>
                             <td class="todayOpenedCell leftVerticalLine">

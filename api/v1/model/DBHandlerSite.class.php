@@ -97,4 +97,17 @@ class DBHandlerSite
     {
         return $this->getSumRecordType($conn, $UUID, 2);
     }
+
+    public function getTotalOpenedCount($conn, $UUID)
+    {
+        $result = 0;
+        $query = $conn->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=1 AND `UUID`="' . $UUID . '";');
+        if($query)
+        {
+            if($query->num_rows > 0)
+                while($row = $query->fetch_assoc())
+                    $result = $row['Total'];
+        }
+        return $result;
+    }
 }
