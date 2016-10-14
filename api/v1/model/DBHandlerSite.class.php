@@ -155,7 +155,7 @@ class DBHandlerSite
     public function getPeriodCount($conn, $UUID, $start, $end)
     {
         $result = 0;
-        $query = $conn->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=1 AND `UUID`="' . $UUID . '" AND `Time` >= ' . $start . ' AND `Time` < ' . $end . ';');
+        $query = $conn->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=2 AND `UUID`="' . $UUID . '" AND `Time` >= ' . $start . ' AND `Time` < ' . $end . ';');
         if($query)
         {
             if($query->num_rows > 0)
