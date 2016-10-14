@@ -73,8 +73,6 @@ if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
                 if($uuids['code'] === 200)
                 {
                     foreach($uuids['uuids'] as $UUIDIndex=>$UUID) {
-                        $rawInfos = $handler->getUserInfos($conn, $UUID)['stats'];
-                        $infos = $siteHelper->decodeInfosFromDB($rawInfos, $customPeriodDisplayed ? $_GET['startPeriod'] : 'NULL', $customPeriodDisplayed ? $_GET['endPeriod'] : 'NULL');
                         echo '<tr id="' . $UUIDIndex . '">'
                         ?>
                             <td class="userCell">
@@ -115,20 +113,22 @@ if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
                             </td>
                             <?php
                                 if($customPeriodDisplayed){
+                                    $start = 'STR_TO_DATE("' . $_GET['startPeriod'] . ' 00:00:00", "%Y-%m-%d %H:%i:%s")';
+                                    $end = 'STR_TO_DATE("' . $_GET['endPeriod'] . ' 23:59:59", "%Y-%m-%d %H:%i:%s")';
                                     ?>
                                     <td class="periodOpenedCell leftVerticalLine">
                                         <?php
-                                        echo $siteHelper->secondsToTimeString($infos['PeriodOpened']);
+                                        echo $siteHelper->millisecondsToTimeString($handler->getPeriodOpened($conn, $UUID, $start, $end));
                                         ?>
                                     </td>
                                     <td class="periodWatchedCell lightVerticalLine">
                                         <?php
-                                        echo $siteHelper->secondsToTimeString($infos['PeriodWatched']);
+                                        echo $siteHelper->millisecondsToTimeString($handler->getPeriodWatched($conn, $UUID, $start, $end));
                                         ?>
                                     </td>
                                     <td class="periodCountCell lightVerticalLine">
                                         <?php
-                                        echo $infos['PeriodCount'];
+                                        echo $handler->getPeriodCount($conn, $UUID, $start, $end)
                                         ?>
                                     </td>
                                     <?php

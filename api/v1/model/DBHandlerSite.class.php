@@ -39,24 +39,6 @@ class DBHandlerSite
         return null;
     }
 
-    public function getUserInfos($conn, $uuid)
-    {
-        $query = $conn->query('SELECT * FROM  `YTTRecords` WHERE `UUID`="' . $uuid . '" ORDER BY `ID` ASC;');
-        if (!$query)
-            return array('code' => 500, 'result' => 'err', 'error' => 'E1');
-        $stats = array();
-        if($query->num_rows > 0)
-            while($row = $query->fetch_assoc())
-                $stats[$row['ID']] = array('id'=>$row['ID'], 'type'=>$row['Type'], 'videoid'=>$row['VideoID'], 'Stat'=>$row['Stat'], 'time'=>$row['Time']);
-        $username = $this->getUsername($conn, $uuid);
-        if($username){
-            $stats['username'] = $username;
-        }
-        if (count($stats) > 0)
-            return array('code' => 200, 'result' => 'OK', 'stats' => $stats);
-        return array('code' => 400, 'result' => 'No entry');
-    }
-
     public function getTodayStats($conn, $uuid)
     {
         $query = $conn->query('SELECT * FROM `YTTRecords` WHERE `UUID`="' . $uuid . '" AND `Time` >= CURDATE();');
@@ -138,6 +120,42 @@ class DBHandlerSite
     {
         $result = 0;
         $query = $conn->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=2 AND `UUID`="' . $UUID . '" AND `Time` >= CURDATE();');
+        if($query)
+        {
+            if($query->num_rows > 0)
+                while($row = $query->fetch_assoc())
+                    $result = $row['Total'];
+        }
+        return $result;
+    }
+
+    public function getSumRecordTypePeriod($conn, $UUID, $type, $start, $end)
+    {
+        $result = 0;
+        $query = $conn->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=' . $type . ' AND `UUID`="' . $UUID . '" AND `Time` >= ' . $start . ' AND `Time` <= ' . $end . ';');
+        if($query)
+        {
+            if($query->num_rows > 0)
+                while($row = $query->fetch_assoc())
+                    $result = $row['Total'];
+        }
+        return $result;
+    }
+
+    public function getPeriodWatched($conn, $UUID, $start, $end)
+    {
+        return $this->getSumRecordTypePeriod($conn, $UUID, 1, $start, $end);
+    }
+
+    public function getPeriodOpened($conn, $UUID, $start, $end)
+    {
+        return $this->getSumRecordTypePeriod($conn, $UUID, 2, $start, $end);
+    }
+
+    public function getPeriodCount($conn, $UUID, $start, $end)
+    {
+        $result = 0;
+        $query = $conn->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=1 AND `UUID`="' . $UUID . '" AND `Time` >= ' . $start . ' AND `Time` < ' . $end . ';');
         if($query)
         {
             if($query->num_rows > 0)

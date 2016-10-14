@@ -8,7 +8,7 @@ else
 	arr=($gitLastCommit)
 	lastCommit=${arr[4]}
 fi
-printf "Last commit: $lastCommit"
+printf "Last commit: $lastCommit\n\n"
 
 filesChanged=$(git diff-tree --no-commit-id --name-only -r $lastCommit)
 if [ ${#filesChanged[@]} -eq 0 ]; then
@@ -18,7 +18,7 @@ else
 	do
 		if [ "$f" != ".travis.yml" ] && [ "$f" != "deploy.sh" ] && [ "$f" != "test.js" ] && [ "$f" != "package.json" ] && [ "$f" != "README.md" ] && [ "$f" != ".gitignore" ]
 		then
-	 		printf "\nUploading file $f"
+	 		printf "\nUploading file $f\n"
 	 		curl --ftp-create-dirs -T $f -u $FTP_USER:$FTP_PASS ftp://ftp.cluster003.ovh.net/www/subdomains/yttracker/$f
 		fi
 	done
