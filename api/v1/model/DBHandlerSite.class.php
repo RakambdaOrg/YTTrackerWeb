@@ -47,8 +47,8 @@ class DBHandlerSite
         $stats = array();
         if($query->num_rows > 0)
             while($row = $query->fetch_assoc())
-                $stats[$row['ID']] = array('id'=>$row['UID'], 'type'=>$row['Type'], 'videoid'=>$row['VideoID'], 'Stat'=>$row['Stat'], 'time'=>$row['Time']);
-        $username = $this->getUsername($uuid);
+                $stats[$row['ID']] = array('id'=>$row['ID'], 'type'=>$row['Type'], 'videoid'=>$row['VideoID'], 'Stat'=>$row['Stat'], 'time'=>$row['Time']);
+        $username = $this->getUsername($conn, $uuid);
         if($username){
             $stats['username'] = $username;
         }
