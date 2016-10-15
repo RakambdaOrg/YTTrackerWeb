@@ -8,13 +8,14 @@
  */
 class DBHandlerSite
 {
-    public function __construct()
+    public function __construct($conn)
     {
+        $this->sqlConnection = $conn;
     }
 
-    public function getUUIDS($conn)
+    public function getUUIDS()
     {
-        $query = $conn->query('SELECT DISTINCT UUID FROM YTTRecords;');
+        $query = $this->sqlConnection->query('SELECT DISTINCT UUID FROM YTTRecords;');
         if(!$query)
             return array('code'=>500, 'result'=>'err', 'error'=>'E0');
         $i = 0;
@@ -27,9 +28,9 @@ class DBHandlerSite
         return array('code' => 400, 'result' => 'No entry');
     }
 
-    public function getUsername($conn, $UUID)
+    public function getUsername($UUID)
     {
-        $query = $conn->query('SELECT `Username` FROM  `YTTUsers` WHERE `UUID`="' . $UUID . '";');
+        $query = $this->sqlConnection->query('SELECT `Username` FROM  `YTTUsers` WHERE `UUID`="' . $UUID . '";');
         if($query)
         {
             if($query->num_rows > 0)
@@ -39,16 +40,16 @@ class DBHandlerSite
         return null;
     }
 
-    public function getTodayStats($conn, $uuid)
+    public function getTodayStats($uuid)
     {
-        $query = $conn->query('SELECT * FROM `YTTRecords` WHERE `UUID`="' . $uuid . '" AND `Time` >= CURDATE();');
+        $query = $this->sqlConnection->query('SELECT * FROM `YTTRecords` WHERE `UUID`="' . $uuid . '" AND `Time` >= CURDATE();');
         if (!$query)
             return array('code' => 500, 'result' => 'err', 'error' => 'E2');
         $stats = array();
         if ($query->num_rows > 0)
             while ($row = $query->fetch_assoc())
                 $stats[$row['UID']] = array('uid' => $row['UID'], 'type' => $row['Type'], 'videoid' => $row['VideoID'], 'Stat' => $row['Stat'], 'time' => $row['Time']);
-        $username = $this->getUsername($conn, $uuid);
+        $username = $this->getUsername($uuid);
         if($username){
             $stats['username'] = $username;
         }
@@ -57,10 +58,10 @@ class DBHandlerSite
         return array('code' => 400, 'result' => 'No entry');
     }
 
-    private function getSumRecordType($conn, $UUID, $type)
+    private function getSumRecordType($UUID, $type)
     {
         $result = 0;
-        $query = $conn->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=' . $type . ' AND `UUID`="' . $UUID . '";');
+        $query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=' . $type . ' AND `UUID`="' . $UUID . '";');
         if($query)
         {
             if($query->num_rows > 0)
@@ -70,20 +71,20 @@ class DBHandlerSite
         return $result;
     }
 
-    public function getTotalWatched($conn, $UUID)
+    public function getTotalWatched($UUID)
     {
-        return $this->getSumRecordType($conn, $UUID, 1);
+        return $this->getSumRecordType($UUID, 1);
     }
 
-    public function getTotalOpened($conn, $UUID)
+    public function getTotalOpened($UUID)
     {
-        return $this->getSumRecordType($conn, $UUID, 2);
+        return $this->getSumRecordType($UUID, 2);
     }
 
-    public function getTotalOpenedCount($conn, $UUID)
+    public function getTotalOpenedCount($UUID)
     {
         $result = 0;
-        $query = $conn->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=2 AND `UUID`="' . $UUID . '";');
+        $query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=2 AND `UUID`="' . $UUID . '";');
         if($query)
         {
             if($query->num_rows > 0)
@@ -93,10 +94,10 @@ class DBHandlerSite
         return $result;
     }
 
-    public function getSumRecordTypeToday($conn, $UUID, $type)
+    public function getSumRecordTypeToday($UUID, $type)
     {
         $result = 0;
-        $query = $conn->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=' . $type . ' AND `UUID`="' . $UUID . '" AND `Time` >= CURDATE();');
+        $query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=' . $type . ' AND `UUID`="' . $UUID . '" AND `Time` >= CURDATE();');
         if($query)
         {
             if($query->num_rows > 0)
@@ -106,20 +107,20 @@ class DBHandlerSite
         return $result;
     }
 
-    public function getTodayWatched($conn, $UUID)
+    public function getTodayWatched($UUID)
     {
-        return $this->getSumRecordTypeToday($conn, $UUID, 1);
+        return $this->getSumRecordTypeToday($UUID, 1);
     }
 
-    public function getTodayOpened($conn, $UUID)
+    public function getTodayOpened($UUID)
     {
-        return $this->getSumRecordTypeToday($conn, $UUID, 2);
+        return $this->getSumRecordTypeToday($UUID, 2);
     }
 
-    public function getTodayOpenedCount($conn, $UUID)
+    public function getTodayOpenedCount($UUID)
     {
         $result = 0;
-        $query = $conn->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=2 AND `UUID`="' . $UUID . '" AND `Time` >= CURDATE();');
+        $query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=2 AND `UUID`="' . $UUID . '" AND `Time` >= CURDATE();');
         if($query)
         {
             if($query->num_rows > 0)
@@ -129,10 +130,10 @@ class DBHandlerSite
         return $result;
     }
 
-    public function getSumRecordTypePeriod($conn, $UUID, $type, $start, $end)
+    public function getSumRecordTypePeriod($UUID, $type, $start, $end)
     {
         $result = 0;
-        $query = $conn->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=' . $type . ' AND `UUID`="' . $UUID . '" AND `Time` >= ' . $start . ' AND `Time` <= ' . $end . ';');
+        $query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=' . $type . ' AND `UUID`="' . $UUID . '" AND `Time` >= ' . $start . ' AND `Time` <= ' . $end . ';');
         if($query)
         {
             if($query->num_rows > 0)
@@ -142,20 +143,20 @@ class DBHandlerSite
         return $result;
     }
 
-    public function getPeriodWatched($conn, $UUID, $start, $end)
+    public function getPeriodWatched($UUID, $start, $end)
     {
-        return $this->getSumRecordTypePeriod($conn, $UUID, 1, $start, $end);
+        return $this->getSumRecordTypePeriod($UUID, 1, $start, $end);
     }
 
-    public function getPeriodOpened($conn, $UUID, $start, $end)
+    public function getPeriodOpened($UUID, $start, $end)
     {
-        return $this->getSumRecordTypePeriod($conn, $UUID, 2, $start, $end);
+        return $this->getSumRecordTypePeriod($UUID, 2, $start, $end);
     }
 
-    public function getPeriodCount($conn, $UUID, $start, $end)
+    public function getPeriodCount($UUID, $start, $end)
     {
         $result = 0;
-        $query = $conn->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=2 AND `UUID`="' . $UUID . '" AND `Time` >= ' . $start . ' AND `Time` < ' . $end . ';');
+        $query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE Type=2 AND `UUID`="' . $UUID . '" AND `Time` >= ' . $start . ' AND `Time` < ' . $end . ';');
         if($query)
         {
             if($query->num_rows > 0)

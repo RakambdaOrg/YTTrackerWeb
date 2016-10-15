@@ -8,20 +8,20 @@
  */
 class SiteHelper
 {
-    public function millisecondsToTimeString($milliseconds)
+    public function millisecondsToTimeString($totalMilliseconds)
     {
-        return $this->secondsToTimeString($milliseconds / 1000);
+        return $this->secondsToTimeString($totalMilliseconds / 1000);
     }
 
-    public function secondsToTimeString($seconds)
+    public function secondsToTimeString($totalSeconds)
     {
-        $hours = floor($seconds / 3600);
-        $mins = floor($seconds / 60 % 60);
-        $secs = floor($seconds % 60);
+        $hours = floor($totalSeconds / 3600);
+        $minutes = floor($totalSeconds / 60 % 60);
+        $seconds = floor($totalSeconds % 60);
         if ($hours > 0)
-            return sprintf("%02d", $hours) . 'h' . sprintf("%02d", $mins) . 'm' . sprintf("%02d", $secs) . 's';
-        elseif ($mins > 0)
-            return sprintf("%02d", $mins) . 'm' . sprintf("%02d", $secs) . 's';
-        return sprintf("%02d", $secs) . 's';
+            return sprintf("%02d", $hours) . 'h' . sprintf("%02d", $minutes) . 'm' . sprintf("%02d", $seconds) . 's';
+        elseif ($minutes > 0)
+            return sprintf("%02d", $minutes) . 'm' . sprintf("%02d", $seconds) . 's';
+        return sprintf("%02d", $seconds) . 's';
     }
 }

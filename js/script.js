@@ -2,7 +2,7 @@ $(document).ready(function () {
     $.tablesorter.addParser({
         id: 'duration',
         is: function(s) {
-            return s.match(/(\d{1,2}h)?(\d{1,2}m)?\d{1,2}s/ig);
+            return s.match(/(\d{2}h)?(\d{2}m)?\d{2}s/ig);
         },
         format: function(str) {
             var h = 0;

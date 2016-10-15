@@ -2,6 +2,10 @@ language: node_js
 node_js:
   - "0.11"
 sudo: true
+notifications:
+  email: true
+  on_failure: always
+  on_success: always
 branches:
   only:
     - master

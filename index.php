@@ -3,7 +3,7 @@ require_once('api/v1/model/DBConnection.class.php');
 require_once('api/v1/model/DBHandlerSite.class.php');
 require_once('model/SiteHelper.class.php');
 $conn = DBConnection::getConnection();
-$handler = new DBHandlerSite();
+$handler = new DBHandlerSite($conn);
 $siteHelper = new SiteHelper();
 $customPeriodDisplayed = false;
 if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
@@ -69,46 +69,48 @@ if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
             </thead>
             <tbody>
                 <?php
-                $uuids = $handler->getUUIDS($conn);
+                $uuids = $handler->getUUIDS();
                 if($uuids['code'] === 200)
                 {
                     foreach($uuids['uuids'] as $UUIDIndex=>$UUID) {
-                        echo '<tr id="' . $UUIDIndex . '">'
                         ?>
+                        <tr id="<?php
+                            echo $UUIDIndex;
+                        ?>">
                             <td class="userCell">
                                 <?php
-                                $username = $handler->getUsername($conn, $UUID);
+                                $username = $handler->getUsername($UUID);
                                 echo $username ? $username : $UUIDIndex;
                                 ?>
                             </td>
                             <td class="totalOpenedCell leftVerticalLine">
                                 <?php
-                                echo $siteHelper->millisecondsToTimeString($handler->getTotalOpened($conn, $UUID));
+                                echo $siteHelper->millisecondsToTimeString($handler->getTotalOpened($UUID));
                                 ?>
                             </td>
                             <td class="totalWatchedCell lightVerticalLine">
                                 <?php
-                                echo $siteHelper->millisecondsToTimeString($handler->getTotalWatched($conn, $UUID));
+                                echo $siteHelper->millisecondsToTimeString($handler->getTotalWatched($UUID));
                                 ?>
                             </td>
                             <td class="totalCountCell lightVerticalLine">
                                 <?php
-                                echo $handler->getTotalOpenedCount($conn, $UUID);
+                                echo $handler->getTotalOpenedCount($UUID);
                                 ?>
                             </td>
                             <td class="todayOpenedCell leftVerticalLine">
                                 <?php
-                                echo $siteHelper->millisecondsToTimeString($handler->getTodayOpened($conn, $UUID));
+                                echo $siteHelper->millisecondsToTimeString($handler->getTodayOpened($UUID));
                                 ?>
                             </td>
                             <td class="todayWatchedCell lightVerticalLine">
                                 <?php
-                                echo $siteHelper->millisecondsToTimeString($handler->getTodayWatched($conn, $UUID));
+                                echo $siteHelper->millisecondsToTimeString($handler->getTodayWatched($UUID));
                                 ?>
                             </td>
                             <td class="todayCountCell lightVerticalLine">
                                 <?php
-                                echo $handler->getTodayOpenedCount($conn, $UUID);
+                                echo $handler->getTodayOpenedCount($UUID);
                                 ?>
                             </td>
                             <?php
@@ -118,17 +120,17 @@ if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
                                     ?>
                                     <td class="periodOpenedCell leftVerticalLine">
                                         <?php
-                                        echo $siteHelper->millisecondsToTimeString($handler->getPeriodOpened($conn, $UUID, $start, $end));
+                                        echo $siteHelper->millisecondsToTimeString($handler->getPeriodOpened($UUID, $start, $end));
                                         ?>
                                     </td>
                                     <td class="periodWatchedCell lightVerticalLine">
                                         <?php
-                                        echo $siteHelper->millisecondsToTimeString($handler->getPeriodWatched($conn, $UUID, $start, $end));
+                                        echo $siteHelper->millisecondsToTimeString($handler->getPeriodWatched($UUID, $start, $end));
                                         ?>
                                     </td>
                                     <td class="periodCountCell lightVerticalLine">
                                         <?php
-                                        echo $handler->getPeriodCount($conn, $UUID, $start, $end)
+                                        echo $handler->getPeriodCount($UUID, $start, $end)
                                         ?>
                                     </td>
                                     <?php
