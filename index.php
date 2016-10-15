@@ -25,7 +25,7 @@ if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
         <form method="get">
             <label>
                 Start:
-                <input type="date" name="startPeriod"<?php
+                <input type="datetime-local" name="startPeriod"<?php
                 if(isset($_GET['startPeriod'])){
                     echo ' value="' . $_GET['startPeriod'] . '"';
                 }
@@ -33,7 +33,7 @@ if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
             </label>
             <label>
                 End:
-                <input type="date" name="endPeriod"<?php
+                <input type="datetime-local" name="endPeriod"<?php
                 if(isset($_GET['startPeriod'])){
                     echo ' value="' . $_GET['endPeriod'] . '"';
                 }
@@ -115,8 +115,8 @@ if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
                             </td>
                             <?php
                                 if($customPeriodDisplayed){
-                                    $start = 'STR_TO_DATE("' . $_GET['startPeriod'] . ' 00:00:00", "%Y-%m-%d %H:%i:%s")';
-                                    $end = 'STR_TO_DATE("' . $_GET['endPeriod'] . ' 23:59:59", "%Y-%m-%d %H:%i:%s")';
+                                    $start = 'STR_TO_DATE("' . $_GET['startPeriod'] . '", "%Y-%m-%dT%H:%i")';
+                                    $end = 'STR_TO_DATE("' . $_GET['endPeriod'] . ':59", "%Y-%m-%dT%H:%i:%s")';
                                     ?>
                                     <td class="periodOpenedCell leftVerticalLine">
                                         <?php
