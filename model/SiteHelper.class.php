@@ -21,7 +21,7 @@ class SiteHelper
         if ($hours > 0)
             return sprintf("%02d", $hours) . 'h' . sprintf("%02d", $mins) . 'm' . sprintf("%02d", $secs) . 's';
         elseif ($mins > 0)
-            return $mins . 'm' . $secs . 's';
-        return $secs . 's';
+            return sprintf("%02d", $mins) . 'm' . sprintf("%02d", $secs) . 's';
+        return sprintf("%02d", $secs) . 's';
     }
 }
