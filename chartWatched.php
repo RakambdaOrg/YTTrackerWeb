@@ -162,7 +162,6 @@
                         lineThickness: 2,
                         bulletSize: 8,
                         balloonFunction: function (graphDataItem) {
-                            console.log(graphDataItem);
                             return username + '<br>' + YTTGetDateString(graphDataItem.category.getTime()) + '<br/><b><span style="font-size:14px;">' + YTTGetDurationString({hours: graphDataItem.values.value}) + '</span></b>';
                         }
                     });
