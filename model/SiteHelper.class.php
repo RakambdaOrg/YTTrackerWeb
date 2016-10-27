@@ -24,4 +24,22 @@ class SiteHelper
             return sprintf("%02d", $minutes) . 'm' . sprintf("%02d", $seconds) . 's';
         return sprintf("%02d", $seconds) . 's';
     }
+
+    public function getChartData($getLastWeekTotals)
+    {
+        $datas = array();
+        foreach ($getLastWeekTotals as $recordIndex=>$data)
+        {
+            if($data['Type'] === '1')
+            {
+                continue;
+            }
+            if(!array_key_exists($data['Date'], $datas))
+            {
+                $datas[$data['Date']] = array();
+            }
+            $datas[$data['Date']][$data['UID']] = $data['Stat'] / 3600000;
+        }
+        return json_encode($datas);
+    }
 }

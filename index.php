@@ -2,20 +2,24 @@
 require_once('api/v1/model/DBConnection.class.php');
 require_once('api/v1/model/DBHandlerSite.class.php');
 require_once('model/SiteHelper.class.php');
+$dev = isset($_GET['dev']);
 $conn = DBConnection::getConnection();
 $handler = new DBHandlerSite($conn);
 $siteHelper = new SiteHelper();
-$customPeriodDisplayed = false;
-if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
-    $customPeriodDisplayed = true;
-}
+$customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <link rel="stylesheet" href="css/main.css"/>
-    <script type="text/javascript" src="js/jquery/jquery.js"></script>
-    <script type="text/javascript" src="js/tablesorter/jquery.tablesorter.js"></script>
+    <script type="text/javascript" src="js/libs/jquery/jquery.js"></script>
+    <script type="text/javascript" src="js/libs/ElementQueries/ResizeSensor.js"></script>
+    <script type="text/javascript" src="js/libs/ElementQueries/ElementQueries.js"></script>
+    <script type="text/javascript" src="js/libs/amcharts/amcharts.js"></script>
+    <script type="text/javascript" src="js/libs/amcharts/serial.js"></script>
+    <script type="text/javascript" src="js/libs/amcharts/themes/light.js"></script>
+    <script type="text/javascript" src="js/libs/amcharts/plugins/responsive/responsive.min.js"></script>
+    <script type="text/javascript" src="js/libs/tablesorter/jquery.tablesorter.js"></script>
     <script type="text/javascript" src="js/script.js"></script>
     <meta charset="UTF-8">
     <title>YTTracker</title>
@@ -74,7 +78,7 @@ if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
                 {
                     foreach($uuids['uuids'] as $UUIDIndex=>$UUID) {
                         ?>
-                        <tr id="<?php
+                        <tr id="user<?php
                             echo $UUIDIndex;
                         ?>">
                             <td class="userCell">
@@ -151,6 +155,14 @@ if(isset($_GET['startPeriod']) && isset($_GET['endPeriod'])){
                 ?>
             </tbody>
         </table>
+    </div>
+    <div id="chartHolder">
+        <div id="chartDiv"><?php
+            if($dev)
+            {
+                include "chart.php";
+            }
+            ?></div>
     </div>
 </body>
 </html>

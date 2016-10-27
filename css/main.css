@@ -1,3 +1,10 @@
+html,
+body {
+    height: 100%;
+    text-align: center;
+    margin: auto;
+}
+
 body {
     background-color: #AAAAAA;
 }
@@ -31,4 +38,14 @@ tr:hover{
 
 .lightVerticalLine{
     border-left: 1px solid #ddd;
+}
+
+#chartHolder{
+    width: 95%;
+    height: 85%;
+    margin: auto;
+}
+
+#chartDiv{
+    width: 100%;
 }
