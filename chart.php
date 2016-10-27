@@ -84,6 +84,19 @@
             return text;
         }
 
+        /**
+         * @return {string}
+         */
+        function YTTGetDateString(time) {
+            if (!time)
+                return '';
+            var date = new Date(time);
+            var y = date.getFullYear();
+            var m = ("0" + (date.getMonth() + 1)).slice(-2);
+            var d = ("0" + date.getDate()).slice(-2);
+            return y + "-" + m + "-" + d;
+        }
+
         //Resize chart to fit height
         var chartHolder = document.getElementById('chartHolder');
         var chartdiv = document.getElementById('chartDiv');
@@ -150,7 +163,7 @@
                         bulletSize: 8,
                         balloonFunction: function (graphDataItem) {
                             console.log(graphDataItem);
-                            return username + ' watched<br><b><span style="font-size:14px;">' + YTTGetDurationString({hours: graphDataItem.values.value}) + '</span></b>';
+                            return username + ' watched<br>' + YTTGetDateString(graphDataItem.category.getTime()) + '<br/><b><span style="font-size:14px;">' + YTTGetDurationString({hours: graphDataItem.values.value}) + '</span></b>';
                         }
                     });
                 }
@@ -235,7 +248,11 @@
                     selectedBackgroundColor: chartColors['selectedBackgroundColor'],
                     gridColor: chartColors['gridColor'],
                     color: chartColors['color'],
-                    backgroundColor: chartColors['scrollBarBackgroundColor']
+                    backgroundColor: chartColors['scrollBarBackgroundColor'],
+                    listeners: [{
+                        event: 'zoomed',
+                        method: onChartZoomed
+                    }]
                 },
                 chartCursor: {
                     categoryBalloonDateFormat: 'YYYY-MM-DD',
@@ -243,13 +260,7 @@
                     cursorColor: '#000000',
                     fullWidth: true,
                     valueBalloonsEnabled: true,
-                    zoomable: false,
-                    listeners: [{
-                        event: 'zoomed',
-                        method: function (event) {
-                            console.log(event);
-                        }
-                    }]
+                    zoomable: true
                 },
                 dataDateFormat: 'YYYY-MM-DD',
                 categoryField: 'date',
@@ -278,6 +289,29 @@
                     enabled: true
                 }
             });
+
+            zoomChart();
+
+            function onChartZoomed(event) {
+                var datas = [];
+                for (var i in event.chart.dataProvider) {
+                    if (event.chart.dataProvider.hasOwnProperty(i)) {
+                        var data = event.chart.dataProvider[i];
+                        var parts = data['date'].split('-');
+                        var date = new Date(parts[0], parts[1] - 1, parts[2]);
+                        if (date.getTime() >= event.start && date.getTime() <= event.end) {
+                            datas.push(data);
+                        }
+                    }
+                }
+            }
+
+            function zoomChart(range) {
+                if (!range) {
+                    range = 7;
+                }
+                chart.zoomToIndexes(datas.length - range, datas.length - 1);
+            }
 
             function buildData(config) {
                 var data = [];
