@@ -134,13 +134,14 @@
             {
                 if(watchedUIDS.hasOwnProperty(key))
                 {
+                    var username = $('#user' + watchedUIDS[key] + '>.userCell').text().trim();
                     watchedGraphs.push({
                         bullet: 'circle',
                         bulletBorderAlpha: 1,
                         bulletBorderThickness: 1,
                         dashLengthField: 'dashLength',
                         legendValueText: '[[value]]',
-                        title: $('#user' + watchedUIDS[key] + '>.userCell').text().trim(),
+                        title: username,
                         fillAlphas: 0.2,
                         valueField: watchedUIDS[key],
                         valueAxis: 'durationAxis',
@@ -148,7 +149,7 @@
                         lineThickness: 2,
                         bulletSize: 8,
                         balloonFunction: function (graphDataItem) {
-                            return 'Watched<br><b><span style="font-size:14px;">' + YTTGetDurationString({hours: graphDataItem.values.value}) + '</span></b>';
+                            return username + ' watched<br><b><span style="font-size:14px;">' + YTTGetDurationString({hours: graphDataItem.values.value}) + '</span></b>';
                         }
                     });
                 }
