@@ -169,7 +169,7 @@ class DBHandlerSite
     public function getLastWeekTotals()
     {
         $result = array();
-        $query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, SUM(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Time` >= NOW() - INTERVAL 1 WEEK GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
+        $query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, SUM(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Time` >= NOW() - INTERVAL 999 WEEK GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
         if($query)
         {
             if($query->num_rows > 0)
