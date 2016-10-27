@@ -68,6 +68,7 @@
                         bullet: 'circle',
                         bulletBorderAlpha: 1,
                         bulletBorderThickness: 1,
+                        connect: false,
                         dashLengthField: 'dashLength',
                         legendValueText: '[[value]]',
                         title: username,
