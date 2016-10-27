@@ -98,10 +98,10 @@
         }
 
         //Resize chart to fit height
-        var chartHolder = document.getElementById('chartHolderOpened');
-        var chartdiv = document.getElementById('chartDivOpened');
-        new ResizeSensor(chartHolder, function () {
-            chartdiv.style.height = '' + chartHolder.clientHeight + 'px';
+        var chartHolderOpened = document.getElementById('chartHolderOpened');
+        var chartdivOpened = document.getElementById('chartDivOpened');
+        new ResizeSensor(chartHolderOpened, function () {
+            chartdivOpened.style.height = '' + chartHolderOpened.clientHeight + 'px';
         });
 
         AmCharts.ready(function () {
@@ -120,35 +120,35 @@
 
             //Get days from config
             //noinspection JSAnnotator
-            var parsedConfig = {};
-            parsedConfig = <?php echo $siteHelper->getChartData($handler->getLastWeekTotalsOpened(), 1); ?>;
-            var watchedUIDS = [];
+            var parsedConfigOpened = {};
+            parsedConfigOpened = <?php echo $siteHelper->getChartData($handler->getLastWeekTotalsOpened(), 1); ?>;
+            var openedUIDS = [];
             //Reorder dates
-            const datas = [];
-            Object.keys(parsedConfig).sort(function (a, b) {
+            const datasOpened = [];
+            Object.keys(parsedConfigOpened).sort(function (a, b) {
                 return Date.parse(a) - Date.parse(b);
             }).forEach(function (key) {
-                for(var UIDIndex in parsedConfig[key])
+                for(var UIDIndex in parsedConfigOpened[key])
                 {
-                    if(parsedConfig[key].hasOwnProperty(UIDIndex))
+                    if(parsedConfigOpened[key].hasOwnProperty(UIDIndex))
                     {
-                        if(watchedUIDS.indexOf(UIDIndex) < 0)
+                        if(openedUIDS.indexOf(UIDIndex) < 0)
                         {
-                            watchedUIDS.push(UIDIndex);
+                            openedUIDS.push(UIDIndex);
                         }
                     }
                 }
-                var conf = parsedConfig[key];
+                var conf = parsedConfigOpened[key];
                 conf['date'] = key;
-                datas.push(conf);
+                datasOpened.push(conf);
             });
-            var watchedGraphs = [];
-            for(var key in watchedUIDS)
+            var openedGraphs = [];
+            for(var key in openedUIDS)
             {
-                if(watchedUIDS.hasOwnProperty(key))
+                if(openedUIDS.hasOwnProperty(key))
                 {
-                    const username = $('#user' + watchedUIDS[key] + '>.userCell').text().trim();
-                    watchedGraphs.push({
+                    const username = $('#user' + openedUIDS[key] + '>.userCell').text().trim();
+                    openedGraphs.push({
                         bullet: 'circle',
                         bulletBorderAlpha: 1,
                         bulletBorderThickness: 1,
@@ -156,7 +156,7 @@
                         legendValueText: '[[value]]',
                         title: username,
                         fillAlphas: 0.2,
-                        valueField: watchedUIDS[key],
+                        valueField: openedUIDS[key],
                         valueAxis: 'durationAxis',
                         type: 'smoothedLine',
                         lineThickness: 2,
@@ -170,7 +170,7 @@
             }
 
             //Build Chart
-            var chart = AmCharts.makeChart(chartdiv, {
+            var chartOpened = AmCharts.makeChart(chartdivOpened, {
                 type: 'serial',
                 theme: chartColors['theme'],
                 backgroundAlpha: 1,
@@ -190,7 +190,7 @@
                         return graphDataItem && graphDataItem.graph && graphDataItem.graph.valueField && graphDataItem.values && (graphDataItem.values.value || graphDataItem.values.value === 0) ? YTTGetDurationString({hours: graphDataItem.values.value}) : '';
                     }
                 },
-                dataProvider: datas,
+                dataProvider: datasOpened,
                 valueAxes: [{
                     id: 'durationAxis',
                     duration: 'hh',
@@ -211,7 +211,7 @@
                         return YTTGetDurationString({hours: value});
                     }
                 }],
-                graphs: watchedGraphs,
+                graphs: openedGraphs,
                 chartScrollbar: {
                     autoGridCount: true,
                     scrollbarHeight: 40,
@@ -280,7 +280,7 @@
                 if (!range) {
                     range = 7;
                 }
-                chart.zoomToIndexes(datas.length - range, datas.length - 1);
+                chartOpened.zoomToIndexes(datasOpened.length - range, datasOpened.length - 1);
             }
         });
     });

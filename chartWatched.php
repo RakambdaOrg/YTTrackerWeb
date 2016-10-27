@@ -98,10 +98,10 @@
         }
 
         //Resize chart to fit height
-        var chartHolder = document.getElementById('chartHolderWatched');
-        var chartdiv = document.getElementById('chartDivWatched');
-        new ResizeSensor(chartHolder, function () {
-            chartdiv.style.height = '' + chartHolder.clientHeight + 'px';
+        var chartHolderWatched = document.getElementById('chartHolderWatched');
+        var chartdivWatched = document.getElementById('chartDivWatched');
+        new ResizeSensor(chartHolderWatched, function () {
+            chartdivWatched.style.height = '' + chartHolderWatched.clientHeight + 'px';
         });
 
         AmCharts.ready(function () {
@@ -120,17 +120,17 @@
 
             //Get days from config
             //noinspection JSAnnotator
-            var parsedConfig = {};
-            parsedConfig = <?php echo $siteHelper->getChartData($handler->getLastWeekTotalsWatched(), 3600000); ?>;
+            var parsedConfigWatched = {};
+            parsedConfigWatched = <?php echo $siteHelper->getChartData($handler->getLastWeekTotalsWatched(), 3600000); ?>;
             var watchedUIDS = [];
             //Reorder dates
-            const datas = [];
-            Object.keys(parsedConfig).sort(function (a, b) {
+            const datasWatched = [];
+            Object.keys(parsedConfigWatched).sort(function (a, b) {
                 return Date.parse(a) - Date.parse(b);
             }).forEach(function (key) {
-                for(var UIDIndex in parsedConfig[key])
+                for(var UIDIndex in parsedConfigWatched[key])
                 {
-                    if(parsedConfig[key].hasOwnProperty(UIDIndex))
+                    if(parsedConfigWatched[key].hasOwnProperty(UIDIndex))
                     {
                         if(watchedUIDS.indexOf(UIDIndex) < 0)
                         {
@@ -138,9 +138,9 @@
                         }
                     }
                 }
-                var conf = parsedConfig[key];
+                var conf = parsedConfigWatched[key];
                 conf['date'] = key;
-                datas.push(conf);
+                datasWatched.push(conf);
             });
             var watchedGraphs = [];
             for(var key in watchedUIDS)
@@ -170,7 +170,7 @@
             }
 
             //Build Chart
-            var chart = AmCharts.makeChart(chartdiv, {
+            var chartWatched = AmCharts.makeChart(chartdivWatched, {
                 type: 'serial',
                 theme: chartColors['theme'],
                 backgroundAlpha: 1,
@@ -190,7 +190,7 @@
                         return graphDataItem && graphDataItem.graph && graphDataItem.graph.valueField && graphDataItem.values && (graphDataItem.values.value || graphDataItem.values.value === 0) ? YTTGetDurationString({hours: graphDataItem.values.value}) : '';
                     }
                 },
-                dataProvider: datas,
+                dataProvider: datasWatched,
                 valueAxes: [{
                     id: 'durationAxis',
                     duration: 'hh',
@@ -280,7 +280,7 @@
                 if (!range) {
                     range = 7;
                 }
-                chart.zoomToIndexes(datas.length - range, datas.length - 1);
+                chartWatched.zoomToIndexes(datasWatched.length - range, datasWatched.length - 1);
             }
         });
     });

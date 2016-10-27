@@ -1,90 +1,6 @@
 <script type='text/javascript'>
     $(document).ready(function () {
         /**
-         * @return {number}
-         */
-        function YTTGetDurationAsMillisec(d) {
-            if (!d) return 0;
-            return (((((d.days || 0) * 24 + (d.hours || 0)) * 60 + (d.minutes || 0)) * 60 + (d.seconds || 0)) * 1000 + (d.milliseconds || 0)) || 0;
-        }
-
-        function YTTGetValidDuration(d) {
-            if (!d) return {};
-            if (YTTGetDurationAsMillisec(d) < 0) return {};
-            if (d.days) {
-                //noinspection JSDuplicatedDeclaration
-                var temp = d.days - Math.floor(d.days);
-                d.days = Math.floor(d.days);
-                d.hours = (d.hours || 0) + temp * 24;
-            }
-            if (d.hours) {
-                //noinspection JSDuplicatedDeclaration
-                var temp = d.hours - Math.floor(d.hours);
-                d.hours = Math.floor(d.hours);
-                d.minutes = (d.minutes || 0) + temp * 60;
-            }
-            if (d.minutes) {
-                //noinspection JSDuplicatedDeclaration
-                var temp = d.minutes - Math.floor(d.minutes);
-                d.minutes = Math.floor(d.minutes);
-                d.secondes = (d.secondes || 0) + temp * 60;
-            }
-            if (d.secondes) {
-                //noinspection JSDuplicatedDeclaration
-                var temp = d.secondes - Math.floor(d.secondes);
-                d.secondes = Math.floor(d.secondes);
-                d.milliseconds = (d.milliseconds || 0) + temp * 1000;
-            }
-            if (d.milliseconds) {
-                d.milliseconds = Math.floor(d.milliseconds);
-            }
-            return d;
-        }
-
-        function YTTAddDurations(d1, d2) {
-            d1 = YTTGetValidDuration(d1);
-            d2 = YTTGetValidDuration(d2);
-            var d = {
-                milliseconds: 0,
-                seconds: 0,
-                minutes: 0,
-                hours: 0,
-                days: 0
-            };
-            d.milliseconds += (d1.milliseconds || 0) + (d2.milliseconds || 0);
-            d.seconds += (d1.seconds || 0) + (d2.seconds || 0) + parseInt(d.milliseconds / 1000);
-            d.milliseconds %= 1000;
-            d.minutes = (d1.minutes || 0) + (d2.minutes || 0) + parseInt(d.seconds / 60);
-            d.seconds %= 60;
-            d.hours = (d1.hours || 0) + (d2.hours || 0) + parseInt(d.minutes / 60);
-            d.minutes %= 60;
-            d.days = (d1.days || 0) + (d2.days || 0) + parseInt(d.hours / 24);
-            d.hours %= 24;
-            return d;
-        }
-
-        /**
-         * @return {string}
-         */
-        function YTTGetDurationString(duration) {
-            if (!duration)
-                return '0S';
-            duration = YTTAddDurations(duration, {});
-            var text = '';
-            if (duration.days)
-                text += duration.days + 'D ';
-            if (duration.hours)
-                text += duration.hours + 'H ';
-            if (duration.minutes)
-                text += duration.minutes + 'M ';
-            if (duration.seconds)
-                text += duration.seconds + 'S';
-            if (text == '')
-                return '0S';
-            return text;
-        }
-
-        /**
          * @return {string}
          */
         function YTTGetDateString(time) {
@@ -98,10 +14,10 @@
         }
 
         //Resize chart to fit height
-        var chartHolder = document.getElementById('chartHolderOpenedCount');
-        var chartdiv = document.getElementById('chartDivOpenedCount');
-        new ResizeSensor(chartHolder, function () {
-            chartdiv.style.height = '' + chartHolder.clientHeight + 'px';
+        var chartHolderCount = document.getElementById('chartHolderOpenedCount');
+        var chartdivCount = document.getElementById('chartDivOpenedCount');
+        new ResizeSensor(chartHolderCount, function () {
+            chartdivCount.style.height = '' + chartHolderCount.clientHeight + 'px';
         });
 
         AmCharts.ready(function () {
@@ -120,34 +36,34 @@
 
             //Get days from config
             //noinspection JSAnnotator
-            var parsedConfig = {};
-            parsedConfig = <?php echo $siteHelper->getChartData($handler->getLastWeekTotalsCountOpened(), 3600000); ?>;
-            var watchedUIDS = [];
+            var parsedConfigCount = {};
+            parsedConfigCount = <?php echo $siteHelper->getChartData($handler->getLastWeekTotalsCountOpened(), 3600000); ?>;
+            var countUIDS = [];
             //Reorder dates
-            const datas = [];
-            Object.keys(parsedConfig).sort(function (a, b) {
+            const datasCOunt = [];
+            Object.keys(parsedConfigCount).sort(function (a, b) {
                 return Date.parse(a) - Date.parse(b);
             }).forEach(function (key) {
-                for(var UIDIndex in parsedConfig[key])
+                for(var UIDIndex in parsedConfigCount[key])
                 {
-                    if(parsedConfig[key].hasOwnProperty(UIDIndex))
+                    if(parsedConfigCount[key].hasOwnProperty(UIDIndex))
                     {
-                        if(watchedUIDS.indexOf(UIDIndex) < 0)
+                        if(countUIDS.indexOf(UIDIndex) < 0)
                         {
-                            watchedUIDS.push(UIDIndex);
+                            countUIDS.push(UIDIndex);
                         }
                     }
                 }
-                var conf = parsedConfig[key];
+                var conf = parsedConfigCount[key];
                 conf['date'] = key;
-                datas.push(conf);
+                datasCOunt.push(conf);
             });
             var watchedGraphs = [];
-            for(var key in watchedUIDS)
+            for(var key in countUIDS)
             {
-                if(watchedUIDS.hasOwnProperty(key))
+                if(countUIDS.hasOwnProperty(key))
                 {
-                    const username = $('#user' + watchedUIDS[key] + '>.userCell').text().trim();
+                    const username = $('#user' + countUIDS[key] + '>.userCell').text().trim();
                     watchedGraphs.push({
                         bullet: 'circle',
                         bulletBorderAlpha: 1,
@@ -156,7 +72,7 @@
                         legendValueText: '[[value]]',
                         title: username,
                         fillAlphas: 0.2,
-                        valueField: watchedUIDS[key],
+                        valueField: countUIDS[key],
                         valueAxis: 'countAxis',
                         type: 'smoothedLine',
                         lineThickness: 2,
@@ -170,7 +86,7 @@
             }
 
             //Build Chart
-            var chart = AmCharts.makeChart(chartdiv, {
+            var chartCount = AmCharts.makeChart(chartdivCount, {
                 type: 'serial',
                 theme: chartColors['theme'],
                 backgroundAlpha: 1,
@@ -190,7 +106,7 @@
                         return graphDataItem && graphDataItem.graph && graphDataItem.graph.valueField && graphDataItem.values && (graphDataItem.values.value || graphDataItem.values.value === 0) ? graphDataItem.values.value : '';
                     }
                 },
-                dataProvider: datas,
+                dataProvider: datasCOunt,
                 valueAxes: [{
                     id: 'countAxis',
                     minimum: 0,
@@ -274,7 +190,7 @@
                 if (!range) {
                     range = 7;
                 }
-                chart.zoomToIndexes(datas.length - range, datas.length - 1);
+                chartCount.zoomToIndexes(datasCOunt.length - range, datasCOunt.length - 1);
             }
         });
     });
