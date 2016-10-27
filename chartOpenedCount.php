@@ -37,10 +37,10 @@
             //Get days from config
             //noinspection JSAnnotator
             var parsedConfigCount = {};
-            parsedConfigCount = <?php echo $siteHelper->getChartData($handler->getLastWeekTotalsCountOpened(), 3600000); ?>;
+            parsedConfigCount = <?php echo $siteHelper->getChartData($handler->getLastWeekTotalsCountOpened(), 1); ?>;
             var countUIDS = [];
             //Reorder dates
-            const datasCOunt = [];
+            const datasCount = [];
             Object.keys(parsedConfigCount).sort(function (a, b) {
                 return Date.parse(a) - Date.parse(b);
             }).forEach(function (key) {
@@ -56,7 +56,7 @@
                 }
                 var conf = parsedConfigCount[key];
                 conf['date'] = key;
-                datasCOunt.push(conf);
+                datasCount.push(conf);
             });
             var watchedGraphs = [];
             for(var key in countUIDS)
@@ -105,15 +105,15 @@
                         return graphDataItem && graphDataItem.graph && graphDataItem.graph.valueField && graphDataItem.values && (graphDataItem.values.value || graphDataItem.values.value === 0) ? graphDataItem.values.value : '';
                     }
                 },
-                dataProvider: datasCOunt,
+                dataProvider: datasCount,
                 valueAxes: [{
                     id: 'countAxis',
                     minimum: 0,
-                    axisAlpha: 0,
-                    gridAlpha: 0,
-                    labelsEnabled: false,
-                    inside: false,
-                    position: 'left',
+                    axisAlpha: 0.5,
+                    gridAlpha: 0.2,
+                    labelsEnabled: true,
+                    inside: true,
+                    position: 'right',
                     title: '',
                     labelFrequency: 2,
                     labelFunction: function (value) {
@@ -127,11 +127,7 @@
                     selectedBackgroundColor: chartColors['selectedBackgroundColor'],
                     gridColor: chartColors['gridColor'],
                     color: chartColors['color'],
-                    backgroundColor: chartColors['scrollBarBackgroundColor'],
-                    listeners: [{
-                        event: 'zoomed',
-                        method: onChartZoomed
-                    }]
+                    backgroundColor: chartColors['scrollBarBackgroundColor']
                 },
                 chartCursor: {
                     categoryBalloonDateFormat: 'YYYY-MM-DD',
@@ -171,25 +167,15 @@
 
             zoomChart();
 
-            function onChartZoomed(event) {
-                var datas = [];
-                for (var i in event.chart.dataProvider) {
-                    if (event.chart.dataProvider.hasOwnProperty(i)) {
-                        var data = event.chart.dataProvider[i];
-                        var parts = data['date'].split('-');
-                        var date = new Date(parts[0], parts[1] - 1, parts[2]);
-                        if (date.getTime() >= event.start && date.getTime() <= event.end) {
-                            datas.push(data);
-                        }
-                    }
-                }
-            }
-
             function zoomChart(range) {
                 if (!range) {
                     range = 7;
                 }
-                chartCount.zoomToIndexes(datasCOunt.length - range, datasCOunt.length - 1);
+                try
+                {
+                    chartCount.zoomToIndexes(datasCount.length - range, datasCount.length - 1);
+                }
+                catch (TypeError) {}
             }
         });
     });

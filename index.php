@@ -159,24 +159,21 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
     <hr/>
     <div class="chartHolder" id="chartHolderWatched">
         <span class="chartName">Watched time</span>
-        <div class="chartDiv" id="chartDivWatched"><?php
-            include "chartWatched.php"; ?>
-        </div>
+        <div class="chartDiv" id="chartDivWatched"></div>
     </div>
+    <?php include "chartWatched.php"; ?>
     <hr/>
     <div class="chartHolder" id="chartHolderOpened">
         <span class="chartName">Opened time</span>
-        <div class="chartDiv" id="chartDivOpened"><?php
-            include "chartOpened.php"; ?>
-        </div>
+        <div class="chartDiv" id="chartDivOpened"></div>
     </div>
+    <?php include "chartOpened.php"; ?>
     <hr/>
     <div class="chartHolder" id="chartHolderOpenedCount">
         <span class="chartName">Opened count</span>
-        <div class="chartDiv" id="chartDivOpenedCount"><?php
-            include "chartOpenedCount.php"; ?>
-        </div>
+        <div class="chartDiv" id="chartDivOpenedCount"></div>
     </div>
+    <?php include "chartOpenedCount.php"; ?>
 </body>
 </html>
 <?php

@@ -217,11 +217,7 @@
                     selectedBackgroundColor: chartColors['selectedBackgroundColor'],
                     gridColor: chartColors['gridColor'],
                     color: chartColors['color'],
-                    backgroundColor: chartColors['scrollBarBackgroundColor'],
-                    listeners: [{
-                        event: 'zoomed',
-                        method: onChartZoomed
-                    }]
+                    backgroundColor: chartColors['scrollBarBackgroundColor']
                 },
                 chartCursor: {
                     categoryBalloonDateFormat: 'YYYY-MM-DD',
@@ -229,7 +225,7 @@
                     cursorColor: '#000000',
                     fullWidth: true,
                     valueBalloonsEnabled: true,
-                    zoomable: true
+                    zoomable: false
                 },
                 dataDateFormat: 'YYYY-MM-DD',
                 categoryField: 'date',
@@ -261,25 +257,15 @@
 
             zoomChart();
 
-            function onChartZoomed(event) {
-                var datas = [];
-                for (var i in event.chart.dataProvider) {
-                    if (event.chart.dataProvider.hasOwnProperty(i)) {
-                        var data = event.chart.dataProvider[i];
-                        var parts = data['date'].split('-');
-                        var date = new Date(parts[0], parts[1] - 1, parts[2]);
-                        if (date.getTime() >= event.start && date.getTime() <= event.end) {
-                            datas.push(data);
-                        }
-                    }
-                }
-            }
-
             function zoomChart(range) {
                 if (!range) {
                     range = 7;
                 }
-                chartWatched.zoomToIndexes(datasWatched.length - range, datasWatched.length - 1);
+                try
+                {
+                    chartWatched.zoomToIndexes(datasWatched.length - range, datasWatched.length - 1);
+                }
+                catch (TypeError) {}
             }
         });
     });
