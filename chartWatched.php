@@ -98,8 +98,8 @@
         }
 
         //Resize chart to fit height
-        var chartHolder = document.getElementById('chartHolder');
-        var chartdiv = document.getElementById('chartDiv');
+        var chartHolder = document.getElementById('chartHolderWatched');
+        var chartdiv = document.getElementById('chartDivWatched');
         new ResizeSensor(chartHolder, function () {
             chartdiv.style.height = '' + chartHolder.clientHeight + 'px';
         });
@@ -121,7 +121,7 @@
             //Get days from config
             //noinspection JSAnnotator
             var parsedConfig = {};
-            parsedConfig = <?php echo $siteHelper->getChartData($handler->getLastWeekTotals()); ?>;
+            parsedConfig = <?php echo $siteHelper->getChartData($handler->getLastWeekTotalsWatched()); ?>;
             var watchedUIDS = [];
             //Reorder dates
             const datas = [];
