@@ -99,10 +99,10 @@
                 color: '#111111',
                 scrollBarBackgroundColor: '#666666',
                 labelColor: '#000000',
-                handDrawn: false,
                 backgroundColor: '#777777',
                 ratioLineColor: '#196E1F',
-                countLineColor: '#214DD1'
+                countLineColor: '#214DD1',
+                handDrawn: false
             };
 
             //Get days from config
@@ -140,22 +140,19 @@
                         bulletBorderThickness: 1,
                         dashLengthField: 'dashLength',
                         legendValueText: '[[value]]',
-                        title: 'Watched time',
+                        title: $('#user' + watchedUIDS[key] + '>.userCell').text().trim(),
                         fillAlphas: 0.2,
-                        valueField: '' + watchedUIDS[key],
+                        valueField: watchedUIDS[key],
                         valueAxis: 'durationAxis',
                         type: 'smoothedLine',
                         lineThickness: 2,
                         bulletSize: 8,
                         balloonFunction: function (graphDataItem) {
-                            return 'Watched<br>' + graphDataItem.category.getTime() + '<br><b><span style="font-size:14px;">' + YTTGetDurationString({hours: graphDataItem.values.value}) + '</span></b>';
+                            return 'Watched<br><b><span style="font-size:14px;">' + YTTGetDurationString({hours: graphDataItem.values.value}) + '</span></b>';
                         }
                     });
                 }
             }
-
-            console.log(datas);
-            console.log(watchedGraphs);
 
             //Build Chart
             var chart = AmCharts.makeChart(chartdiv, {

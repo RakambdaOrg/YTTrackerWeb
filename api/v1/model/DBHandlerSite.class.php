@@ -19,9 +19,10 @@ class DBHandlerSite
         if(!$query)
             return array('code'=>500, 'result'=>'err', 'error'=>'E0');
         $uuids = array();
+        $i = 0;
         if($query->num_rows > 0)
             while($row = $query->fetch_assoc())
-                $uuids[$row['ID']] = $row['UUID'];
+                $uuids[$i++] = array('ID'=> $row['ID'], 'UUID' => $row['UUID']);
         if (count($uuids) > 0)
             return array('code' => 200, 'result' => 'OK', 'uuids' => $uuids);
         return array('code' => 400, 'result' => 'No entry');

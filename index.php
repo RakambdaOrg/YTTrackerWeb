@@ -79,42 +79,42 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
                     foreach($uuids['uuids'] as $UUIDIndex=>$UUID) {
                         ?>
                         <tr id="user<?php
-                            echo $UUIDIndex;
+                            echo $UUID['ID'];
                         ?>">
                             <td class="userCell">
                                 <?php
-                                $username = $handler->getUsername($UUID);
-                                echo $username ? $username : $UUIDIndex;
+                                $username = $handler->getUsername($UUID['UUID']);
+                                echo $username ? $username : $UUID['ID'];
                                 ?>
                             </td>
                             <td class="totalOpenedCell leftVerticalLine">
                                 <?php
-                                echo $siteHelper->millisecondsToTimeString($handler->getTotalOpened($UUID));
+                                echo $siteHelper->millisecondsToTimeString($handler->getTotalOpened($UUID['UUID']));
                                 ?>
                             </td>
                             <td class="totalWatchedCell lightVerticalLine">
                                 <?php
-                                echo $siteHelper->millisecondsToTimeString($handler->getTotalWatched($UUID));
+                                echo $siteHelper->millisecondsToTimeString($handler->getTotalWatched($UUID['UUID']));
                                 ?>
                             </td>
                             <td class="totalCountCell lightVerticalLine">
                                 <?php
-                                echo $handler->getTotalOpenedCount($UUID);
+                                echo $handler->getTotalOpenedCount($UUID['UUID']);
                                 ?>
                             </td>
                             <td class="todayOpenedCell leftVerticalLine">
                                 <?php
-                                echo $siteHelper->millisecondsToTimeString($handler->getTodayOpened($UUID));
+                                echo $siteHelper->millisecondsToTimeString($handler->getTodayOpened($UUID['UUID']));
                                 ?>
                             </td>
                             <td class="todayWatchedCell lightVerticalLine">
                                 <?php
-                                echo $siteHelper->millisecondsToTimeString($handler->getTodayWatched($UUID));
+                                echo $siteHelper->millisecondsToTimeString($handler->getTodayWatched($UUID['UUID']));
                                 ?>
                             </td>
                             <td class="todayCountCell lightVerticalLine">
                                 <?php
-                                echo $handler->getTodayOpenedCount($UUID);
+                                echo $handler->getTodayOpenedCount($UUID['UUID']);
                                 ?>
                             </td>
                             <?php
@@ -124,17 +124,17 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
                                     ?>
                                     <td class="periodOpenedCell leftVerticalLine">
                                         <?php
-                                        echo $siteHelper->millisecondsToTimeString($handler->getPeriodOpened($UUID, $start, $end));
+                                        echo $siteHelper->millisecondsToTimeString($handler->getPeriodOpened($UUID['UUID'], $start, $end));
                                         ?>
                                     </td>
                                     <td class="periodWatchedCell lightVerticalLine">
                                         <?php
-                                        echo $siteHelper->millisecondsToTimeString($handler->getPeriodWatched($UUID, $start, $end));
+                                        echo $siteHelper->millisecondsToTimeString($handler->getPeriodWatched($UUID['UUID'], $start, $end));
                                         ?>
                                     </td>
                                     <td class="periodCountCell lightVerticalLine">
                                         <?php
-                                        echo $handler->getPeriodCount($UUID, $start, $end)
+                                        echo $handler->getPeriodCount($UUID['UUID'], $start, $end)
                                         ?>
                                     </td>
                                     <?php
