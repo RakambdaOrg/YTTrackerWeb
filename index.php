@@ -170,6 +170,13 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
             include "chartOpened.php"; ?>
         </div>
     </div>
+    <hr/>
+    <div class="chartHolder" id="chartHolderOpenedCount">
+        <span class="chartName">Opened count</span>
+        <div class="chartDiv" id="chartDivOpenedCount"><?php
+            include "chartOpenedCount.php"; ?>
+        </div>
+    </div>
 </body>
 </html>
 <?php

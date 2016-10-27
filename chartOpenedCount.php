@@ -98,8 +98,8 @@
         }
 
         //Resize chart to fit height
-        var chartHolder = document.getElementById('chartHolderOpened');
-        var chartdiv = document.getElementById('chartDivOpened');
+        var chartHolder = document.getElementById('chartHolderOpenedCount');
+        var chartdiv = document.getElementById('chartDivOpenedCount');
         new ResizeSensor(chartHolder, function () {
             chartdiv.style.height = '' + chartHolder.clientHeight + 'px';
         });
@@ -121,7 +121,7 @@
             //Get days from config
             //noinspection JSAnnotator
             var parsedConfig = {};
-            parsedConfig = <?php echo $siteHelper->getChartData($handler->getLastWeekTotalsOpened(), 1); ?>;
+            parsedConfig = <?php echo $siteHelper->getChartData($handler->getLastWeekTotalsCountOpened(), 3600000); ?>;
             var watchedUIDS = [];
             //Reorder dates
             const datas = [];
@@ -157,13 +157,13 @@
                         title: username,
                         fillAlphas: 0.2,
                         valueField: watchedUIDS[key],
-                        valueAxis: 'durationAxis',
+                        valueAxis: 'countAxis',
                         type: 'smoothedLine',
                         lineThickness: 2,
                         bulletSize: 8,
                         balloonFunction: function (graphDataItem) {
                             console.log(graphDataItem);
-                            return username + '<br>' + YTTGetDateString(graphDataItem.category.getTime()) + '<br/><b><span style="font-size:14px;">' + YTTGetDurationString({hours: graphDataItem.values.value}) + '</span></b>';
+                            return username + '<br>' + YTTGetDateString(graphDataItem.category.getTime()) + '<br/><b><span style="font-size:14px;">' + graphDataItem.values.value + '</span></b>';
                         }
                     });
                 }
@@ -187,28 +187,22 @@
                     backgroundColor: chartColors['backgroundColor'],
                     fillColors: chartColors['backgroundColor'],
                     valueFunction: function (graphDataItem) {
-                        return graphDataItem && graphDataItem.graph && graphDataItem.graph.valueField && graphDataItem.values && (graphDataItem.values.value || graphDataItem.values.value === 0) ? YTTGetDurationString({hours: graphDataItem.values.value}) : '';
+                        return graphDataItem && graphDataItem.graph && graphDataItem.graph.valueField && graphDataItem.values && (graphDataItem.values.value || graphDataItem.values.value === 0) ? graphDataItem.values.value : '';
                     }
                 },
                 dataProvider: datas,
                 valueAxes: [{
-                    id: 'durationAxis',
-                    duration: 'hh',
-                    durationUnits: {
-                        DD: 'd',
-                        hh: 'h ',
-                        mm: 'min',
-                        ss: 's'
-                    },
-                    axisAlpha: 0.5,
-                    gridAlpha: 0.2,
-                    inside: true,
-                    color: chartColors['labelColor'],
-                    position: 'right',
-                    title: 'Duration',
+                    id: 'countAxis',
+                    minimum: 0,
+                    axisAlpha: 0,
+                    gridAlpha: 0,
+                    labelsEnabled: false,
+                    inside: false,
+                    position: 'left',
+                    title: '',
                     labelFrequency: 2,
                     labelFunction: function (value) {
-                        return YTTGetDurationString({hours: value});
+                        return value;
                     }
                 }],
                 graphs: watchedGraphs,

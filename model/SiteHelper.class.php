@@ -25,7 +25,7 @@ class SiteHelper
         return sprintf("%02d", $seconds) . 's';
     }
 
-    public function getChartData($getLastWeekTotals)
+    public function getChartData($getLastWeekTotals, $statsRatio)
     {
         $datas = array();
         foreach ($getLastWeekTotals as $recordIndex=>$data)
@@ -34,7 +34,7 @@ class SiteHelper
             {
                 $datas[$data['Date']] = array();
             }
-            $datas[$data['Date']][$data['UID']] = $data['Stat'] / 3600000;
+            $datas[$data['Date']][$data['UID']] = $data['Stat'] / $statsRatio;
         }
         return json_encode($datas);
     }

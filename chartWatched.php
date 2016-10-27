@@ -121,7 +121,7 @@
             //Get days from config
             //noinspection JSAnnotator
             var parsedConfig = {};
-            parsedConfig = <?php echo $siteHelper->getChartData($handler->getLastWeekTotalsWatched()); ?>;
+            parsedConfig = <?php echo $siteHelper->getChartData($handler->getLastWeekTotalsWatched(), 3600000); ?>;
             var watchedUIDS = [];
             //Reorder dates
             const datas = [];
@@ -209,33 +209,6 @@
                     labelFrequency: 2,
                     labelFunction: function (value) {
                         return YTTGetDurationString({hours: value});
-                    }
-                }, {
-                    id: 'ratioAxis',
-                    minimum: 0,
-                    //maximum: 1,
-                    axisAlpha: 0,
-                    gridAlpha: 0,
-                    labelsEnabled: false,
-                    inside: false,
-                    position: 'left',
-                    title: '',
-                    labelFrequency: 2,
-                    labelFunction: function (value) {
-                        return (100 * value).toFixed(2) + '%';
-                    }
-                }, {
-                    id: 'countAxis',
-                    minimum: 0,
-                    axisAlpha: 0,
-                    gridAlpha: 0,
-                    labelsEnabled: false,
-                    inside: false,
-                    position: 'left',
-                    title: '',
-                    labelFrequency: 2,
-                    labelFunction: function (value) {
-                        return value;
                     }
                 }],
                 graphs: watchedGraphs,

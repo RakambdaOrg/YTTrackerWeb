@@ -191,4 +191,17 @@ class DBHandlerSite
         }
         return $result;
     }
+
+    public function getLastWeekTotalsCountOpened()
+    {
+        $result = array();
+        $query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, COUNT(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 1 GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
+        if($query)
+        {
+            if($query->num_rows > 0)
+                while($row = $query->fetch_assoc())
+                    $result[$row['ID']] = array('UID' => $row['UID'], 'Stat' => $row['Stat'], 'Date' => $row['StatDay'], 'Type' => $row['Type']);
+        }
+        return $result;
+    }
 }
