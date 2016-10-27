@@ -158,10 +158,7 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
     </div>
     <div id="chartHolder">
         <div id="chartDiv"><?php
-            if($dev)
-            {
-                include "chart.php";
-            }
+            include "chart.php";
             ?></div>
     </div>
 </body>
