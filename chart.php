@@ -134,7 +134,7 @@
             {
                 if(watchedUIDS.hasOwnProperty(key))
                 {
-                    var username = $('#user' + watchedUIDS[key] + '>.userCell').text().trim();
+                    const username = $('#user' + watchedUIDS[key] + '>.userCell').text().trim();
                     watchedGraphs.push({
                         bullet: 'circle',
                         bulletBorderAlpha: 1,
