@@ -30,10 +30,6 @@ class SiteHelper
         $datas = array();
         foreach ($getLastWeekTotals as $recordIndex=>$data)
         {
-            if($data['Type'] === '1')
-            {
-                continue;
-            }
             if(!array_key_exists($data['Date'], $datas))
             {
                 $datas[$data['Date']] = array();
