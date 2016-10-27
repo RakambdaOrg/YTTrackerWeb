@@ -175,7 +175,6 @@
                 backgroundAlpha: 1,
                 backgroundColor: chartColors['backgroundColor'],
                 fillColors: chartColors['backgroundColor'],
-                startDuration: 0.6,
                 handDrawn: chartColors['handDrawn'],
                 legend: {
                     equalWidths: false,
