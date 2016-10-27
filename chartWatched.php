@@ -312,16 +312,6 @@
                 }
                 chart.zoomToIndexes(datas.length - range, datas.length - 1);
             }
-
-            function buildData(config) {
-                var data = [];
-                for (var key in config) {
-                    if (config.hasOwnProperty(key)) {
-                        data.push(config);
-                    }
-                }
-                return data;
-            }
         });
     });
 </script>

@@ -157,9 +157,9 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
         </table>
     </div>
     <br/>
-    <div id="chartHolderWatched">
+    <div class="chartHolder" id="chartHolderWatched">
         <p>Watched time</p>
-        <div id="chartDivWatched"><?php
+        <div class="chartDiv" id="chartDivWatched"><?php
             include "chartWatched.php";
             ?></div>
     </div>
