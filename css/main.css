@@ -1,5 +1,12 @@
+html,
 body {
-    background-color: #AAAAAA;
+    height: 100%;
+    text-align: center;
+    margin: auto;
+}
+
+body {
+    background-color: #777777;
 }
 
 table {
@@ -31,4 +38,14 @@ tr:hover{
 
 .lightVerticalLine{
     border-left: 1px solid #ddd;
+}
+
+#chartHolder{
+    width: 95%;
+    height: 85%;
+    margin: auto;
+}
+
+#chartDiv{
+    width: 100%;
 }
