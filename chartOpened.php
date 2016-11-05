@@ -121,7 +121,7 @@
             //Get days from config
             //noinspection JSAnnotator
             var parsedConfigOpened = {};
-            parsedConfigOpened = <?php echo $siteHelper->getChartData($handler->getLastWeekTotalsOpened(), 3600000); ?>;
+            parsedConfigOpened = <?php echo $siteHelper->getChartData($handler->getUsersTotalsOpened(), 3600000); ?>;
             var openedUIDS = [];
             //Reorder dates
             const datasOpened = [];

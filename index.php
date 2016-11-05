@@ -2,6 +2,11 @@
 require_once('api/v1/model/DBConnection.class.php');
 require_once('api/v1/model/DBHandlerSite.class.php');
 require_once('model/SiteHelper.class.php');
+if(false)
+{
+    error_reporting(E_ALL);
+    ini_set('display_errors', '1');
+}
 $dev = isset($_GET['dev']);
 $conn = DBConnection::getConnection();
 $handler = new DBHandlerSite($conn);

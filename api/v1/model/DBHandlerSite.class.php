@@ -166,10 +166,10 @@ class DBHandlerSite
         return $result;
     }
 
-    public function getLastWeekTotalsWatched()
+    public function getUsersTotalsWatched()
     {
         $result = array();
-        $query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, SUM(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 1 GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
+        $query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, SUM(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 1 AND DATE(`YTTRecords`.`Time`) >= DATE_SUB(NOW(), INTERVAL 1 MONTH) GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
         if($query)
         {
             if($query->num_rows > 0)
@@ -179,10 +179,10 @@ class DBHandlerSite
         return $result;
     }
 
-    public function getLastWeekTotalsOpened()
+    public function getUsersTotalsOpened()
     {
         $result = array();
-        $query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, SUM(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 2 GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
+        $query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, SUM(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 2 AND DATE(`YTTRecords`.`Time`) >= DATE_SUB(NOW(), INTERVAL 1 MONTH) GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
         if($query)
         {
             if($query->num_rows > 0)
@@ -192,10 +192,10 @@ class DBHandlerSite
         return $result;
     }
 
-    public function getLastWeekTotalsCountOpened()
+    public function getUsersTotalsCountOpened()
     {
         $result = array();
-        $query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, COUNT(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 2 GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
+        $query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, COUNT(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 2 AND DATE(`YTTRecords`.`Time`) >= DATE_SUB(NOW(), INTERVAL 1 MONTH) GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
         if($query)
         {
             if($query->num_rows > 0)

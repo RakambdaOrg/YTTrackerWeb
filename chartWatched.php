@@ -121,7 +121,7 @@
             //Get days from config
             //noinspection JSAnnotator
             var parsedConfigWatched = {};
-            parsedConfigWatched = <?php echo $siteHelper->getChartData($handler->getLastWeekTotalsWatched(), 3600000); ?>;
+            parsedConfigWatched = <?php echo $siteHelper->getChartData($handler->getUsersTotalsWatched(), 3600000); ?>;
             var watchedUIDS = [];
             //Reorder dates
             const datasWatched = [];

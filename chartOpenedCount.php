@@ -37,7 +37,7 @@
             //Get days from config
             //noinspection JSAnnotator
             var parsedConfigCount = {};
-            parsedConfigCount = <?php echo $siteHelper->getChartData($handler->getLastWeekTotalsCountOpened(), 1); ?>;
+            parsedConfigCount = <?php echo $siteHelper->getChartData($handler->getUsersTotalsCountOpened(), 1); ?>;
             var countUIDS = [];
             //Reorder dates
             const datasCount = [];
