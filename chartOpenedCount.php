@@ -41,6 +41,7 @@
             var countUIDS = [];
             //Reorder dates
             const datasCount = [];
+            var dates = [];
             Object.keys(parsedConfigCount).sort(function (a, b) {
                 return Date.parse(a) - Date.parse(b);
             }).forEach(function (key) {
@@ -56,8 +57,45 @@
                 }
                 var conf = parsedConfigCount[key];
                 conf['date'] = key;
+                dates.push(key);
                 datasCount.push(conf);
             });
+            //Fill missing records
+            var startDate = new Date(datasCount[0]['date']);
+            startDate.setHours(0, 0, 0, 0);
+            var endDate = new Date();
+            endDate.setHours(0, 0, 0, 0);
+            var nullDay = {};
+            for(var i = 0; i < countUIDS.length; i++)
+            {
+                nullDay[countUIDS[i]] = 0;
+            }
+            var dateShift = 0;
+            while(startDate.getTime() <= endDate.getTime()) {
+                var current = startDate.getFullYear() + '-' + (startDate.getMonth() < 9 ? "0" : "") + (startDate.getMonth() + 1) + '-' + (startDate.getDate() < 10 ? "0" : "") + startDate.getDate();
+                console.log(current);
+                console.log(dates.indexOf(current) < 0);
+                if (dates.indexOf(current) < 0) {
+                    var data = nullDay;
+                    data['date'] = current;
+                    datasCount.splice(dateShift, 0, data)
+                }
+                else {
+                    for (var i = 0; i < datasCount.length; i++) {
+                        if (datasCount[i]['date'] === current) {
+                            for (var j = 0; j < countUIDS.length; j++) {
+                                if (!datasCount[i].hasOwnProperty(countUIDS[j])) {
+                                    datasCount[i][countUIDS[j]] = 0;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+                dateShift += 1;
+                startDate.setDate(startDate.getDate() + 1);
+            }
+
             var watchedGraphs = [];
             for(var key in countUIDS)
             {

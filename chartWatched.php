@@ -125,6 +125,7 @@
             var watchedUIDS = [];
             //Reorder dates
             const datasWatched = [];
+            var dates = [];
             Object.keys(parsedConfigWatched).sort(function (a, b) {
                 return Date.parse(a) - Date.parse(b);
             }).forEach(function (key) {
@@ -140,8 +141,43 @@
                 }
                 var conf = parsedConfigWatched[key];
                 conf['date'] = key;
+                dates.push(key);
                 datasWatched.push(conf);
             });
+            //Fill missing records
+            var startDate = new Date(datasWatched[0]['date']);
+            startDate.setHours(0, 0, 0, 0);
+            var endDate = new Date();
+            endDate.setHours(0, 0, 0, 0);
+            var nullDay = {};
+            for(var i = 0; i < watchedUIDS.length; i++)
+            {
+                nullDay[watchedUIDS[i]] = 0;
+            }
+            var dateShift = 0;
+            while(startDate.getTime() <= endDate.getTime()) {
+                var current = startDate.getFullYear() + '-' + (startDate.getMonth() < 9 ? "0" : "") + (startDate.getMonth() + 1) + '-' + (startDate.getDate() < 10 ? "0" : "") + startDate.getDate();
+                if (dates.indexOf(current) < 0) {
+                    var data = nullDay;
+                    data['date'] = current;
+                    datasWatched.splice(dateShift, 0, data)
+                }
+                else {
+                    for (var i = 0; i < datasWatched.length; i++) {
+                        if (datasWatched[i]['date'] === current) {
+                            for (var j = 0; j < watchedUIDS.length; j++) {
+                                if (!datasWatched[i].hasOwnProperty(watchedUIDS[j])) {
+                                    datasWatched[i][watchedUIDS[j]] = 0;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+                dateShift += 1;
+                startDate.setDate(startDate.getDate() + 1);
+            }
+
             var watchedGraphs = [];
             for(var key in watchedUIDS)
             {

@@ -125,6 +125,7 @@
             var openedUIDS = [];
             //Reorder dates
             const datasOpened = [];
+            var dates = [];
             Object.keys(parsedConfigOpened).sort(function (a, b) {
                 return Date.parse(a) - Date.parse(b);
             }).forEach(function (key) {
@@ -140,8 +141,45 @@
                 }
                 var conf = parsedConfigOpened[key];
                 conf['date'] = key;
+                dates.push(key);
                 datasOpened.push(conf);
             });
+            //Fill missing records
+            var startDate = new Date(datasOpened[0]['date']);
+            startDate.setHours(0, 0, 0, 0);
+            var endDate = new Date();
+            endDate.setHours(0, 0, 0, 0);
+            var nullDay = {};
+            for(var i = 0; i < openedUIDS.length; i++)
+            {
+                nullDay[openedUIDS[i]] = 0;
+            }
+            var dateShift = 0;
+            while(startDate.getTime() <= endDate.getTime()) {
+                var current = startDate.getFullYear() + '-' + (startDate.getMonth() < 9 ? "0" : "") + (startDate.getMonth() + 1) + '-' + (startDate.getDate() < 10 ? "0" : "") + startDate.getDate();
+                console.log(current);
+                console.log(dates.indexOf(current) < 0);
+                if (dates.indexOf(current) < 0) {
+                    var data = nullDay;
+                    data['date'] = current;
+                    datasOpened.splice(dateShift, 0, data)
+                }
+                else {
+                    for (var i = 0; i < datasOpened.length; i++) {
+                        if (datasOpened[i]['date'] === current) {
+                            for (var j = 0; j < openedUIDS.length; j++) {
+                                if (!datasOpened[i].hasOwnProperty(openedUIDS[j])) {
+                                    datasOpened[i][openedUIDS[j]] = 0;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+                dateShift += 1;
+                startDate.setDate(startDate.getDate() + 1);
+            }
+
             var openedGraphs = [];
             for(var key in openedUIDS)
             {
