@@ -30,7 +30,7 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
     <title>YTTracker</title>
 </head>
 <body>
-    <div>
+    <div style="margin-top: 5px;">
         <form method="get">
             <label>
                 Start:
