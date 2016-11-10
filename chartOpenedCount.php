@@ -73,8 +73,6 @@
             var dateShift = 0;
             while(startDate.getTime() <= endDate.getTime()) {
                 var current = startDate.getFullYear() + '-' + (startDate.getMonth() < 9 ? "0" : "") + (startDate.getMonth() + 1) + '-' + (startDate.getDate() < 10 ? "0" : "") + startDate.getDate();
-                console.log(current);
-                console.log(dates.indexOf(current) < 0);
                 if (dates.indexOf(current) < 0) {
                     var data = nullDay;
                     data['date'] = current;
