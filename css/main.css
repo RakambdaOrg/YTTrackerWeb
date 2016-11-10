@@ -10,17 +10,25 @@ body {
 }
 
 table {
+    border-color: #ddd;
     border-collapse: collapse;
     width: 100%;
 }
 
 th{
-    border-bottom: 3px solid #ddd;
+    border-bottom: 1px solid;
     cursor: pointer;
 }
 
-td{
-    border-bottom: 1px solid #ddd;
+.userCell,
+.totalOpenedCell, .totalWatchedCell, .totalCountCell,
+.todayOpenedCell, .todayWatchedCell, .todayCountCell,
+.periodOpenedCell, .periodWatchedCell, .periodCountCell {
+    border-bottom: 3px solid;
+}
+
+td {
+    border-bottom: 1px solid;
 }
 
 th, td {
@@ -33,11 +41,11 @@ tr:hover{
 }
 
 .leftVerticalLine{
-    border-left: 3px solid #ddd;
+    border-left: 3px solid;
 }
 
 .lightVerticalLine{
-    border-left: 1px solid #ddd;
+    border-left: 1px solid;
 }
 
 .chartHolder{
