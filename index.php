@@ -58,7 +58,7 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
         <table id="dataTable">
             <thead>
                 <tr>
-                    <th class="userCell"></th>
+                    <th class="userCell" rowspan="2">User</th>
                     <th class="leftVerticalLine" colspan="3">Total</th>
                     <th class="leftVerticalLine" colspan="3">Last 24h</th>
                     <?php
@@ -70,7 +70,6 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
                     ?>
                 </tr>
                 <tr>
-                    <th class="userCell">User</th>
                     <th class="totalOpenedCell leftVerticalLine">Opened</th>
                     <th class="totalWatchedCell lightVerticalLine">Watched</th>
                     <th class="totalCountCell lightVerticalLine">Count</th>
