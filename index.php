@@ -58,19 +58,31 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
         <table id="dataTable">
             <thead>
                 <tr>
-                    <th class="userCell">User</th>
-                    <th class="totalOpenedCell leftVerticalLine">Total Opened</th>
-                    <th class="totalWatchedCell lightVerticalLine">Total Watched</th>
-                    <th class="totalCountCell lightVerticalLine">Total Count</th>
-                    <th class="todayOpenedCell leftVerticalLine">Opened last 24h</th>
-                    <th class="todayWatchedCell lightVerticalLine">Watched last 24h</th>
-                    <th class="todayCountCell lightVerticalLine">Count last 24h</th>
+                    <th class="userCell"></th>
+                    <th class="leftVerticalLine" colspan="3">Total</th>
+                    <th class="leftVerticalLine" colspan="3">Last 24h</th>
                     <?php
                     if($customPeriodDisplayed){
                         ?>
-                        <th class="periodOpenedCell leftVerticalLine">Period Opened</th>
-                        <th class="periodWatchedCell lightVerticalLine">Period Watched</th>
-                        <th class="periodCountCell lightVerticalLine">Period Count</th>
+                        <th class="leftVerticalLine" colspan="3">Period</th>
+                        <?php
+                    }
+                    ?>
+                </tr>
+                <tr>
+                    <th class="userCell">User</th>
+                    <th class="totalOpenedCell leftVerticalLine">Opened</th>
+                    <th class="totalWatchedCell lightVerticalLine">Watched</th>
+                    <th class="totalCountCell lightVerticalLine">Count</th>
+                    <th class="todayOpenedCell leftVerticalLine">Opened</th>
+                    <th class="todayWatchedCell lightVerticalLine">Watched</th>
+                    <th class="todayCountCell lightVerticalLine">Count</th>
+                    <?php
+                    if($customPeriodDisplayed){
+                        ?>
+                        <th class="periodOpenedCell leftVerticalLine">Opened</th>
+                        <th class="periodWatchedCell lightVerticalLine">Watched</th>
+                        <th class="periodCountCell lightVerticalLine">Count</th>
                         <?php
                     }
                     ?>
