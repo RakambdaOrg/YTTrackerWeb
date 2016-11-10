@@ -132,32 +132,29 @@ function processRequest($methodName, $params)
         sendResponse(500, json_encode(array('code' => '500', 'result' => 'err', 'error' => 'E0')));
         return;
     }
-    if (!$methodName($conn, $params)) {
+    if (!$methodName(new DBHandler($conn), $params)) {
         sendResponse(500, json_encode(array('code' => '500')));
     }
     $conn->close();
 }
 
-function addStats($conn, $params)
+function addStats($dbHandler, $params)
 {
-    $dbHandler = new DBhandler();
-    $result = $dbHandler->addStat($conn, $params['uuid'], $params['type'], $params['stats'], $params['videoID'], isset($params['date']) ? $params['date'] : null);
+    $result = $dbHandler->addStat($params['uuid'], $params['type'], $params['stats'], $params['videoID'], isset($params['date']) ? $params['date'] : null);
     sendResponse($result['code'], json_encode($result));
     return true;
 }
 
-function getStats($conn, $params)
+function getStats($dbHandler, $params)
 {
-    $dbHandler = new DBhandler();
-    $result = $dbHandler->getStats($conn, $params['uuid']);
+    $result = $dbHandler->getStats($params['uuid']);
     sendResponse($result['code'], json_encode($result));
     return true;
 }
 
-function setUsername($conn, $params)
+function setUsername($dbHandler, $params)
 {
-    $dbHandler = new DBhandler();
-    $result = $dbHandler->setUsername($conn, $params['uuid'], $params['username']);
+    $result = $dbHandler->setUsername($params['uuid'], $params['username']);
     sendResponse($result['code'], json_encode($result));
     return true;
 }

@@ -8,13 +8,17 @@
  */
 class DBHandler
 {
-    public function __construct()
+    /** @var mysqli */
+    private $conn;
+
+    public function __construct($conn)
     {
+        $this->conn = $conn;
     }
 
-    function addStat($conn, $uuid, $type, $stat, $videoID, $date)
+    function addStat($uuid, $type, $stat, $videoID, $date)
     {
-        if (!$conn->query('INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`) VALUES("' . $uuid . '", ' . $type . ',"' . $videoID . '",' . $stat . ', ' . $this->getTimestamp($date) . ');'))
+        if (!$this->conn->query('INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`) VALUES("' . $uuid . '", ' . $type . ',"' . $videoID . '",' . $stat . ', ' . $this->getTimestamp($date) . ');'))
             return array('code' => 400, 'result' => 'err', 'error' => 'E2');
         return array('code' => 200, 'result' => 'OK');
     }
@@ -37,9 +41,9 @@ class DBHandler
         return 'STR_TO_DATE("' . $date . '", "%Y-%m-%d %H:%i:%s")';
     }
 
-    public function getStats($conn, $uuid)
+    public function getStats($uuid)
     {
-        $query = $conn->query('SELECT * FROM  `YTTRecords` WHERE `UUID` IS "' . $uuid . '" ORDER BY `ID` ASC;');
+        $query = $this->conn->query('SELECT * FROM  `YTTRecords` WHERE `UUID` IS "' . $uuid . '" ORDER BY `ID` ASC;');
         if (!$query)
             return array('code' => 500, 'result' => 'err', 'error' => 'E3');
         $stats = array();
@@ -51,9 +55,9 @@ class DBHandler
         return array('code' => 400, 'result' => 'No entry');
     }
 
-    public function setUsername($conn, $uuid, $username)
+    public function setUsername($uuid, $username)
     {
-        $query = $conn->query('INSERT INTO `YTTUsers`(`UUID`, `Username`) VALUES("' . $uuid . '","' . $conn->real_escape_string($username) . '") ON DUPLICATE KEY UPDATE `Username`="' . $conn->real_escape_string($username) . '";');
+        $query = $this->conn->query('INSERT INTO `YTTUsers`(`UUID`, `Username`) VALUES("' . $uuid . '","' . $conn->real_escape_string($username) . '") ON DUPLICATE KEY UPDATE `Username`="' . $conn->real_escape_string($username) . '";');
         if (!$query)
             return array('code' => 500, 'result' => 'err', 'error' => 'E4');
         return array('code' => 200, 'result' => 'OK');

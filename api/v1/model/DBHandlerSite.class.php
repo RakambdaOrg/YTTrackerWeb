@@ -8,6 +8,9 @@
  */
 class DBHandlerSite
 {
+    /** @var mysqli */
+    private $sqlConnection;
+
     public function __construct($conn)
     {
         $this->sqlConnection = $conn;
@@ -156,7 +159,7 @@ class DBHandlerSite
     public function getPeriodCount($UUID, $start, $end)
     {
         $result = 0;
-        $query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=2 AND `UUID`="' . $UUID . '" AND `Time` >= ' . $start . ' AND `Time` < ' . $end . ';');
+        $query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM `YTTRecords` WHERE `Type`=2 AND `UUID`="' . $UUID . '" AND `Time` >= ' . $start . ' AND `Time` < ' . $end . ';');
         if($query)
         {
             if($query->num_rows > 0)
@@ -195,12 +198,48 @@ class DBHandlerSite
     public function getUsersTotalsCountOpened()
     {
         $result = array();
-        $query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, COUNT(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 2 AND DATE(`YTTRecords`.`Time`) >= DATE_SUB(NOW(), INTERVAL 1 MONTH) GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
+        $query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, COUNT(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 2 AND DATE(`YTTRecords`.`Time`) >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
         if($query)
         {
             if($query->num_rows > 0)
                 while($row = $query->fetch_assoc())
                     $result[$row['ID']] = array('UID' => $row['UID'], 'Stat' => $row['Stat'], 'Date' => $row['StatDay'], 'Type' => $row['Type']);
+        }
+        return $result;
+    }
+
+    public function getLast24hOpened($UUID)
+    {
+        return $this->getSumRecordType24h($UUID, 2);
+    }
+
+    public function getLast24hWatched($UUID)
+    {
+        return $this->getSumRecordType24h($UUID, 1);
+    }
+
+    public function getLast24hOpenedCount($UUID)
+    {
+        $result = 0;
+        $query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM `YTTRecords` WHERE `Type`=2 AND `UUID`="' . $UUID . '" AND `Time` >= DATE_SUB(NOW(), INTERVAL 1 DAY);');
+        if($query)
+        {
+            if($query->num_rows > 0)
+                while($row = $query->fetch_assoc())
+                    $result = $row['Total'];
+        }
+        return $result;
+    }
+
+    private function getSumRecordType24h($UUID, $type)
+    {
+        $result = 0;
+        $query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`="' . $UUID . '" AND `Time` >= DATE_SUB(NOW(), INTERVAL 1 DAY);');
+        if($query)
+        {
+            if($query->num_rows > 0)
+                while($row = $query->fetch_assoc())
+                    $result = $row['Total'];
         }
         return $result;
     }

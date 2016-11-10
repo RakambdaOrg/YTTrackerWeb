@@ -62,9 +62,9 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
                     <th class="totalOpenedCell leftVerticalLine">Total Opened</th>
                     <th class="totalWatchedCell lightVerticalLine">Total Watched</th>
                     <th class="totalCountCell lightVerticalLine">Total Count</th>
-                    <th class="todayOpenedCell leftVerticalLine">Opened Today</th>
-                    <th class="todayWatchedCell lightVerticalLine">Watched Today</th>
-                    <th class="todayCountCell lightVerticalLine">Count Today</th>
+                    <th class="todayOpenedCell leftVerticalLine">Opened last 24h</th>
+                    <th class="todayWatchedCell lightVerticalLine">Watched last 24h</th>
+                    <th class="todayCountCell lightVerticalLine">Count last 24h</th>
                     <?php
                     if($customPeriodDisplayed){
                         ?>
@@ -109,17 +109,17 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
                             </td>
                             <td class="todayOpenedCell leftVerticalLine">
                                 <?php
-                                echo $siteHelper->millisecondsToTimeString($handler->getTodayOpened($UUID['UUID']));
+                                echo $siteHelper->millisecondsToTimeString($handler->getLast24hOpened($UUID['UUID']));
                                 ?>
                             </td>
                             <td class="todayWatchedCell lightVerticalLine">
                                 <?php
-                                echo $siteHelper->millisecondsToTimeString($handler->getTodayWatched($UUID['UUID']));
+                                echo $siteHelper->millisecondsToTimeString($handler->getLast24hWatched($UUID['UUID']));
                                 ?>
                             </td>
                             <td class="todayCountCell lightVerticalLine">
                                 <?php
-                                echo $handler->getTodayOpenedCount($UUID['UUID']);
+                                echo $handler->getLast24hOpenedCount($UUID['UUID']);
                                 ?>
                             </td>
                             <?php
