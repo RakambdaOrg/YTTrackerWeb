@@ -16,7 +16,8 @@ table {
 }
 
 th{
-    border-bottom: 1px solid inherit;
+    border-bottom: 1px solid;
+    border-color: inherit;
     cursor: pointer;
 }
 
@@ -24,11 +25,13 @@ th>.userCell,
 th>.totalOpenedCell, th>.totalWatchedCell, th>.totalCountCell,
 th>.todayOpenedCell, th>.todayWatchedCell, th>.todayCountCell,
 th>.periodOpenedCell, th>.periodWatchedCell, th>.periodCountCell {
-    border-bottom: 3px solid inherit;
+    border-bottom: 3px solid;
+    border-color: inherit;
 }
 
 td {
-    border-bottom: 1px solid inherit;
+    border-bottom: 1px solid;
+    border-color: inherit;
 }
 
 th, td {
@@ -41,11 +44,13 @@ tr:hover{
 }
 
 .leftVerticalLine{
-    border-left: 3px solid inherit;
+    border-left: 3px solid;
+    border-color: inherit;
 }
 
 .lightVerticalLine{
-    border-left: 1px solid inherit;
+    border-left: 1px solid;
+    border-color: inherit;
 }
 
 .chartHolder{
