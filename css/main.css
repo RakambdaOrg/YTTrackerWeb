@@ -16,19 +16,19 @@ table {
 }
 
 th{
-    border-bottom: 1px solid;
+    border-bottom: 1px solid inherit;
     cursor: pointer;
 }
 
-.userCell,
-.totalOpenedCell, .totalWatchedCell, .totalCountCell,
-.todayOpenedCell, .todayWatchedCell, .todayCountCell,
-.periodOpenedCell, .periodWatchedCell, .periodCountCell {
-    border-bottom: 3px solid;
+th>.userCell,
+th>.totalOpenedCell, th>.totalWatchedCell, th>.totalCountCell,
+th>.todayOpenedCell, th>.todayWatchedCell, th>.todayCountCell,
+th>.periodOpenedCell, th>.periodWatchedCell, th>.periodCountCell {
+    border-bottom: 3px solid inherit;
 }
 
 td {
-    border-bottom: 1px solid;
+    border-bottom: 1px solid inherit;
 }
 
 th, td {
@@ -41,11 +41,11 @@ tr:hover{
 }
 
 .leftVerticalLine{
-    border-left: 3px solid;
+    border-left: 3px solid inherit;
 }
 
 .lightVerticalLine{
-    border-left: 1px solid;
+    border-left: 1px solid inherit;
 }
 
 .chartHolder{
