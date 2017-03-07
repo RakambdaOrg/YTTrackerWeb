@@ -15,10 +15,13 @@ class SiteHelper
 
     public function secondsToTimeString($totalSeconds)
     {
-        $hours = floor($totalSeconds / 3600);
+        $days = floor($totalSeconds / 86400);
+        $hours = floor($totalSeconds / 3600 % 24);
         $minutes = floor($totalSeconds / 60 % 60);
         $seconds = floor($totalSeconds % 60);
-        if ($hours > 0)
+        if($days > 0)
+            return sprintf("%02d", $days) . 'd' . sprintf("%02d", $hours) . 'h' . sprintf("%02d", $minutes) . 'm' . sprintf("%02d", $seconds) . 's';
+        elseif ($hours > 0)
             return sprintf("%02d", $hours) . 'h' . sprintf("%02d", $minutes) . 'm' . sprintf("%02d", $seconds) . 's';
         elseif ($minutes > 0)
             return sprintf("%02d", $minutes) . 'm' . sprintf("%02d", $seconds) . 's';
