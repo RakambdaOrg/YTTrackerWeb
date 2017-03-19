@@ -221,7 +221,7 @@ class DBHandlerSite
     public function getCountDays($UUID, $days)
     {
         $result = 0;
-        $query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM `YTTRecords` WHERE `Type`=2 AND `UUID`="' . $UUID . '" AND `Time` >= DATE_SUB(NOW(), INTERVAL ' + $days + ' DAY);');
+        $query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM `YTTRecords` WHERE `Type`=2 AND `UUID`="' . $UUID . '" AND `Time` >= DATE_SUB(NOW(), INTERVAL ' . $days . ' DAY);');
         if($query)
         {
             if($query->num_rows > 0)
@@ -234,7 +234,7 @@ class DBHandlerSite
     private function getSumRecordTypeDays($UUID, $type, $days)
     {
         $result = 0;
-        $query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`="' . $UUID . '" AND `Time` >= DATE_SUB(NOW(), INTERVAL ' + $days + ' DAY);');
+        $query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`="' . $UUID . '" AND `Time` >= DATE_SUB(NOW(), INTERVAL ' . $days . ' DAY);');
         if($query)
         {
             if($query->num_rows > 0)
