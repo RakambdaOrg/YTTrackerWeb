@@ -210,18 +210,18 @@ class DBHandlerSite
 
     public function getLast24hOpened($UUID)
     {
-        return $this->getSumRecordType24h($UUID, 2);
+        return $this->getSumRecordTypeDays($UUID, 2, 1);
     }
 
     public function getLast24hWatched($UUID)
     {
-        return $this->getSumRecordType24h($UUID, 1);
+        return $this->getSumRecordTypeDays($UUID, 1, 1);
     }
 
-    public function getLast24hOpenedCount($UUID)
+    public function getCountDays($UUID, $days)
     {
         $result = 0;
-        $query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM `YTTRecords` WHERE `Type`=2 AND `UUID`="' . $UUID . '" AND `Time` >= DATE_SUB(NOW(), INTERVAL 1 DAY);');
+        $query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM `YTTRecords` WHERE `Type`=2 AND `UUID`="' . $UUID . '" AND `Time` >= DATE_SUB(NOW(), INTERVAL ' + $days + ' DAY);');
         if($query)
         {
             if($query->num_rows > 0)
@@ -231,10 +231,10 @@ class DBHandlerSite
         return $result;
     }
 
-    private function getSumRecordType24h($UUID, $type)
+    private function getSumRecordTypeDays($UUID, $type, $days)
     {
         $result = 0;
-        $query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`="' . $UUID . '" AND `Time` >= DATE_SUB(NOW(), INTERVAL 1 DAY);');
+        $query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`="' . $UUID . '" AND `Time` >= DATE_SUB(NOW(), INTERVAL ' + $days + ' DAY);');
         if($query)
         {
             if($query->num_rows > 0)
@@ -281,5 +281,25 @@ class DBHandlerSite
                     $result[$row['ID']] = array('UID' => $row['UID'], 'Stat' => $row['Stat'], 'Date' => $row['StatDay'], 'Type' => $row['Type']);
         }
         return $result;
+    }
+
+    public function getWeekWatched($UUID)
+    {
+        return $this->getSumRecordTypeDays($UUID, 1, 7);
+    }
+
+    public function getWeekOpened($UUID)
+    {
+        return $this->getSumRecordTypeDays($UUID, 2, 7);
+    }
+
+    public function getWeekOpenedCount($UUID)
+    {
+        return $this->getCountDays($UUID, 7);
+    }
+
+    public function getLast24hOpenedCount($UUID)
+    {
+        return $this->getCountDays($UUID, 1);
     }
 }

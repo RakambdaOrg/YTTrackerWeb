@@ -60,6 +60,7 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
                 <tr>
                     <th class="userCell" rowspan="2">User</th>
                     <th class="leftVerticalLine" colspan="3">Total</th>
+                    <th class="leftVerticalLine" colspan="3">Last Week</th>
                     <th class="leftVerticalLine" colspan="3">Last 24h</th>
                     <?php
                     if($customPeriodDisplayed){
@@ -73,6 +74,9 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
                     <th class="totalOpenedCell leftVerticalLine">Opened</th>
                     <th class="totalWatchedCell lightVerticalLine">Watched</th>
                     <th class="totalCountCell lightVerticalLine">Count</th>
+                    <th class="weekOpenedCell leftVerticalLine">Opened</th>
+                    <th class="weekWatchedCell lightVerticalLine">Watched</th>
+                    <th class="weekCountCell lightVerticalLine">Count</th>
                     <th class="todayOpenedCell leftVerticalLine">Opened</th>
                     <th class="todayWatchedCell lightVerticalLine">Watched</th>
                     <th class="todayCountCell lightVerticalLine">Count</th>
@@ -116,6 +120,21 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
                             <td class="totalCountCell lightVerticalLine">
                                 <?php
                                 echo $handler->getTotalOpenedCount($UUID['UUID']);
+                                ?>
+                            </td>
+                            <td class="weekOpenedCell leftVerticalLine">
+                                <?php
+                                echo $siteHelper->millisecondsToTimeString($handler->getWeekOpened($UUID['UUID']));
+                                ?>
+                            </td>
+                            <td class="weekWatchedCell lightVerticalLine">
+                                <?php
+                                echo $siteHelper->millisecondsToTimeString($handler->getWeekWatched($UUID['UUID']));
+                                ?>
+                            </td>
+                            <td class="weekCountCell lightVerticalLine">
+                                <?php
+                                echo $handler->getWeekOpenedCount($UUID['UUID']);
                                 ?>
                             </td>
                             <td class="todayOpenedCell leftVerticalLine">

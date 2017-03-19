@@ -23,6 +23,7 @@ th{
 
 thead .userCell,
 thead .totalOpenedCell, thead .totalWatchedCell, thead .totalCountCell,
+thead .weekOpenedCell, thead .weekWatchedCell, thead .weekCountCell,
 thead .todayOpenedCell, thead .todayWatchedCell, thead .todayCountCell,
 thead .periodOpenedCell, thead .periodWatchedCell, thead .periodCountCell {
     border-bottom: 3px solid;
