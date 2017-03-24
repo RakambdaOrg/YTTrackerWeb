@@ -57,7 +57,7 @@ class DBHandler
 
     public function setUsername($uuid, $username)
     {
-        $query = $this->conn->query('INSERT INTO `YTTUsers`(`UUID`, `Username`) VALUES("' . $uuid . '","' . $conn->real_escape_string($username) . '") ON DUPLICATE KEY UPDATE `Username`="' . $conn->real_escape_string($username) . '";');
+        $query = $this->conn->query('INSERT INTO `YTTUsers`(`UUID`, `Username`) VALUES("' . $uuid . '","' . $this->conn->real_escape_string($username) . '") ON DUPLICATE KEY UPDATE `Username`="' . $this->conn->real_escape_string($username) . '";');
         if (!$query)
             return array('code' => 500, 'result' => 'err', 'error' => 'E4');
         return array('code' => 200, 'result' => 'OK');
