@@ -99,12 +99,15 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
                     foreach($uuids['uuids'] as $UUIDIndex=>$UUID) {
                         ?>
                         <tr id="user<?php
-                            echo $UUID['ID'] . "<br/>(" . $handler->getOldestRecord($UUID) . ")";
+                            echo $UUID['ID'];
                         ?>">
                             <td class="userCell">
                                 <?php
                                 $username = $handler->getUsername($UUID['UUID']);
                                 echo $username ? $username : $UUID['ID'];
+                                echo '<br/>(';
+                                echo $handler->getOldestRecord($UUID);
+                                echo ')';
                                 ?>
                             </td>
                             <td class="totalOpenedCell leftVerticalLine">
