@@ -43,7 +43,7 @@ class DBHandler
 
     public function getStats($uuid)
     {
-        $query = $this->conn->query('SELECT * FROM  `YTTRecords` WHERE `UUID` IS "' . $uuid . '" ORDER BY `ID` ASC;');
+        $query = $this->conn->query('SELECT * FROM  `YTTRecords` WHERE `UUID`="' . $uuid . '" ORDER BY `ID` ASC;');
         if (!$query)
             return array('code' => 500, 'result' => 'err', 'error' => 'E3');
         $stats = array();
