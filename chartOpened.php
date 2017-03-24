@@ -121,7 +121,12 @@
             //Get days from config
             //noinspection JSAnnotator
             var parsedConfigOpened = {};
-            parsedConfigOpened = <?php echo $siteHelper->getChartData($handler->getUsersTotalsOpened(), 3600000); ?>;
+            parsedConfigOpened = <?php
+                    if(isset($_GET['all']))
+                        echo $siteHelper->getChartData($handler->getUsersTotalsOpenedForever(), 3600000);
+                    else
+                        echo $siteHelper->getChartData($handler->getUsersTotalsOpened(), 3600000);
+            ?>;
             var openedUIDS = [];
             //Reorder dates
             const datasOpened = [];
@@ -156,7 +161,7 @@
             }
             var dateShift = 0;
             while(startDate.getTime() <= endDate.getTime()) {
-                var current = startDate.getFullYear() + '-' + (startDate.getMonth() < 9 ? "0" : "") + (startDate.getMonth() + 1) + '-' + (startDate.getDate() < 10 ? "0" : "") + startDate.getDate();
+                var current = startDate.getFullYear() + '-' + (startDate.getMonth() < 10 ? "0" : "") + (startDate.getMonth() + 1) + '-' + (startDate.getDate() < 10 ? "0" : "") + startDate.getDate();
                 if (dates.indexOf(current) < 0) {
                     var data = nullDay;
                     data['date'] = current;
