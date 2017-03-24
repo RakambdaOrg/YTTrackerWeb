@@ -302,4 +302,17 @@ class DBHandlerSite
     {
         return $this->getCountDays($UUID, 1);
     }
+
+    public function getOldestRecord()
+    {
+        $result = "ERROR";
+        $query = $this->sqlConnection->query('SELECT MIN(`StatDay`) AS "oldest" FROM `YTTRecords`;');
+        if($query)
+        {
+            if($query->num_rows > 0)
+                while($row = $query->fetch_assoc())
+                    $result = $row['oldest'];
+        }
+        return $result;
+    }
 }
