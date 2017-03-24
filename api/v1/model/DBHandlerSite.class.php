@@ -306,7 +306,7 @@ class DBHandlerSite
     public function getOldestRecord($UUID)
     {
         $result = "ERROR";
-        $query = $this->sqlConnection->query('SELECT MIN(`Time`) AS Oldest FROM `YTTRecords` WHERE `UUID`="' . $UUID . '";');
+        $query = $this->sqlConnection->query('SELECT MIN(`Time`) AS `Oldest` FROM `YTTRecords` WHERE `UUID`="' . $UUID . '";');
         if($query)
         {
             if($query->num_rows > 0)
