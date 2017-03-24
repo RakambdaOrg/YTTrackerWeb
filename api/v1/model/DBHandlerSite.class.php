@@ -303,15 +303,15 @@ class DBHandlerSite
         return $this->getCountDays($UUID, 1);
     }
 
-    public function getOldestRecord()
+    public function getOldestRecord($UUID)
     {
         $result = "ERROR";
-        $query = $this->sqlConnection->query('SELECT MIN(`Time`) AS "oldest" FROM `YTTRecords`;');
+        $query = $this->sqlConnection->query('SELECT MIN(`Time`) AS Oldest FROM `YTTRecords` WHERE `UUID`="' . $UUID . '";');
         if($query)
         {
             if($query->num_rows > 0)
                 while($row = $query->fetch_assoc())
-                    $result = $row['oldest'];
+                    $result = $row['Oldest'];
         }
         return $result;
     }
