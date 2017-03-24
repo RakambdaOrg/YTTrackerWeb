@@ -306,7 +306,7 @@ class DBHandlerSite
     public function getOldestRecord()
     {
         $result = "ERROR";
-        $query = $this->sqlConnection->query('SELECT MIN(`StatDay`) AS "oldest" FROM `YTTRecords`;');
+        $query = $this->sqlConnection->query('SELECT MIN(`Time`) AS "oldest" FROM `YTTRecords`;');
         if($query)
         {
             if($query->num_rows > 0)
