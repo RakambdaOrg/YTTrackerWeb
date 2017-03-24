@@ -129,11 +129,9 @@
             ?>;
             var openedUIDS = [];
             //Reorder dates
-            const datasOpened = [];
+            const datasOpenedTemp = [];
             var dates = [];
-            Object.keys(parsedConfigOpened).sort(function (a, b) {
-                return Date.parse(a) - Date.parse(b);
-            }).forEach(function (key) {
+            parsedConfigOpened.forEach(function (key) {
                 for(var UIDIndex in parsedConfigOpened[key])
                 {
                     if(parsedConfigOpened[key].hasOwnProperty(UIDIndex))
@@ -147,7 +145,10 @@
                 var conf = parsedConfigOpened[key];
                 conf['date'] = key;
                 dates.push(key);
-                datasOpened.push(conf);
+                datasOpenedTemp.push(conf);
+            });
+            const datasOpened = datasOpenedTemp.sort(function (a, b) {
+                return Date.parse(a['date']) - Date.parse(b['date']);
             });
             //Fill missing records
             var startDate = new Date(datasOpened[0]['date']);
