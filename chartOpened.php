@@ -79,7 +79,7 @@
                 text += duration.minutes + 'M ';
             if (duration.seconds)
                 text += duration.seconds + 'S';
-            if (text == '')
+            if (text === '')
                 return '0S';
             return text;
         }
@@ -131,27 +131,30 @@
             //Reorder dates
             const datasOpenedTemp = [];
             var dates = [];
-            parsedConfigOpened.forEach(function (key) {
-                for(var UIDIndex in parsedConfigOpened[key])
+            var startDate = new Date();
+            for(var key in parsedConfigOpened)
+            {
+                if(parsedConfigOpened.hasOwnProperty(key))
                 {
-                    if(parsedConfigOpened[key].hasOwnProperty(UIDIndex))
+                    for(var UIDIndex in parsedConfigOpened[key])
                     {
-                        if(openedUIDS.indexOf(UIDIndex) < 0)
+                        if(parsedConfigOpened[key].hasOwnProperty(UIDIndex))
                         {
-                            openedUIDS.push(UIDIndex);
+                            if(openedUIDS.indexOf(UIDIndex) < 0)
+                            {
+                                openedUIDS.push(UIDIndex);
+                            }
                         }
                     }
+                    var conf = parsedConfigOpened[key];
+                    conf['date'] = key;
+                    dates.push(key);
+                    datasOpenedTemp.push(conf);
+                    if(startDate - Date.parse(key) > 0)
+                        startDate = new Date(key);
                 }
-                var conf = parsedConfigOpened[key];
-                conf['date'] = key;
-                dates.push(key);
-                datasOpenedTemp.push(conf);
-            });
-            const datasOpened = datasOpenedTemp.sort(function (a, b) {
-                return Date.parse(a['date']) - Date.parse(b['date']);
-            });
+            }
             //Fill missing records
-            var startDate = new Date(datasOpened[0]['date']);
             startDate.setHours(0, 0, 0, 0);
             var endDate = new Date();
             endDate.setHours(0, 0, 0, 0);
@@ -160,36 +163,39 @@
             {
                 nullDay[openedUIDS[i]] = 0;
             }
-            var dateShift = 0;
             while(startDate.getTime() <= endDate.getTime()) {
-                var current = startDate.getFullYear() + '-' + (startDate.getMonth() < 10 ? "0" : "") + (startDate.getMonth() + 1) + '-' + (startDate.getDate() < 10 ? "0" : "") + startDate.getDate();
+                var current = startDate.getFullYear() + '-' + (startDate.getMonth() < 9 ? "0" : "") + (startDate.getMonth() + 1) + '-' + (startDate.getDate() < 10 ? "0" : "") + startDate.getDate();
                 if (dates.indexOf(current) < 0) {
-                    var data = nullDay;
+                    var data = {};
+                    for(var k in nullDay)
+                        data[k] = nullDay[k];
                     data['date'] = current;
-                    datasOpened.splice(dateShift, 0, data)
+                    datasOpenedTemp.push(data)
                 }
                 else {
-                    for (var i = 0; i < datasOpened.length; i++) {
-                        if (datasOpened[i]['date'] === current) {
+                    for (var i = 0; i < datasOpenedTemp.length; i++) {
+                        if (datasOpenedTemp[i]['date'] === current) {
                             for (var j = 0; j < openedUIDS.length; j++) {
-                                if (!datasOpened[i].hasOwnProperty(openedUIDS[j])) {
-                                    datasOpened[i][openedUIDS[j]] = 0;
+                                if (!datasOpenedTemp[i].hasOwnProperty(openedUIDS[j])) {
+                                    datasOpenedTemp[i][openedUIDS[j]] = 0;
                                 }
                             }
                             break;
                         }
                     }
                 }
-                dateShift += 1;
                 startDate.setDate(startDate.getDate() + 1);
             }
+            const datasOpened = datasOpenedTemp.sort(function (a, b) {
+                return Date.parse(a['date']) - Date.parse(b['date']);
+            });
 
             var openedGraphs = [];
             for(var key in openedUIDS)
             {
                 if(openedUIDS.hasOwnProperty(key))
                 {
-                    const username = $('#user' + openedUIDS[key] + '>.userCell').text().trim();
+                    const username = $('#user' + openedUIDS[key] + '>.userCell>.username').text().trim();
                     openedGraphs.push({
                         bullet: 'circle',
                         bulletBorderAlpha: 1,

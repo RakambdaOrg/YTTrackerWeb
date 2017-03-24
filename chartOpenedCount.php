@@ -43,52 +43,58 @@
                     else
                         echo $siteHelper->getChartData($handler->getUsersTotalsCountOpened(), 1);
                     ?>;
-            var countUIDS = [];
+            var openedUIDS = [];
             //Reorder dates
-            const datasCount = [];
+            const datasCountTemp = [];
             var dates = [];
-            Object.keys(parsedConfigCount).sort(function (a, b) {
-                return Date.parse(a) - Date.parse(b);
-            }).forEach(function (key) {
-                for(var UIDIndex in parsedConfigCount[key])
+            var startDate = new Date();
+            for(var key in parsedConfigCount)
+            {
+                if(parsedConfigCount.hasOwnProperty(key))
                 {
-                    if(parsedConfigCount[key].hasOwnProperty(UIDIndex))
+                    for(var UIDIndex in parsedConfigCount[key])
                     {
-                        if(countUIDS.indexOf(UIDIndex) < 0)
+                        if(parsedConfigCount[key].hasOwnProperty(UIDIndex))
                         {
-                            countUIDS.push(UIDIndex);
+                            if(openedUIDS.indexOf(UIDIndex) < 0)
+                            {
+                                openedUIDS.push(UIDIndex);
+                            }
                         }
                     }
+                    var conf = parsedConfigCount[key];
+                    conf['date'] = key;
+                    dates.push(key);
+                    datasCountTemp.push(conf);
+                    if(startDate - Date.parse(key) > 0)
+                        startDate = new Date(key);
                 }
-                var conf = parsedConfigCount[key];
-                conf['date'] = key;
-                dates.push(key);
-                datasCount.push(conf);
-            });
+            }
             //Fill missing records
-            var startDate = new Date(datasCount[0]['date']);
             startDate.setHours(0, 0, 0, 0);
             var endDate = new Date();
             endDate.setHours(0, 0, 0, 0);
             var nullDay = {};
-            for(var i = 0; i < countUIDS.length; i++)
+            for(var i = 0; i < openedUIDS.length; i++)
             {
-                nullDay[countUIDS[i]] = 0;
+                nullDay[openedUIDS[i]] = 0;
             }
             var dateShift = 0;
             while(startDate.getTime() <= endDate.getTime()) {
-                var current = startDate.getFullYear() + '-' + (startDate.getMonth() < 10 ? "0" : "") + (startDate.getMonth() + 1) + '-' + (startDate.getDate() < 10 ? "0" : "") + startDate.getDate();
+                var current = startDate.getFullYear() + '-' + (startDate.getMonth() < 9 ? "0" : "") + (startDate.getMonth() + 1) + '-' + (startDate.getDate() < 10 ? "0" : "") + startDate.getDate();
                 if (dates.indexOf(current) < 0) {
-                    var data = nullDay;
+                    var data = {};
+                    for(var k in nullDay)
+                        data[k] = nullDay[k];
                     data['date'] = current;
-                    datasCount.splice(dateShift, 0, data)
+                    datasCountTemp.splice(dateShift, 0, data)
                 }
                 else {
-                    for (var i = 0; i < datasCount.length; i++) {
-                        if (datasCount[i]['date'] === current) {
-                            for (var j = 0; j < countUIDS.length; j++) {
-                                if (!datasCount[i].hasOwnProperty(countUIDS[j])) {
-                                    datasCount[i][countUIDS[j]] = 0;
+                    for (var i = 0; i < datasCountTemp.length; i++) {
+                        if (datasCountTemp[i]['date'] === current) {
+                            for (var j = 0; j < openedUIDS.length; j++) {
+                                if (!datasCountTemp[i].hasOwnProperty(openedUIDS[j])) {
+                                    datasCountTemp[i][openedUIDS[j]] = 0;
                                 }
                             }
                             break;
@@ -98,13 +104,16 @@
                 dateShift += 1;
                 startDate.setDate(startDate.getDate() + 1);
             }
+            const datasCount = datasCountTemp.sort(function (a, b) {
+                return Date.parse(a['date']) - Date.parse(b['date']);
+            });
 
             var watchedGraphs = [];
-            for(var key in countUIDS)
+            for(var key in openedUIDS)
             {
-                if(countUIDS.hasOwnProperty(key))
+                if(openedUIDS.hasOwnProperty(key))
                 {
-                    const username = $('#user' + countUIDS[key] + '>.userCell').text().trim();
+                    const username = $('#user' + openedUIDS[key] + '>.userCell>.username').text().trim();
                     watchedGraphs.push({
                         bullet: 'circle',
                         bulletBorderAlpha: 1,
@@ -114,7 +123,7 @@
                         legendValueText: '[[value]]',
                         title: username,
                         fillAlphas: 0.2,
-                        valueField: countUIDS[key],
+                        valueField: openedUIDS[key],
                         valueAxis: 'countAxis',
                         type: 'smoothedLine',
                         lineThickness: 2,
