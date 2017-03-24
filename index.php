@@ -106,7 +106,7 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
                                 $username = $handler->getUsername($UUID['UUID']);
                                 echo $username ? $username : $UUID['ID'];
                                 echo '<br/>(';
-                                echo $handler->getOldestRecord($UUID);
+                                echo $handler->getOldestRecord($UUID['UUID']);
                                 echo ')';
                                 ?>
                             </td>
