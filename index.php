@@ -58,7 +58,7 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
         <table id="dataTable">
             <thead>
                 <tr>
-                    <th class="userCell" rowspan="2">User</th>
+                    <th class="userCell" rowspan="2">User<br/>(oldest record)</th>
                     <th class="leftVerticalLine" colspan="3">Total</th>
                     <th class="leftVerticalLine" colspan="3">Last Week</th>
                     <th class="leftVerticalLine" colspan="3">Last 24h</th>
