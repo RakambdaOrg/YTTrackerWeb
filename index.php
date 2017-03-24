@@ -216,6 +216,24 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
         <div class="chartDiv" id="chartDivOpenedCount"></div>
     </div>
     <?php include "chartOpenedCount.php"; ?>
+    <?php
+        if(!isset($_GET['all']))
+        {
+            ?>
+            <div align="center" style="margin-top:20px; margin-bottom: 7px;">
+                <a href="?all=1">See all gathered data</a>
+            </div>
+            <?php
+        }
+        else
+        {
+            ?>
+            <div align="center" style="margin-top:20px; margin-bottom: 7px;">
+                <a href=".">See current month data</a>
+            </div>
+            <?php
+        }
+    ?>
 </body>
 </html>
 <?php
