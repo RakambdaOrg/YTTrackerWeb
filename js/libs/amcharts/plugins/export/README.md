@@ -1,6 +1,6 @@
 # amCharts Export
 
-Version: 1.4.27
+Version: 1.4.61
 
 
 ## Description
@@ -149,6 +149,7 @@ border | {} | An object of key/value pairs to define the overlaying border
 processData | | A function which can be used to change the dataProvider when exporting to CSV, XLSX, or JSON
 pageOrigin | true | A flag to show / hide the origin of the generated PDF ( pdf export only )
 forceRemoveImages | false | If true export removes all images
+debug | false | A flag which enables the plugin to write console logs (currently used by the dependency handler only).
 
 
 ## Configuring export menu
@@ -290,7 +291,7 @@ If you want to change the dataProvider when exporting to CSV, XLSX, or JSON, you
 
 ```
 "export": {
-  "processData": function (data) {
+  "processData": function (data, cfg) {
     return data.slice(1, -1);
   }
 }
@@ -600,7 +601,7 @@ your exported images.
         top: 50,
         left: 100,
         family: this.setup.chart.fontFamily,
-        size: this.setup.chart.fontSize * 2
+        fontSize: this.setup.chart.fontSize * 2
       });
       this.setup.fabric.add(text);
   },
@@ -615,11 +616,36 @@ your exported images.
           top: 50,
           left: 100,
           family: this.setup.chart.fontFamily,
-          size: this.setup.chart.fontSize * 2
+          fontSize: this.setup.chart.fontSize * 2
         });
         this.setup.fabric.add(text);
     }
-  }]
+  }],
+```
+
+Since version 1.4.29 we have added the `onReady` callback to get your stuff done
+right after the plugin or specific dependency is ready to use. Ensure to check the
+`timedout` flag to be sure the dependency got fully loaded.
+
+```
+"export": {
+  "onReady": function( type, timedout ) {
+
+    // Plugin ready for data exports
+    if ( type == "data" ) {
+      this.toCSV( {}, function( data ) {
+        // Exported to CSV
+      } );
+
+    // Plugin ready for image exports
+    } else if ( type == "fabric" && !timedout ) {
+      this.capture( {}, function() {
+        this.toPNG( {}, function( data ) {
+          // Exported to PNG
+        } );
+      } );
+    }
+  }
 }
 ```
 
@@ -662,6 +688,7 @@ dataDateFormat | Format to convert date strings to date objects, uses by default
 dateFormat | Formats the category field in given date format ( data export only )
 border | An object of key/value pairs to define the overlaying border
 pageOrigin | A flag to show / hide the origin of the generated PDF ( pdf export only )
+compress | A flag to compress the generated output ( svg only )
 
 Available `format` values:
 
@@ -945,6 +972,128 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 
 ## Changelog
+
+### 1.4.61
+* Fixed: SmoothCustomBullet plugin support, clip-path issue on curved corners
+
+### 1.4.60
+* Fixed: Empty print output in chrome version 57
+
+### 1.4.59
+* Fixed: Issue with blurred element when closing annotation mode
+
+### 1.4.58
+* Fixed: SVG clip-path export issue; injection control; wrap elements to support fill reference
+* Fixed: Keyboard navigation disabled on touch devices
+
+### 1.4.57
+* Added: Support for keyboard navigation (tabs and arrow keys).
+* Fixed: Merged pull request [#84](https://github.com/amcharts/export/pull/54) fixing an issue when "a" is undefined within deepMerge (thanks to [RahavLussato](https://github.com/RahavLussato) )
+
+### 1.4.56
+* Added: Dependency handler on export methods, holds the actual call until the namespace shows up in current scope (uses libs.loadTimeout).
+
+### 1.4.55
+* Added: Radial gradient issue on pie caused by the vertical gradient fix (v1.4.44)
+
+### 1.4.54
+* Fixed: Default text size on width changes
+
+### 1.4.53
+* Fixed: IOS print issue, captured the whole page instead of the single page
+
+### 1.4.52
+* Fixed: Blank export issue especifically in chrome on IOS devices.
+* Updated: FileSaver.js due the chrome export issue on IOS
+
+### 1.4.51
+* Fixed: Render issue on maps due half pixel position correction; simplified the positioning.
+
+### 1.4.50
+* Fixed: Half pixel positioning issue which caused the blurriness within the canvas and exported image.
+
+### 1.4.49
+* Fixed: Custom data export issue through toXSLX and toJSON which results in an empty data sheet.
+
+### 1.4.48
+* Fixed: toXLSX issue handling objects/array in data points.
+
+### 1.4.47
+* Fixed: `afterCapture` issue which removed injected elements.
+
+### 1.4.46
+* Fixed: toSVG clipPath issue which exported multiple times the same clipPath
+
+### 1.4.45
+* Fixed: Object selection issue on charts with heavy amount of datapoints
+* Fixed: Line/Arrow drawing issue on vertical movement
+* Changed: Pressing escape while an object has been selected will deselect first instead quiting the annotation mode
+
+### 1.4.44
+* Fixed: Vertical gradient issue
+
+### 1.4.43
+* Fixed: Shown label in hidden valueAxis
+
+### 1.4.42
+* Fixed: `exportFields` issue in combination with `columnNames` or `exportTitles`
+* Added: `dataFieldsTitlesMap` into `processData` context to be able to trace back the translated keys against the data fields
+
+### 1.4.41
+* Added: quote, escape option to `toArray` method
+* Fixed: toArray method to respect `exportFields` order
+* Fixed: toCSV, toXLSX to respect `exportFields` order
+
+### 1.4.40
+* Fixed: Infinite loop in Angular2 Zones
+* Fixed: `compress` option being obtained from the global config
+
+### 1.4.39
+* Added: New menu option `compress` to compress the generated output (svg only).
+* Fixed: Strikethrough issue in SVG output.
+
+### 1.4.38
+* Fixed: Support for external stock chart legends, overlapping issue with free licensed version of amcharts
+
+### 1.4.37
+* Fixed: Gradient issue which left the chart elements hidden after the export process
+* Fixed: Typo in examples dropdown
+* Added: Support for external stock chart legends
+
+### 1.4.36
+* Fixed: exportFields order being considered
+* Fixed: Keep scroll position after printing
+* Fixed: Namespace key issue with minified resource versions
+
+### 1.4.35
+* Fixed: Menu handling issue on touch devices, uses css classname to toggle menu items (updated CSS file, on devices only where the "Touch" object is within window scope)
+
+### 1.4.34
+* Fixed: Data shifting issue in data exports with compared graphs (stock only)
+* Fixed: Shallow copy of compared graphs in data exports (stock only)
+
+### 1.4.33
+* Fixed: fill/stroke polyfilling issue on svg elements with color validation/preparation for fabric 
+
+### 1.4.32
+* Fixed: Issue polyfilling the color attributes with "rgba" color codes
+
+### 1.4.31
+* Changed: Included independent IE detection to handle specific IE10, IE11 svg image in canvas issue
+
+### 1.4.30
+* Fixed: Pattern loading, positioning issue, supports x,y offset now
+
+### 1.4.29
+* Added: `libs.loadTimeout` dependency namespace timeout used within onReady handler
+* Added: `fabric.loadTimeout` loading image timeout to avoid blocking the export process
+* Added: [onReady](#events) ready callback handler to get notified when the export or specific dependency is ready to use
+* Fixed: fill/stroke issue on SVG elements which caused a crash within the export process
+* Fixed: Image loader which freezed occasionally and caused an unexpected behaviour
+
+### 1.4.28
+* Fixed: Positioning / handling issue on multiline labels (injected modifed fabricJS snippet to handle it)
+* Fixed: Cursor issue on regular exports which flashed the crosshair cursor for a moment
 
 ### 1.4.27
 * Added: [Annotations API](#annotations-api) to get or set annotations within drawing mode.
