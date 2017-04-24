@@ -3,8 +3,12 @@
     "yttracker@mrcraftcod.fr": {
       "updates": [
         {
-          "version": "1.4.0",
-          "update_link": "https://yttracker.mrcraftcod.fr/firefox/versions/1.4.0.xpi"
+          "version": "1.14.0",
+          "update_link": "https://yttracker.mrcraftcod.fr/firefox/versions/1.14.0.xpi"
+        },
+        {
+          "version": "1.14.1",
+          "update_link": "https://yttracker.mrcraftcod.fr/firefox/versions/1.14.1.xpi"
         }
       ]
     }
