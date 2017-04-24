@@ -9,6 +9,10 @@
         {
           "version": "1.14.1",
           "update_link": "https://yttracker.mrcraftcod.fr/firefox/versions/1.14.1.xpi"
+        },
+        {
+          "version": "1.14.2",
+          "update_link": "https://yttracker.mrcraftcod.fr/firefox/versions/1.14.2.xpi"
         }
       ]
     }

@@ -31,7 +31,7 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
 </head>
 <body>
     <div id="extentionsAd" style="text-align: center;">
-        <a href="https://chrome.google.com/webstore/detail/youtube-tracker/knnlnielflnfhdohmihofhdelgahgjdb/"><img src="https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_v2_496x150.png" style="height: 50px;"/></a><a href="firefox/versions/1.14.1.xpi"><img src="https://www.mozilla.org/media/img/styleguide/identity/firefox/usage-standard.dd994d6216e9.png" style="height: 50px;"/></a>
+        <a href="https://chrome.google.com/webstore/detail/youtube-tracker/knnlnielflnfhdohmihofhdelgahgjdb/"><img src="https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_v2_496x150.png" style="height: 50px;"/></a><a href="firefox/versions/1.14.2.xpi"><img src="https://www.mozilla.org/media/img/styleguide/identity/firefox/usage-standard.dd994d6216e9.png" style="height: 50px;"/></a>
         <hr/>
     </div>
     <div style="margin-top: 5px;">
