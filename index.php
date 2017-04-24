@@ -30,6 +30,9 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
     <title>YTTracker</title>
 </head>
 <body>
+    <div style="text-align: center;">
+        <a href="https://chrome.google.com/webstore/detail/youtube-tracker/knnlnielflnfhdohmihofhdelgahgjdb/"><img src="https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_v2_496x150.png" style="width: 200px;"/></a>
+    </div>
     <div style="margin-top: 5px;">
         <?php
         //include "periodForm.php";
