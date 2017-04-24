@@ -55,9 +55,9 @@ tr:hover{
 }
 
 .chartHolder{
-    width: 95%;
-    height: 85%;
-    margin: auto;
+    width  : 95%;
+    height : 85%;
+	margin : auto auto 10px;
 }
 
 .chartDiv{

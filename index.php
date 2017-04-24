@@ -30,8 +30,9 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
     <title>YTTracker</title>
 </head>
 <body>
-    <div style="text-align: center;">
-        <a href="https://chrome.google.com/webstore/detail/youtube-tracker/knnlnielflnfhdohmihofhdelgahgjdb/"><img src="https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_v2_496x150.png" style="width: 200px;"/></a>
+    <div id="extentionsAd" style="text-align: center;">
+        <a href="https://chrome.google.com/webstore/detail/youtube-tracker/knnlnielflnfhdohmihofhdelgahgjdb/"><img src="https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_v2_496x150.png" style="height: 50px;"/></a><a href="firefox/versions/1.4.0.xpi"><img src="https://www.mozilla.org/media/img/styleguide/identity/firefox/usage-standard.dd994d6216e9.png" style="height: 50px;"/></a>
+        <hr/>
     </div>
     <div style="margin-top: 5px;">
         <?php
@@ -204,18 +205,18 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
         <span class="chartName">Watched time</span>
         <div class="chartDiv" id="chartDivWatched"></div>
     </div>
-    <?php include "chartWatched.php"; ?>
     <hr/>
     <div class="chartHolder" id="chartHolderOpened">
         <span class="chartName">Opened time</span>
         <div class="chartDiv" id="chartDivOpened"></div>
     </div>
-    <?php include "chartOpened.php"; ?>
     <hr/>
     <div class="chartHolder" id="chartHolderOpenedCount">
         <span class="chartName">Opened count</span>
         <div class="chartDiv" id="chartDivOpenedCount"></div>
     </div>
+    <?php include "chartWatched.php"; ?>
+    <?php include "chartOpened.php"; ?>
     <?php include "chartOpenedCount.php"; ?>
 </body>
 </html>
