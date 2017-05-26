@@ -18,6 +18,7 @@ class DBHandler
 
     function addStat($uuid, $type, $stat, $videoID, $date)
     {
+    	$this->conn->query('INSERT IGNORE INTO `YTTUsers`(`UUID`, `Username`) VALUES("' . $uuid . '", "Annonymous");');
         if (!$this->conn->query('INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`) VALUES("' . $uuid . '", ' . $type . ',"' . $videoID . '",' . $stat . ', ' . $this->getTimestamp($date) . ');'))
             return array('code' => 400, 'result' => 'err', 'error' => 'E2');
         return array('code' => 200, 'result' => 'OK');
