@@ -16,10 +16,10 @@ class DBHandler
         $this->conn = $conn;
     }
 
-    function addStat($uuid, $type, $stat, $videoID, $date)
+    function addStat($uuid, $type, $stat, $videoID, $date, $browser)
     {
     	$this->conn->query('INSERT IGNORE INTO `YTTUsers`(`UUID`, `Username`) VALUES("' . $uuid . '", "Annonymous");');
-        if (!$this->conn->query('INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`) VALUES("' . $uuid . '", ' . $type . ',"' . $videoID . '",' . $stat . ', ' . $this->getTimestamp($date) . ');'))
+        if (!$this->conn->query('INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`, `Browser`) VALUES("' . $uuid . '", ' . $type . ',"' . $videoID . '",' . $stat . ', ' . $this->getTimestamp($date) . ',"' . ($browser == null ? 'Unknown' : $browser) . '");'))
             return array('code' => 400, 'result' => 'err', 'error' => 'E2');
         return array('code' => 200, 'result' => 'OK');
     }

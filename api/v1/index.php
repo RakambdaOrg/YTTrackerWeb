@@ -140,7 +140,7 @@ function processRequest($methodName, $params)
 
 function addStats($dbHandler, $params)
 {
-    $result = $dbHandler->addStat($params['uuid'], $params['type'], $params['stats'], $params['videoID'], isset($params['date']) ? $params['date'] : null);
+    $result = $dbHandler->addStat($params['uuid'], $params['type'], $params['stats'], $params['videoID'], isset($params['date']) ? $params['date'] : null, isset($params['browser']) ? $params['browser'] : null);
     sendResponse($result['code'], json_encode($result));
     return true;
 }
