@@ -18,7 +18,7 @@ class DBHandlerSite
 
     public function getUUIDS()
     {
-        $query = $this->sqlConnection->query('SELECT `ID`, `UUID` FROM `YTTUsers`;');
+        $query = $this->sqlConnection->query('SELECT `ID`, `UUID` FROM `YTTUsers` WHERE `UUID` IN (SELECT DISTINCT(`UUID`) FROM `YTTRecords`);');
         if(!$query)
             return array('code'=>500, 'result'=>'err', 'error'=>'E0');
         $uuids = array();
