@@ -5,6 +5,12 @@
 		require_once('model/DBConnection.class.php');
 		require_once('model/DBHandler.class.php');
 
+		if(false)
+		{
+			error_reporting(E_ALL);
+			ini_set('display_errors', '1');
+		}
+
 		switch($_SERVER['REQUEST_METHOD'])
 		{
 			case 'POST':
@@ -81,8 +87,8 @@
 			header('HTTP/1.1 ' . $status . ' ' . getStatusCodeMessage($status));
 			header('Content-type:' . 'application/json');
 			header('Access-Control-Allow-Methods:' . 'POST,PUT,GET,DELETE,OPTIONS');
-			$http_origin = $_SERVER['HTTP_ORIGIN'];
-			if($http_origin == "http://*.mrcraftcod.fr" || $http_origin == "chrome-extension://moboafdnejnjnppicfiadaalobjeemec" || $http_origin == "chrome-extension://knnlnielflnfhdohmihofhdelgahgjdb/*")
+			$http_origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
+			if($http_origin === "http://*.mrcraftcod.fr" || $http_origin === "chrome-extension://moboafdnejnjnppicfiadaalobjeemec" || $http_origin === "chrome-extension://knnlnielflnfhdohmihofhdelgahgjdb/*")
 			{
 				header("Access-Control-Allow-Origin: $http_origin");
 			}
@@ -114,6 +120,7 @@
 		 */
 		function processRequest($methodName, $params)
 		{
+			$methodName = 'YTT\\' . $methodName;
 			$conn = DBConnection::getConnection();
 			if($conn->connect_error)
 			{
