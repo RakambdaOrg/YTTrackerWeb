@@ -8,9 +8,9 @@ if(false)
     ini_set('display_errors', '1');
 }
 $dev = isset($_GET['dev']);
-$conn = DBConnection::getConnection();
-$handler = new DBHandlerSite($conn);
-$siteHelper = new SiteHelper();
+	$conn = YTT\DBConnection::getConnection();
+	$handler = new YTT\DBHandlerSite($conn);
+	$siteHelper = new YTT\SiteHelper();
 $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']);
 ?>
 <!DOCTYPE html>
@@ -40,7 +40,7 @@ $customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']
         if(!isset($_GET['all']))
         {
             ?>
-            <div align="center"">
+            <div align="center">
                 <a href="?all=1">See all gathered data</a>
             </div>
             <?php
