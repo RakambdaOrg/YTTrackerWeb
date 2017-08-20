@@ -1,65 +1,77 @@
 html,
-body {
-    height: 100%;
-    text-align: center;
-    margin: auto;
+body
+{
+	height     : 100%;
+	text-align : center;
+	margin     : auto;
 }
 
-body {
-    background-color: #777777;
+body
+{
+	background-color : #777777;
 }
 
-table {
-    border-color: #ddd;
-    border-collapse: collapse;
-    width: 100%;
+table
+{
+	border-color    : #DDDDDD;
+	border-collapse : collapse;
+	width           : 100%;
 }
 
-th{
-    border-bottom: 1px solid;
-    border-color: inherit;
-    cursor: pointer;
+th
+{
+	border-bottom : 1px solid;
+	border-color  : inherit;
+	cursor        : pointer;
 }
 
 thead .userCell,
 thead .totalOpenedCell, thead .totalWatchedCell, thead .totalCountCell,
 thead .weekOpenedCell, thead .weekWatchedCell, thead .weekCountCell,
 thead .todayOpenedCell, thead .todayWatchedCell, thead .todayCountCell,
-thead .periodOpenedCell, thead .periodWatchedCell, thead .periodCountCell {
-    border-bottom: 3px solid;
-    border-color: inherit;
+thead .periodOpenedCell, thead .periodWatchedCell, thead .periodCountCell
+{
+	border-bottom : 3px solid;
+	border-color  : inherit;
 }
 
-td {
-    border-bottom: 1px solid;
-    border-color: inherit;
+td
+{
+	border-bottom : 1px solid;
+	border-color  : inherit;
 }
 
-th, td {
-    padding: 8px;
-    text-align: center;
+th, td
+{
+	padding    : 8px;
+	text-align : center;
 }
 
-tr:hover{
-    background-color:#f5f5f5
+tr:hover
+{
+	background-color : #F5F5F5
 }
 
-.leftVerticalLine{
-    border-left: 3px solid;
-    border-color: inherit;
+.leftVerticalLine
+{
+	border-left  : 3px solid;
+	border-color : inherit;
 }
 
-.lightVerticalLine{
-    border-left: 1px solid;
-    border-color: inherit;
+.lightVerticalLine
+{
+	border-left  : 1px solid;
+	border-color : inherit;
 }
 
-.chartHolder{
-    width  : 95%;
-    height : 85%;
+.chartHolder
+{
+	width  : 95%;
+	height : 85%;
 	margin : auto auto 10px;
 }
 
-.chartDiv{
-    width: 100%;
+.chartDiv
+{
+	width : 100%;
 }

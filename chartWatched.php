@@ -92,9 +92,9 @@
                 return '';
             var date = new Date(time);
             var y = date.getFullYear();
-            var m = ("0" + (date.getMonth() + 1)).slice(-2);
-            var d = ("0" + date.getDate()).slice(-2);
-            return y + "-" + m + "-" + d;
+			var m = ('0' + (date.getMonth() + 1)).slice(-2);
+			var d = ('0' + date.getDate()).slice(-2);
+			return y + '-' + m + '-' + d;
         }
 
         //Resize chart to fit height

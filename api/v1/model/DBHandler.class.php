@@ -1,11 +1,6 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: MrCraftCod
- * Date: 21/08/2016
- * Time: 09:57
- */
+	/**Anonymous*/
 
 	namespace YTT
 	{
@@ -34,8 +29,8 @@
 			 */
 			function addStat($uuid, $type, $stat, $videoID, $date, $browser)
 			{
-				$this->conn->query('INSERT IGNORE INTO `YTTUsers`(`UUID`, `Username`) VALUES("' . $uuid . '", "Annonymous");');
-				if(!$this->conn->query('INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`, `Browser`) VALUES("' . $uuid . '", ' . $type . ',"' . $videoID . '",' . $stat . ', ' . $this->getTimestamp($date) . ',"' . ($browser == null ? 'Unknown' : $browser) . '");'))
+				$this->conn->query('INSERT IGNORE INTO `YTTUsers`(`UUID`, `Username`) VALUES(\'' . $uuid . '\', \'Anonymous\');');
+				if(!$this->conn->query('INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`, `Browser`) VALUES(\'' . $uuid . '\', ' . $type . ',\'' . $videoID . '\',' . $stat . ', ' . $this->getTimestamp($date) . ',\'' . ($browser == null ? 'Unknown' : $browser) . '\');'))
 					return array('code' => 400, 'result' => 'err', 'error' => 'E2');
 				return array('code' => 200, 'result' => 'OK');
 			}
@@ -64,7 +59,7 @@
 				{
 					return 'CURRENT_TIMESTAMP()';
 				}
-				return 'STR_TO_DATE("' . $date . '", "%Y-%m-%d %H:%i:%s")';
+				return 'STR_TO_DATE(\'' . $date . '\', \'%Y-%m-%d %H:%i:%s\')';
 			}
 
 			/**
@@ -73,7 +68,7 @@
 			 */
 			public function getStats($uuid)
 			{
-				$query = $this->conn->query('SELECT * FROM  `YTTRecords` WHERE `UUID`="' . $uuid . '" ORDER BY `ID` ASC;');
+				$query = $this->conn->query('SELECT * FROM  `YTTRecords` WHERE `UUID`=\'' . $uuid . '\' ORDER BY `ID` ASC;');
 				if(!$query)
 					return array('code' => 500, 'result' => 'err', 'error' => 'E3');
 				$stats = array();
@@ -92,7 +87,7 @@
 			 */
 			public function setUsername($uuid, $username)
 			{
-				$query = $this->conn->query('INSERT INTO `YTTUsers`(`UUID`, `Username`) VALUES("' . $uuid . '","' . $this->conn->real_escape_string($username) . '") ON DUPLICATE KEY UPDATE `Username`="' . $this->conn->real_escape_string($username) . '";');
+				$query = $this->conn->query('INSERT INTO `YTTUsers`(`UUID`, `Username`) VALUES(\'' . $uuid . '\',\'' . $this->conn->real_escape_string($username) . '\') ON DUPLICATE KEY UPDATE `Username`=\'' . $this->conn->real_escape_string($username) . '\';');
 				if(!$query)
 					return array('code' => 500, 'result' => 'err', 'error' => 'E4');
 				return array('code' => 200, 'result' => 'OK');

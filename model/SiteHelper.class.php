@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: MrCraftCod
- * Date: 22/08/2016
- * Time: 11:38
- */
+	/**
+	 * Created by PhpStorm.
+	 * User: MrCraftCod
+	 * Date: 22/08/2016
+	 * Time: 11:38
+	 */
 
 	namespace YTT
 	{
@@ -31,12 +31,12 @@
 				$minutes = floor($totalSeconds / 60 % 60);
 				$seconds = floor($totalSeconds % 60);
 				if($days > 0)
-					return sprintf("%02d", $days) . 'd' . sprintf("%02d", $hours) . 'h' . sprintf("%02d", $minutes) . 'm' . sprintf("%02d", $seconds) . 's';
+					return sprintf('%02d', $days) . 'd' . sprintf('%02d', $hours) . 'h' . sprintf('%02d', $minutes) . 'm' . sprintf('%02d', $seconds) . 's';
 				elseif($hours > 0)
-					return sprintf("%02d", $hours) . 'h' . sprintf("%02d", $minutes) . 'm' . sprintf("%02d", $seconds) . 's';
+					return sprintf('%02d', $hours) . 'h' . sprintf('%02d', $minutes) . 'm' . sprintf('%02d', $seconds) . 's';
 				elseif($minutes > 0)
-					return sprintf("%02d", $minutes) . 'm' . sprintf("%02d", $seconds) . 's';
-				return sprintf("%02d", $seconds) . 's';
+					return sprintf('%02d', $minutes) . 'm' . sprintf('%02d', $seconds) . 's';
+				return sprintf('%02d', $seconds) . 's';
 			}
 
 			/**

@@ -47,7 +47,7 @@
 			 */
 			public function getUsername($uuid)
 			{
-				$query = $this->sqlConnection->query('SELECT `Username` FROM  `YTTUsers` WHERE `UUID`="' . $uuid . '";');
+				$query = $this->sqlConnection->query('SELECT `Username` FROM  `YTTUsers` WHERE `UUID`=\'' . $uuid . '\';');
 				if($query)
 				{
 					if($query->num_rows > 0)
@@ -63,7 +63,7 @@
 			 */
 			public function getTodayStats($uuid)
 			{
-				$query = $this->sqlConnection->query('SELECT * FROM `YTTRecords` WHERE `UUID`="' . $uuid . '" AND `Time` >= CURDATE();');
+				$query = $this->sqlConnection->query('SELECT * FROM `YTTRecords` WHERE `UUID`=\'' . $uuid . '\' AND `Time` >= CURDATE();');
 				if(!$query)
 					return array('code' => 500, 'result' => 'err', 'error' => 'E2');
 				$stats = array();
@@ -88,7 +88,7 @@
 			private function getSumRecordType($uuid, $type)
 			{
 				$result = 0;
-				$query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`="' . $uuid . '";');
+				$query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`=\'' . $uuid . '\';');
 				if($query)
 				{
 					if($query->num_rows > 0)
@@ -123,7 +123,7 @@
 			public function getTotalOpenedCount($uuid)
 			{
 				$result = 0;
-				$query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=2 AND `UUID`="' . $uuid . '";');
+				$query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=2 AND `UUID`=\'' . $uuid . '\';');
 				if($query)
 				{
 					if($query->num_rows > 0)
@@ -141,7 +141,7 @@
 			public function getSumRecordTypeToday($uuid, $type)
 			{
 				$result = 0;
-				$query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`="' . $uuid . '" AND `Time` >= CURDATE();');
+				$query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`=\'' . $uuid . '\' AND `Time` >= CURDATE();');
 				if($query)
 				{
 					if($query->num_rows > 0)
@@ -176,7 +176,7 @@
 			public function getTodayOpenedCount($uuid)
 			{
 				$result = 0;
-				$query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=2 AND `UUID`="' . $uuid . '" AND `Time` >= CURDATE();');
+				$query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=2 AND `UUID`=\'' . $uuid . '\' AND `Time` >= CURDATE();');
 				if($query)
 				{
 					if($query->num_rows > 0)
@@ -196,7 +196,7 @@
 			public function getSumRecordTypePeriod($uuid, $type, $start, $end)
 			{
 				$result = 0;
-				$query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`="' . $uuid . '" AND `Time` >= ' . $start . ' AND `Time` <= ' . $end . ';');
+				$query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`=\'' . $uuid . '\' AND `Time` >= ' . $start . ' AND `Time` <= ' . $end . ';');
 				if($query)
 				{
 					if($query->num_rows > 0)
@@ -237,7 +237,7 @@
 			public function getPeriodCount($uuid, $start, $end)
 			{
 				$result = 0;
-				$query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM `YTTRecords` WHERE `Type`=2 AND `UUID`="' . $uuid . '" AND `Time` >= ' . $start . ' AND `Time` < ' . $end . ';');
+				$query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM `YTTRecords` WHERE `Type`=2 AND `UUID`=\'' . $uuid . '\' AND `Time` >= ' . $start . ' AND `Time` < ' . $end . ';');
 				if($query)
 				{
 					if($query->num_rows > 0)
@@ -321,7 +321,7 @@
 			public function getCountDays($uuid, $days)
 			{
 				$result = 0;
-				$query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM `YTTRecords` WHERE `Type`=2 AND `UUID`="' . $uuid . '" AND `Time` >= DATE_SUB(NOW(), INTERVAL ' . $days . ' DAY);');
+				$query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM `YTTRecords` WHERE `Type`=2 AND `UUID`=\'' . $uuid . '\' AND `Time` >= DATE_SUB(NOW(), INTERVAL ' . $days . ' DAY);');
 				if($query)
 				{
 					if($query->num_rows > 0)
@@ -340,7 +340,7 @@
 			private function getSumRecordTypeDays($uuid, $type, $days)
 			{
 				$result = 0;
-				$query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`="' . $uuid . '" AND `Time` >= DATE_SUB(NOW(), INTERVAL ' . $days . ' DAY);');
+				$query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`=\'' . $uuid . '\' AND `Time` >= DATE_SUB(NOW(), INTERVAL ' . $days . ' DAY);');
 				if($query)
 				{
 					if($query->num_rows > 0)
@@ -441,7 +441,7 @@
 			public function getOldestRecord($uuid)
 			{
 				$result = "ERROR";
-				$query = $this->sqlConnection->query('SELECT MIN(`Time`) AS `Oldest` FROM `YTTRecords` WHERE `UUID`="' . $uuid . '";');
+				$query = $this->sqlConnection->query('SELECT MIN(`Time`) AS `Oldest` FROM `YTTRecords` WHERE `UUID`=\'' . $uuid . '\';');
 				if($query)
 				{
 					if($query->num_rows > 0)
