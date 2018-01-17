@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: MrCraftCod
- * Date: 22/08/2016
- * Time: 11:23
- */
+	/**
+	 * Created by PhpStorm.
+	 * User: MrCraftCod
+	 * Date: 22/08/2016
+	 * Time: 11:23
+	 */
 
 	namespace YTT
 	{
@@ -16,7 +16,7 @@
 			/**
 			 * DBHandlerSite constructor.
 			 *
-			 * @param \mysqli $conn
+			 * @param \PDO $conn
 			 */
 			public function __construct($conn)
 			{
@@ -28,14 +28,13 @@
 			 */
 			public function getUUIDS()
 			{
-				$query = $this->sqlConnection->query('SELECT `ID`, `UUID` FROM `YTTUsers` WHERE `UUID` IN (SELECT DISTINCT(`UUID`) FROM `YTTRecords`);');
+				$query = $this->sqlConnection->query("SELECT `ID`, `UUID` FROM `YTTUsers` WHERE `UUID` IN (SELECT DISTINCT(`UUID`) FROM `YTTRecords`);");
 				if(!$query)
 					return array('code' => 500, 'result' => 'err', 'error' => 'E0');
 				$uuids = array();
 				$i = 0;
-				if($query->num_rows > 0)
-					while($row = $query->fetch_assoc())
-						$uuids[$i++] = array('ID' => $row['ID'], 'UUID' => $row['UUID']);
+				foreach($query as $index => $row)
+					$uuids[$i++] = array('ID' => $row['ID'], 'UUID' => $row['UUID']);
 				if(count($uuids) > 0)
 					return array('code' => 200, 'result' => 'OK', 'uuids' => $uuids);
 				return array('code' => 400, 'result' => 'No entry');
@@ -47,12 +46,11 @@
 			 */
 			public function getUsername($uuid)
 			{
-				$query = $this->sqlConnection->query('SELECT `Username` FROM  `YTTUsers` WHERE `UUID`=\'' . $uuid . '\';');
-				if($query)
+				$query = $this->sqlConnection->prepare("SELECT `Username` FROM  `YTTUsers` WHERE `UUID`=:uuid;");
+				if($query->execute(array(':uuid' => $uuid)))
 				{
-					if($query->num_rows > 0)
-						while($row = $query->fetch_assoc())
-							return $row['Username'];
+					if($row = $query->fetch())
+						return $row['Username'];
 				}
 				return null;
 			}
@@ -63,13 +61,12 @@
 			 */
 			public function getTodayStats($uuid)
 			{
-				$query = $this->sqlConnection->query('SELECT * FROM `YTTRecords` WHERE `UUID`=\'' . $uuid . '\' AND `Time` >= CURDATE();');
-				if(!$query)
+				$query = $this->sqlConnection->prepare("SELECT * FROM `YTTRecords` WHERE `UUID`=:uuid AND `Time` >= CURDATE();");
+				if(!$query->execute(array(':uuid' => $uuid)))
 					return array('code' => 500, 'result' => 'err', 'error' => 'E2');
 				$stats = array();
-				if($query->num_rows > 0)
-					while($row = $query->fetch_assoc())
-						$stats[$row['UID']] = array('uid' => $row['UID'], 'type' => $row['Type'], 'videoid' => $row['VideoID'], 'Stat' => $row['Stat'], 'time' => $row['Time']);
+				foreach($query->fetchAll() as $index => $row)
+					$stats[$row['UID']] = array('uid' => $row['UID'], 'type' => $row['Type'], 'videoid' => $row['VideoID'], 'Stat' => $row['Stat'], 'time' => $row['Time']);
 				$username = $this->getUsername($uuid);
 				if($username)
 				{
@@ -88,12 +85,11 @@
 			private function getSumRecordType($uuid, $type)
 			{
 				$result = 0;
-				$query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`=\'' . $uuid . '\';');
-				if($query)
+				$query = $this->sqlConnection->prepare("SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=:type AND `UUID`=:uuid;");
+				if($query->execute(array(':type' => $type, ':uuid' => $uuid)))
 				{
-					if($query->num_rows > 0)
-						while($row = $query->fetch_assoc())
-							$result = $row['Total'];
+					foreach($query->fetchAll() as $index => $row)
+						$result = $row['Total'];
 				}
 				return $result;
 			}
@@ -123,12 +119,11 @@
 			public function getTotalOpenedCount($uuid)
 			{
 				$result = 0;
-				$query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=2 AND `UUID`=\'' . $uuid . '\';');
-				if($query)
+				$query = $this->sqlConnection->prepare("SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=2 AND `UUID`=:uuid;");
+				if($query->execute(array(':uuid' => $uuid)))
 				{
-					if($query->num_rows > 0)
-						while($row = $query->fetch_assoc())
-							$result = $row['Total'];
+					foreach($query->fetchAll() as $index => $row)
+						$result = $row['Total'];
 				}
 				return $result;
 			}
@@ -141,12 +136,11 @@
 			public function getSumRecordTypeToday($uuid, $type)
 			{
 				$result = 0;
-				$query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`=\'' . $uuid . '\' AND `Time` >= CURDATE();');
-				if($query)
+				$query = $this->sqlConnection->prepare("SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=:type AND `UUID`=:uuid AND `Time` >= CURDATE();");
+				if($query->execute(array(':type' => $type, ':uuid' => $uuid)))
 				{
-					if($query->num_rows > 0)
-						while($row = $query->fetch_assoc())
-							$result = $row['Total'];
+					foreach($query->fetchAll() as $index => $row)
+						$result = $row['Total'];
 				}
 				return $result;
 			}
@@ -176,12 +170,11 @@
 			public function getTodayOpenedCount($uuid)
 			{
 				$result = 0;
-				$query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=2 AND `UUID`=\'' . $uuid . '\' AND `Time` >= CURDATE();');
-				if($query)
+				$query = $this->sqlConnection->prepare("SELECT COUNT(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=2 AND `UUID`=:uuid AND `Time` >= CURDATE();");
+				if($query->execute(array(':uuid' => $uuid)))
 				{
-					if($query->num_rows > 0)
-						while($row = $query->fetch_assoc())
-							$result = $row['Total'];
+					foreach($query->fetchAll() as $index => $row)
+						$result = $row['Total'];
 				}
 				return $result;
 			}
@@ -196,12 +189,11 @@
 			public function getSumRecordTypePeriod($uuid, $type, $start, $end)
 			{
 				$result = 0;
-				$query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`=\'' . $uuid . '\' AND `Time` >= ' . $start . ' AND `Time` <= ' . $end . ';');
-				if($query)
+				$query = $this->sqlConnection->prepare("SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=:type AND `UUID`=:uuid AND `Time` >= :start AND `Time` <= :end;");
+				if($query->execute(array(':type' => $type, ':uuid' => $uuid, ':start' => $start, ':end' => $end)))
 				{
-					if($query->num_rows > 0)
-						while($row = $query->fetch_assoc())
-							$result = $row['Total'];
+					foreach($query->fetchAll() as $index => $row)
+						$result = $row['Total'];
 				}
 				return $result;
 			}
@@ -237,12 +229,11 @@
 			public function getPeriodCount($uuid, $start, $end)
 			{
 				$result = 0;
-				$query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM `YTTRecords` WHERE `Type`=2 AND `UUID`=\'' . $uuid . '\' AND `Time` >= ' . $start . ' AND `Time` < ' . $end . ';');
-				if($query)
+				$query = $this->sqlConnection->prepare("SELECT COUNT(`Stat`) AS Total FROM `YTTRecords` WHERE `Type`=2 AND `UUID`=:uuid AND `Time` >= :start AND `Time` < :end;");
+				if($query->execute(array('uuid' => $uuid, ':start' => $start, ':end' => $end)))
 				{
-					if($query->num_rows > 0)
-						while($row = $query->fetch_assoc())
-							$result = $row['Total'];
+					foreach($query->fetchAll() as $index => $row)
+						$result = $row['Total'];
 				}
 				return $result;
 			}
@@ -253,12 +244,9 @@
 			public function getUsersTotalsWatched()
 			{
 				$result = array();
-				$query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, SUM(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 1 AND DATE(`YTTRecords`.`Time`) >= DATE_SUB(NOW(), INTERVAL 1 MONTH) GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
-				if($query)
+				foreach($this->sqlConnection->query("SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, SUM(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 1 AND DATE(`YTTRecords`.`Time`) >= DATE_SUB(NOW(), INTERVAL 1 MONTH) GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;") as $index => $row)
 				{
-					if($query->num_rows > 0)
-						while($row = $query->fetch_assoc())
-							$result[$row['ID']] = array('UID' => $row['UID'], 'Stat' => $row['Stat'], 'Date' => $row['StatDay'], 'Type' => $row['Type']);
+					$result[$row['ID']] = array('UID' => $row['UID'], 'Stat' => $row['Stat'], 'Date' => $row['StatDay'], 'Type' => $row['Type']);
 				}
 				return $result;
 			}
@@ -269,12 +257,9 @@
 			public function getUsersTotalsOpened()
 			{
 				$result = array();
-				$query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, SUM(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 2 AND DATE(`YTTRecords`.`Time`) >= DATE_SUB(NOW(), INTERVAL 1 MONTH) GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
-				if($query)
+				foreach($this->sqlConnection->query("SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, SUM(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 2 AND DATE(`YTTRecords`.`Time`) >= DATE_SUB(NOW(), INTERVAL 1 MONTH) GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;") as $index => $row)
 				{
-					if($query->num_rows > 0)
-						while($row = $query->fetch_assoc())
-							$result[$row['ID']] = array('UID' => $row['UID'], 'Stat' => $row['Stat'], 'Date' => $row['StatDay'], 'Type' => $row['Type']);
+					$result[$row['ID']] = array('UID' => $row['UID'], 'Stat' => $row['Stat'], 'Date' => $row['StatDay'], 'Type' => $row['Type']);
 				}
 				return $result;
 			}
@@ -285,12 +270,9 @@
 			public function getUsersTotalsCountOpened()
 			{
 				$result = array();
-				$query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, COUNT(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 2 AND DATE(`YTTRecords`.`Time`) >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
-				if($query)
+				foreach($this->sqlConnection->query("SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, COUNT(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 2 AND DATE(`YTTRecords`.`Time`) >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;") as $index => $row)
 				{
-					if($query->num_rows > 0)
-						while($row = $query->fetch_assoc())
-							$result[$row['ID']] = array('UID' => $row['UID'], 'Stat' => $row['Stat'], 'Date' => $row['StatDay'], 'Type' => $row['Type']);
+					$result[$row['ID']] = array('UID' => $row['UID'], 'Stat' => $row['Stat'], 'Date' => $row['StatDay'], 'Type' => $row['Type']);
 				}
 				return $result;
 			}
@@ -321,12 +303,11 @@
 			public function getCountDays($uuid, $days)
 			{
 				$result = 0;
-				$query = $this->sqlConnection->query('SELECT COUNT(`Stat`) AS Total FROM `YTTRecords` WHERE `Type`=2 AND `UUID`=\'' . $uuid . '\' AND `Time` >= DATE_SUB(NOW(), INTERVAL ' . $days . ' DAY);');
-				if($query)
+				$query = $this->sqlConnection->prepare("SELECT COUNT(`Stat`) AS Total FROM `YTTRecords` WHERE `Type`=2 AND `UUID`=:uuid AND `Time` >= DATE_SUB(NOW(), INTERVAL $days DAY);");
+				if($query->execute(array(':uuid' => $uuid)))
 				{
-					if($query->num_rows > 0)
-						while($row = $query->fetch_assoc())
-							$result = $row['Total'];
+					foreach($query->fetchAll() as $index => $row)
+						$result = $row['Total'];
 				}
 				return $result;
 			}
@@ -340,12 +321,11 @@
 			private function getSumRecordTypeDays($uuid, $type, $days)
 			{
 				$result = 0;
-				$query = $this->sqlConnection->query('SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=' . $type . ' AND `UUID`=\'' . $uuid . '\' AND `Time` >= DATE_SUB(NOW(), INTERVAL ' . $days . ' DAY);');
-				if($query)
+				$query = $this->sqlConnection->prepare("SELECT SUM(`Stat`) AS Total FROM  `YTTRecords` WHERE `Type`=:type AND `UUID`=:uuid AND `Time` >= DATE_SUB(NOW(), INTERVAL $days DAY);");
+				if($query->execute(array(':type' => $type, ':uuid' => $uuid)))
 				{
-					if($query->num_rows > 0)
-						while($row = $query->fetch_assoc())
-							$result = $row['Total'];
+					foreach($query->fetchAll() as $index => $row)
+						$result = $row['Total'];
 				}
 				return $result;
 			}
@@ -356,12 +336,9 @@
 			public function getUsersTotalsWatchedForever()
 			{
 				$result = array();
-				$query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, SUM(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 1 GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
-				if($query)
+				foreach($this->sqlConnection->query("SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, SUM(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 1 GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;") as $index => $row)
 				{
-					if($query->num_rows > 0)
-						while($row = $query->fetch_assoc())
-							$result[$row['ID']] = array('UID' => $row['UID'], 'Stat' => $row['Stat'], 'Date' => $row['StatDay'], 'Type' => $row['Type']);
+					$result[$row['ID']] = array('UID' => $row['UID'], 'Stat' => $row['Stat'], 'Date' => $row['StatDay'], 'Type' => $row['Type']);
 				}
 				return $result;
 			}
@@ -372,12 +349,9 @@
 			public function getUsersTotalsOpenedForever()
 			{
 				$result = array();
-				$query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, SUM(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 2 GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
-				if($query)
+				foreach($this->sqlConnection->query("SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, SUM(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 2 GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;") as $index => $row)
 				{
-					if($query->num_rows > 0)
-						while($row = $query->fetch_assoc())
-							$result[$row['ID']] = array('UID' => $row['UID'], 'Stat' => $row['Stat'], 'Date' => $row['StatDay'], 'Type' => $row['Type']);
+					$result[$row['ID']] = array('UID' => $row['UID'], 'Stat' => $row['Stat'], 'Date' => $row['StatDay'], 'Type' => $row['Type']);
 				}
 				return $result;
 			}
@@ -388,12 +362,9 @@
 			public function getUsersTotalsCountOpenedForever()
 			{
 				$result = array();
-				$query = $this->sqlConnection->query('SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, COUNT(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 2 GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;');
-				if($query)
+				foreach($this->sqlConnection->query("SELECT `YTTRecords`.`ID`, `YTTUsers`.`ID` AS `UID`, `YTTRecords`.`Type`, COUNT(`YTTRecords`.`Stat`) AS `Stat`, DATE(`YTTRecords`.`Time`) AS `StatDay` FROM `YTTRecords` LEFT JOIN `YTTUsers` ON `YTTRecords`.`UUID` = `YTTUsers`.`UUID` WHERE `YTTRecords`.`Type` = 2 GROUP BY `YTTRecords`.`UUID`, `StatDay`, `YTTRecords`.`Type`;") as $index => $row)
 				{
-					if($query->num_rows > 0)
-						while($row = $query->fetch_assoc())
-							$result[$row['ID']] = array('UID' => $row['UID'], 'Stat' => $row['Stat'], 'Date' => $row['StatDay'], 'Type' => $row['Type']);
+					$result[$row['ID']] = array('UID' => $row['UID'], 'Stat' => $row['Stat'], 'Date' => $row['StatDay'], 'Type' => $row['Type']);
 				}
 				return $result;
 			}
@@ -441,12 +412,11 @@
 			public function getOldestRecord($uuid)
 			{
 				$result = "ERROR";
-				$query = $this->sqlConnection->query('SELECT MIN(`Time`) AS `Oldest` FROM `YTTRecords` WHERE `UUID`=\'' . $uuid . '\';');
-				if($query)
+				$query = $this->sqlConnection->prepare('SELECT MIN(`Time`) AS `Oldest` FROM `YTTRecords` WHERE `UUID`=:uuid;');
+				if($query->execute(array(':uuid' => $uuid)))
 				{
-					if($query->num_rows > 0)
-						while($row = $query->fetch_assoc())
-							$result = $row['Oldest'];
+					foreach($query->fetchAll() as $index => $row)
+						$result = $row['Oldest'];
 				}
 				return $result;
 			}

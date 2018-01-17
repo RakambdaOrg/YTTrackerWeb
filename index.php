@@ -228,6 +228,3 @@
     <?php include 'chartOpenedCount.php'; ?>
     </body>
     </html>
-<?php
-	$conn->close();
-?>

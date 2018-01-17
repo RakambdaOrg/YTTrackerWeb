@@ -11,7 +11,7 @@
 			/**
 			 * DBHandler constructor.
 			 *
-			 * @param \mysqli $conn
+			 * @param \PDO $conn
 			 */
 			public function __construct($conn)
 			{
@@ -29,8 +29,10 @@
 			 */
 			function addStat($uuid, $type, $stat, $videoID, $date, $browser)
 			{
-				$this->conn->query('INSERT IGNORE INTO `YTTUsers`(`UUID`, `Username`) VALUES(\'' . $uuid . '\', \'Anonymous\');');
-				if(!$this->conn->query('INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`, `Browser`) VALUES(\'' . $uuid . '\', ' . $type . ',\'' . $videoID . '\',' . $stat . ', ' . $this->getTimestamp($date) . ',\'' . ($browser == null ? 'Unknown' : $browser) . '\');'))
+				$query = $this->conn->prepare("INSERT IGNORE INTO `YTTUsers`(`UUID`, `Username`) VALUES(:uuid, 'Anonymous');");
+				$query->execute(array(':uuid' => $uuid));
+				$query = $this->conn->prepare("INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`, `Browser`) VALUES(:uuid, :type, :videoID, :stat, :timee, :browser);");
+				if($query->execute(array(':uuid' => $uuid, ':type', $type, ':videoID' => $videoID, ':stat' => $stat, ':timee' => $this->getTimestamp($date), ':browser' => ($browser == null ? 'Unknown' : $browser))))
 					return array('code' => 400, 'result' => 'err', 'error' => 'E2');
 				return array('code' => 200, 'result' => 'OK');
 			}
@@ -68,13 +70,12 @@
 			 */
 			public function getStats($uuid)
 			{
-				$query = $this->conn->query('SELECT * FROM  `YTTRecords` WHERE `UUID`=\'' . $uuid . '\' ORDER BY `ID` ASC;');
-				if(!$query)
+				$query = $this->conn->prepare("SELECT * FROM  `YTTRecords` WHERE `UUID`=:uuid ORDER BY `ID` ASC;");
+				if(!$query->execute(array(':uuid' => $uuid)))
 					return array('code' => 500, 'result' => 'err', 'error' => 'E3');
 				$stats = array();
-				if($query->num_rows > 0)
-					while($row = $query->fetch_assoc())
-						$stats[$row['ID']] = array('id' => $row['ID'], 'type' => $row['Type'], 'typeStr' => $row['Type'] == 2 ? 'Opened' : 'Watched', 'videoid' => $row['VideoID'], 'Stat' => $row['Stat'], 'Fstats' => DBHandler::formatTime($row['Stat']), 'time' => $row['Time']);
+				foreach($query->fetchAll() as $index => $row)
+					$stats[$row['ID']] = array('id' => $row['ID'], 'type' => $row['Type'], 'typeStr' => $row['Type'] == 2 ? 'Opened' : 'Watched', 'videoid' => $row['VideoID'], 'Stat' => $row['Stat'], 'Fstats' => DBHandler::formatTime($row['Stat']), 'time' => $row['Time']);
 				if(count($stats) > 0)
 					return array('code' => 200, 'result' => 'OK', 'stats' => $stats);
 				return array('code' => 400, 'result' => 'No entry');
@@ -87,8 +88,8 @@
 			 */
 			public function setUsername($uuid, $username)
 			{
-				$query = $this->conn->query('INSERT INTO `YTTUsers`(`UUID`, `Username`) VALUES(\'' . $uuid . '\',\'' . $this->conn->real_escape_string($username) . '\') ON DUPLICATE KEY UPDATE `Username`=\'' . $this->conn->real_escape_string($username) . '\';');
-				if(!$query)
+				$query = $this->conn->prepare("INSERT INTO `YTTUsers`(`UUID`, `Username`) VALUES(:uuid, :username) ON DUPLICATE KEY UPDATE `Username`=:username;");
+				if(!$query->execute(array(':uuid' => $uuid, ':username' => $username)))
 					return array('code' => 500, 'result' => 'err', 'error' => 'E4');
 				return array('code' => 200, 'result' => 'OK');
 			}

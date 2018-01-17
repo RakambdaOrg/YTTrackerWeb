@@ -121,21 +121,23 @@
 		function processRequest($methodName, $params)
 		{
 			$methodName = 'YTT\\' . $methodName;
-			$conn = DBConnection::getConnection();
-			if($conn->connect_error)
+			try{
+				$conn = DBConnection::getConnection();
+			}
+			catch(\PDOException $e)
 			{
 				sendResponse(500, json_encode(array('code' => '500', 'result' => 'err', 'error' => 'E0')));
 				return;
 			}
+
 			if(!$methodName(new DBHandler($conn), $params))
 			{
 				sendResponse(500, json_encode(array('code' => '500')));
 			}
-			$conn->close();
 		}
 
 		/**
-		 * @param DBHandler $dbHandler
+		 * @param \PDO $dbHandler
 		 * @param array $params
 		 * @return bool
 		 */
@@ -147,7 +149,7 @@
 		}
 
 		/**
-		 * @param DBHandler $dbHandler
+		 * @param \PDO $dbHandler
 		 * @param array $params
 		 * @return bool
 		 */
@@ -159,7 +161,7 @@
 		}
 
 		/**
-		 * @param DBHandler $dbHandler
+		 * @param \PDO $dbHandler
 		 * @param array $params
 		 * @return bool
 		 */
