@@ -5,7 +5,7 @@
 		require_once('model/DBConnection.class.php');
 		require_once('model/DBHandler.class.php');
 
-		if(false)
+		if(true)
 		{
 			error_reporting(E_ALL);
 			ini_set('display_errors', '1');
@@ -137,7 +137,7 @@
 		}
 
 		/**
-		 * @param \PDO $dbHandler
+		 * @param DBHandler $dbHandler
 		 * @param array $params
 		 * @return bool
 		 */
@@ -149,7 +149,7 @@
 		}
 
 		/**
-		 * @param \PDO $dbHandler
+		 * @param DBHandler $dbHandler
 		 * @param array $params
 		 * @return bool
 		 */
@@ -161,7 +161,7 @@
 		}
 
 		/**
-		 * @param \PDO $dbHandler
+		 * @param DBHandler $dbHandler
 		 * @param array $params
 		 * @return bool
 		 */

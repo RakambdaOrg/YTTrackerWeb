@@ -30,10 +30,11 @@
 			function addStat($uuid, $type, $stat, $videoID, $date, $browser)
 			{
 				$query = $this->conn->prepare("INSERT IGNORE INTO `YTTUsers`(`UUID`, `Username`) VALUES(:uuid, 'Anonymous');");
-				$query->execute(array(':uuid' => $uuid));
-				$query = $this->conn->prepare("INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`, `Browser`) VALUES(:uuid, :type, :videoID, :stat, :timee, :browser);");
-				if($query->execute(array(':uuid' => $uuid, ':type', $type, ':videoID' => $videoID, ':stat' => $stat, ':timee' => $this->getTimestamp($date), ':browser' => ($browser == null ? 'Unknown' : $browser))))
-					return array('code' => 400, 'result' => 'err', 'error' => 'E2');
+				if(!$query->execute(array(':uuid' => $uuid)))
+					return array('code' => 400, 'result' => 'err', 'error' => 'E2.1');
+				$query2 = $this->conn->prepare("INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`, `Browser`) VALUES(:uuid, :type, :videoID, :stat, STR_TO_DATE(:timee, '%Y-%m-%d %H:%i:%s'), :browser);");
+				if(!$query2->execute(array(':uuid' => $uuid, ':type' => $type, ':videoID' => $videoID, ':stat' => $stat, ':timee' => $this->getTimestamp($date), ':browser' => ($browser == null ? 'Unknown' : $browser))))
+					return array('code' => 400, 'result' => 'err', 'error' => 'E2.2');
 				return array('code' => 200, 'result' => 'OK');
 			}
 
@@ -59,9 +60,9 @@
 			{
 				if(!$date)
 				{
-					return 'CURRENT_TIMESTAMP()';
+					return date('%Y-%m-%d %H:%i:%s');
 				}
-				return 'STR_TO_DATE(\'' . $date . '\', \'%Y-%m-%d %H:%i:%s\')';
+				return $date;
 			}
 
 			/**
