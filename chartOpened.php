@@ -107,12 +107,12 @@
 		AmCharts.ready(function () {
 			var chartColors = {
 				theme: 'dark',
-				selectedBackgroundColor: '#444444',
+				selectedBackgroundColor: '#3c5077',
 				gridColor: '#999999',
 				color: '#111111',
-				scrollBarBackgroundColor: '#666666',
+				scrollBarBackgroundColor: '#3d5e77',
 				labelColor: '#000000',
-				backgroundColor: '#777777',
+				backgroundColor: '#2b3e50',
 				ratioLineColor: '#196E1F',
 				countLineColor: '#214DD1',
 				handDrawn: false
@@ -230,26 +230,28 @@
 					}
 				},
 				dataProvider: datasOpened,
-				valueAxes: [{
-					id: 'durationAxis',
-					duration: 'hh',
-					durationUnits: {
-						DD: 'd',
-						hh: 'h ',
-						mm: 'min',
-						ss: 's'
-					},
-					axisAlpha: 0.5,
-					gridAlpha: 0.2,
-					inside: true,
-					color: chartColors['labelColor'],
-					position: 'right',
-					title: 'Duration',
-					labelFrequency: 2,
-					labelFunction: function (value) {
-						return YTTGetDurationString({hours: value});
+				valueAxes: [
+					{
+						id: 'durationAxis',
+						duration: 'hh',
+						durationUnits: {
+							DD: 'd',
+							hh: 'h ',
+							mm: 'min',
+							ss: 's'
+						},
+						axisAlpha: 0.5,
+						gridAlpha: 0.2,
+						inside: true,
+						color: chartColors['labelColor'],
+						position: 'left',
+						title: 'Opened time',
+						labelFrequency: 2,
+						labelFunction: function (value) {
+							return YTTGetDurationString({hours: value});
+						}
 					}
-				}],
+				],
 				graphs: openedGraphs,
 				chartScrollbar: {
 					autoGridCount: true,

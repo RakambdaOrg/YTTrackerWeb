@@ -23,12 +23,12 @@
 		AmCharts.ready(function () {
 			var chartColors = {
 				theme: 'dark',
-				selectedBackgroundColor: '#444444',
+				selectedBackgroundColor: '#3c5077',
 				gridColor: '#999999',
 				color: '#111111',
-				scrollBarBackgroundColor: '#666666',
+				scrollBarBackgroundColor: '#3d5e77',
 				labelColor: '#000000',
-				backgroundColor: '#777777',
+				backgroundColor: '#2b3e50',
 				ratioLineColor: '#196E1F',
 				countLineColor: '#214DD1',
 				handDrawn: false
@@ -155,8 +155,8 @@
 					gridAlpha: 0.2,
 					labelsEnabled: true,
 					inside: true,
-					position: 'right',
-					title: '',
+					position: 'left',
+					title: 'Opened count',
 					labelFrequency: 2,
 					labelFunction: function (value) {
 						return value;

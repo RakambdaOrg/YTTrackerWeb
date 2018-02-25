@@ -37,6 +37,18 @@
         {
           "version": "1.18.1",
           "update_link": "https://yttracker.mrcraftcod.fr/firefox/versions/1.18.1.xpi"
+        },
+        {
+          "version": "1.19.0",
+          "update_link": "https://yttracker.mrcraftcod.fr/firefox/versions/1.19.0.xpi"
+        },
+        {
+          "version": "1.20.0",
+          "update_link": "https://yttracker.mrcraftcod.fr/firefox/versions/1.20.0.xpi"
+        },
+        {
+          "version": "1.21.0",
+          "update_link": "https://yttracker.mrcraftcod.fr/firefox/versions/1.21.0.xpi"
         }
       ]
     }
