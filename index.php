@@ -51,13 +51,13 @@
 </head>
 <body>
 <?php
-    include __DIR__ . "/header.php";
+	include __DIR__ . "/header.php";
 ?>
 <div class="container-fluid" style="margin-top:40px">
     <table id="dataTable" class="table table-striped table-bordered table-hover">
         <thead class="thead-dark">
         <tr>
-            <th class="userCell" scope="col" rowspan="2">User<br/>(oldest record)</th>
+            <th class="userCell" scope="col" rowspan="2">User<br/>(most recent record)<br/>(oldest record)</th>
             <th class="" scope="col" colspan="3">Total</th>
             <th class="" scope="col" colspan="3">Last Week</th>
             <th class="" scope="col" colspan="3">Last 24h</th>
@@ -101,90 +101,99 @@
 		        {
 			        ?>
                     <tr id="user<?php
-				        echo $UUID['ID'];
-			        ?>">
+	                    echo $UUID['ID'];
+                    ?>">
                         <td class="userCell">
-                            <div class="username">
-						        <?php
-							        $username = $handler->getUsername($UUID['UUID']);
-							        echo $username ? $username : $UUID['ID'];
-						        ?>
+                            <div>
+                                <span class="username">
+								<?php
+									$username = $handler->getUsername($UUID['UUID']);
+									echo $username ? $username : $UUID['ID'];
+								?>
+                                </span>
+                                <br/>
+                                (
+		                        <?php
+			                        echo $handler->getMostRecentRecord($UUID['UUID']);
+		                        ?>
+                                )
+                                <br/>
+                                (
+		                        <?php
+			                        echo $handler->getOldestRecord($UUID['UUID']);
+		                        ?>
+                                )
                             </div>
-					        <?php
-						        echo '(';
-						        echo $handler->getOldestRecord($UUID['UUID']);
-						        echo ')';
-					        ?>
                         </td>
                         <td class="totalOpenedCell">
-					        <?php
-						        echo $siteHelper->millisecondsToTimeString($handler->getTotalOpened($UUID['UUID']));
-					        ?>
+	                        <?php
+		                        echo $siteHelper->millisecondsToTimeString($handler->getTotalOpened($UUID['UUID']));
+	                        ?>
                         </td>
                         <td class="totalWatchedCell">
-					        <?php
-						        echo $siteHelper->millisecondsToTimeString($handler->getTotalWatched($UUID['UUID']));
-					        ?>
+	                        <?php
+		                        echo $siteHelper->millisecondsToTimeString($handler->getTotalWatched($UUID['UUID']));
+	                        ?>
                         </td>
                         <td class="totalCountCell">
-					        <?php
-						        echo $handler->getTotalOpenedCount($UUID['UUID']);
-					        ?>
+	                        <?php
+		                        echo $handler->getTotalOpenedCount($UUID['UUID']);
+	                        ?>
                         </td>
                         <td class="weekOpenedCell">
-					        <?php
-						        echo $siteHelper->millisecondsToTimeString($handler->getWeekOpened($UUID['UUID']));
-					        ?>
+	                        <?php
+		                        echo $siteHelper->millisecondsToTimeString($handler->getWeekOpened($UUID['UUID']));
+	                        ?>
                         </td>
                         <td class="weekWatchedCell">
-					        <?php
-						        echo $siteHelper->millisecondsToTimeString($handler->getWeekWatched($UUID['UUID']));
-					        ?>
+	                        <?php
+		                        echo $siteHelper->millisecondsToTimeString($handler->getWeekWatched($UUID['UUID']));
+	                        ?>
                         </td>
                         <td class="weekCountCell">
-					        <?php
-						        echo $handler->getWeekOpenedCount($UUID['UUID']);
-					        ?>
+	                        <?php
+		                        echo $handler->getWeekOpenedCount($UUID['UUID']);
+	                        ?>
                         </td>
                         <td class="todayOpenedCell">
-					        <?php
-						        echo $siteHelper->millisecondsToTimeString($handler->getLast24hOpened($UUID['UUID']));
-					        ?>
+	                        <?php
+		                        echo $siteHelper->millisecondsToTimeString($handler->getLast24hOpened($UUID['UUID']));
+	                        ?>
                         </td>
                         <td class="todayWatchedCell">
-					        <?php
-						        echo $siteHelper->millisecondsToTimeString($handler->getLast24hWatched($UUID['UUID']));
-					        ?>
+	                        <?php
+		                        echo $siteHelper->millisecondsToTimeString($handler->getLast24hWatched($UUID['UUID']));
+	                        ?>
                         </td>
                         <td class="todayCountCell">
-					        <?php
-						        echo $handler->getLast24hOpenedCount($UUID['UUID']);
-					        ?>
+	                        <?php
+		                        echo $handler->getLast24hOpenedCount($UUID['UUID']);
+	                        ?>
                         </td>
-				        <?php
-					        if($customPeriodDisplayed)
-					        {
-						        $start = 'STR_TO_DATE("' . $_GET['startPeriod'] . '", "%Y-%m-%dT%H:%i")';
-						        $end = 'STR_TO_DATE("' . $_GET['endPeriod'] . ':59", "%Y-%m-%dT%H:%i:%s")';
-						        ?>
+	                    <?php
+		                    if($customPeriodDisplayed)
+		                    {
+			                    $start = 'STR_TO_DATE("' . $_GET['startPeriod'] . '", "%Y-%m-%dT%H:%i")';
+			                    $end = 'STR_TO_DATE("' . $_GET['endPeriod'] . ':59", "%Y-%m-%dT%H:%i:%s")';
+			                    ?>
                                 <td class="periodOpenedCell">
-							        <?php
-								        echo $siteHelper->millisecondsToTimeString($handler->getPeriodOpened($UUID['UUID'], $start, $end));
-							        ?>
+	                                <?php
+		                                echo $siteHelper->millisecondsToTimeString($handler->getPeriodOpened($UUID['UUID'], $start, $end));
+	                                ?>
                                 </td>
                                 <td class="periodWatchedCell">
-							        <?php
-								        echo $siteHelper->millisecondsToTimeString($handler->getPeriodWatched($UUID['UUID'], $start, $end));
-							        ?>
+	                                <?php
+		                                echo $siteHelper->millisecondsToTimeString($handler->getPeriodWatched($UUID['UUID'], $start, $end));
+	                                ?>
                                 </td>
                                 <td class="periodCountCell">
-							        <?php
-								        echo $handler->getPeriodCount($UUID['UUID'], $start, $end)
-							        ?>
+	                                <?php
+		                                echo $handler->getPeriodCount($UUID['UUID'], $start, $end)
+	                                ?>
                                 </td>
-						        <?php
-					        }
-				        ?>
+			                    <?php
+		                    }
+	                    ?>
                     </tr>
 			        <?php
 		        }

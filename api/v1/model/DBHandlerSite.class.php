@@ -420,5 +420,21 @@
 				}
 				return $result;
 			}
+
+			/**
+			 * @param string $uuid
+			 * @return string
+			 */
+			public function getMostRecentRecord($uuid)
+			{
+				$result = "ERROR";
+				$query = $this->sqlConnection->prepare('SELECT MAX(`Time`) AS `Oldest` FROM `YTTRecords` WHERE `UUID`=:uuid;');
+				if($query->execute(array(':uuid' => $uuid)))
+				{
+					foreach($query->fetchAll() as $index => $row)
+						$result = $row['Oldest'];
+				}
+				return $result;
+			}
 		}
 	}

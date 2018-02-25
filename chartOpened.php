@@ -187,7 +187,7 @@
 			var openedGraphs = [];
 			for (var key in openedUIDS) {
 				if (openedUIDS.hasOwnProperty(key)) {
-					const username = $('#user' + openedUIDS[key] + '>.userCell>.username').text().trim();
+					const username = $('#user' + openedUIDS[key] + ' .username').text().trim();
 					openedGraphs.push({
 						bullet: 'circle',
 						bulletBorderAlpha: 1,
