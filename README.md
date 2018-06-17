@@ -4,7 +4,7 @@
 <a style="color: white; text-decoration:none;" href="https://chrome.google.com/webstore/detail/youtube-tracker/knnlnielflnfhdohmihofhdelgahgjdb"><h1 align="center">YTTrackerWeb</h1></a>
 
 ## Description
-Webpage used to display public statistics for the chrome extension [YTTracker](https://github.com/MrCraftCod/YTTracker).
+Webpage used to display public statistics for the chrome extension [YTTracker](https://gitlab.com/MrCraftCod/YTTracker).
 
 ## Libraries
 Amcharts - [https://www.amcharts.com](https://www.amcharts.com)
