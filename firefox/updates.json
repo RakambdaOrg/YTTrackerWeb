@@ -49,6 +49,10 @@
         {
           "version": "1.21.0",
           "update_link": "https://yttracker.mrcraftcod.fr/firefox/versions/1.21.0.xpi"
+        },
+        {
+          "version": "1.22.0",
+          "update_link": "https://yttracker.mrcraftcod.fr/firefox/versions/1.22.0.xpi"
         }
       ]
     }
