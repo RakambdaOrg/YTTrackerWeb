@@ -246,7 +246,7 @@
 						inside: true,
 						color: chartColors['labelColor'],
 						position: 'left',
-						title: 'Opened time',
+						title: 'Watched time',
 						labelFrequency: 2,
 						labelFunction: function (value) {
 							return YTTGetDurationString({hours: value});
