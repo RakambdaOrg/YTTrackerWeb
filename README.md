@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://chrome.google.com/webstore/detail/youtube-tracker/knnlnielflnfhdohmihofhdelgahgjdb"><img alt="YTTracker logo" src="https://rawgit.com/MrCraftCod/YTTracker/master/extras/timer.svg" height="175"/></a>
+    <a href="https://chrome.google.com/webstore/detail/youtube-tracker/knnlnielflnfhdohmihofhdelgahgjdb"><img alt="YTTracker logo" src="https://gitlab.com/MrCraftCod/YTTracker/raw/master/extras/timer.svg" height="175"/></a>
 </p>
 <a style="color: white; text-decoration:none;" href="https://chrome.google.com/webstore/detail/youtube-tracker/knnlnielflnfhdohmihofhdelgahgjdb"><h1 align="center">YTTrackerWeb</h1></a>
 
