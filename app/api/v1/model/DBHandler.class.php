@@ -4,6 +4,9 @@
 
 	namespace YTT
 	{
+
+		use PDO;
+
 		class DBHandler
 		{
 			private $conn;
@@ -11,7 +14,7 @@
 			/**
 			 * DBHandler constructor.
 			 *
-			 * @param \PDO $conn
+			 * @param PDO $conn
 			 */
 			public function __construct($conn)
 			{
@@ -29,10 +32,10 @@
 			 */
 			function addStat($uuid, $type, $stat, $videoID, $date, $browser)
 			{
-				$query = $this->conn->prepare("INSERT IGNORE INTO `YTTUsers`(`UUID`, `Username`) VALUES(:uuid, 'Anonymous');");
+				$query = $this->conn->prepare("INSERT IGNORE INTO `YTT_Users`(`UUID`, `Username`) VALUES(:uuid, 'Anonymous');");
 				if(!$query->execute(array(':uuid' => $uuid)))
 					return array('code' => 400, 'result' => 'err', 'error' => 'E2.1');
-				$query2 = $this->conn->prepare("INSERT INTO `YTTRecords`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`, `Browser`) VALUES(:uuid, :type, :videoID, :stat, STR_TO_DATE(:timee, '%Y-%m-%d %H:%i:%s'), :browser);");
+				$query2 = $this->conn->prepare("INSERT INTO `YTT_Records`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`, `Browser`) VALUES(:uuid, :type, :videoID, :stat, STR_TO_DATE(:timee, '%Y-%m-%d %H:%i:%s'), :browser);");
 				if(!$query2->execute(array(':uuid' => $uuid, ':type' => $type, ':videoID' => $videoID, ':stat' => $stat, ':timee' => $this->getTimestamp($date), ':browser' => ($browser == null ? 'Unknown' : $browser))))
 					return array('code' => 400, 'result' => 'err', 'error' => 'E2.2');
 				return array('code' => 200, 'result' => 'OK');
@@ -71,7 +74,7 @@
 			 */
 			public function getStats($uuid)
 			{
-				$query = $this->conn->prepare("SELECT * FROM  `YTTRecords` WHERE `UUID`=:uuid ORDER BY `ID` ASC;");
+				$query = $this->conn->prepare("SELECT * FROM  `YTT_Records` WHERE `UUID`=:uuid ORDER BY `ID` ASC;");
 				if(!$query->execute(array(':uuid' => $uuid)))
 					return array('code' => 500, 'result' => 'err', 'error' => 'E3');
 				$stats = array();
@@ -89,7 +92,7 @@
 			 */
 			public function setUsername($uuid, $username)
 			{
-				$query = $this->conn->prepare("INSERT INTO `YTTUsers`(`UUID`, `Username`) VALUES(:uuid, :username) ON DUPLICATE KEY UPDATE `Username`=:username;");
+				$query = $this->conn->prepare("INSERT INTO `YTT_Users`(`UUID`, `Username`) VALUES(:uuid, :username) ON DUPLICATE KEY UPDATE `Username`=:username;");
 				if(!$query->execute(array(':uuid' => $uuid, ':username' => $username)))
 					return array('code' => 500, 'result' => 'err', 'error' => 'E4');
 				return array('code' => 200, 'result' => 'OK');
