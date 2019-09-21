@@ -1,0 +1,24 @@
+name: Deployment
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Git-FTP
+        run: |
+          curl https://raw.githubusercontent.com/git-ftp/git-ftp/master/git-ftp > git-ftp &&
+          sudo mv git-ftp /bin &&
+          sudo chmod 755 /bin/git-ftp
+      - name: Deploy on FTP
+        run: |
+          git ftp push -v --remote-root /www/subdomains/yttracker --syncroot app/ --user ${FTP_USER} --passwd ${FTP_PASSWORD} ${FTP_HOST}
+        env:
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_HOST: ${{ secrets.FTP_HOST }}
