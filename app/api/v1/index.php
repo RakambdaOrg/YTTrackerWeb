@@ -5,7 +5,7 @@
 		require_once('model/DBConnection.class.php');
 		require_once('model/DBHandler.class.php');
 
-		if(true)
+		if(false)
 		{
 			error_reporting(E_ALL);
 			ini_set('display_errors', '1');
