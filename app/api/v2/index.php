@@ -20,7 +20,9 @@
 	$usersHandler = new YTT\UsersHandler();
 
 	$endpoints = array();
-	$endpoints[] = array('method' => 'GET', 'route' => "/stats\/$uuidRegex\/$categoryRegex$/", 'object' => $statsHandler, 'function' => 'getUserStats');
+	$endpoints[] = array('method' => 'GET', 'route' => "/stats\/$uuidRegex\/watched$/", 'object' => $statsHandler, 'function' => 'getUserWatched');
+	$endpoints[] = array('method' => 'GET', 'route' => "/stats\/$uuidRegex\/opened$/", 'object' => $statsHandler, 'function' => 'getUserOpened');
+	$endpoints[] = array('method' => 'GET', 'route' => "/stats\/$uuidRegex\/opened-count$/", 'object' => $statsHandler, 'function' => 'getUserOpenedCount');
 
 	$endpoints[] = array('method' => 'GET', 'route' => "/users$/", 'object' => $usersHandler, 'function' => 'getUsers');
 

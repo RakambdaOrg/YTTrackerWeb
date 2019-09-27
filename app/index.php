@@ -2,6 +2,8 @@
 
 	use YTT\GraphSupplier;
 	use YTT\OpenedGraph;
+	use YTT\OpenedCountGraph;
+	use YTT\WatchedGraph;
 
 	require_once('api/v1/model/DBConnection.class.php');
 	require_once('api/v1/model/DBHandlerSite.class.php');
@@ -61,17 +63,25 @@
 //		include __DIR__ . "/table.php"
 	?>
 </div>
-<hr/>
 <div class="chartHolder" id="chartHolderWatched">
     <div class="chartDiv" id="chartDivWatched"></div>
+</div>
+<div class="legendHolder" id='legendHolderWatched'>
+    <div class="legendDiv" id='legendDivWatched'></div>
 </div>
 <hr/>
 <div class="chartHolder" id="chartHolderOpened">
     <div class="chartDiv" id="chartDivOpened"></div>
 </div>
+<div class="legendHolder" id='legendHolderOpened'>
+    <div class="legendDiv" id='legendDivOpened'></div>
+</div>
 <hr/>
 <div class="chartHolder" id="chartHolderOpenedCount">
     <div class="chartDiv" id="chartDivOpenedCount"></div>
+</div>
+<div class="legendHolder" id='legendHolderOpenedCount'>
+    <div class="legendDiv" id='legendDivOpenedCount'></div>
 </div>
 <?php
 	foreach(glob("graphs/*.php") as $filename)
@@ -79,6 +89,8 @@
 		require_once __DIR__ . '/' . $filename;
 
 	$plots[] = new OpenedGraph();
+	$plots[] = new OpenedCountGraph();
+	$plots[] = new WatchedGraph();
 
 	$plots = array_filter($plots, function($plot){
 		/**
@@ -97,8 +109,5 @@
 		$plot->plot();
 	}
 ?>
-<?php //include 'chartWatched.php'; ?>
-<?php //include 'chartOpened.php'; ?>
-<?php //include 'chartOpenedCount.php'; ?>
 </body>
 </html>

@@ -19,6 +19,9 @@
 							function getUsers(usersCallback) {
 								$.ajax({
 									url: '<?php echo $this->getUsersURL(); ?>',
+                                    data: {
+										range: <?php echo $this->getDataRange(); ?>
+                                    },
 									context: document.body,
 									method: 'GET'
 								}).done(function (data) {
@@ -68,6 +71,18 @@
 									chart.legend = new am4charts.Legend();
 									chart.legend.useDefaultMarker = true;
 
+									const legendContainer = am4core.create("legendDiv" + '<?php echo $this->getID(); ?>', am4core.Container);
+									legendContainer.width = am4core.percent(100);
+									legendContainer.height = am4core.percent(100);
+									chart.legend.parent = legendContainer;
+
+									chart.events.on("datavalidated", resizeLegend);
+									chart.events.on("maxsizechanged", resizeLegend);
+
+									function resizeLegend(ev) {
+										document.getElementById("legendDiv" + '<?php echo $this->getID(); ?>').style.height = chart.legend.contentHeight + "px";
+									}
+
 									let marker = chart.legend.markers.template.children.getIndex(0);
 									marker.cornerRadius(12, 12, 12, 12);
 									marker.strokeWidth = 2;
@@ -95,7 +110,7 @@
 											series.dataSource.parser.options.dateFormat = 'yyyy-MM-dd';
 											series.name = userObject['username'];
 											series.strokeWidth = 2;
-											series.legendSettings.valueText = "<?php echo $this->getLegendText(); ?>";
+											//series.legendSettings.valueText = "<?php //echo $this->getLegendText(); ?>//";
 											// series.fillOpacity = 0.3;
 
 											let bullet = series.bullets.push(new am4charts.CircleBullet());
@@ -180,7 +195,7 @@
 			 */
 			protected function getDataRange()
 			{
-				return $_GET['range'];
+				return isset($_GET['all']) ? ($_GET['all'] ? 2147483647 : 31) : 31;
 			}
 		}
 	}

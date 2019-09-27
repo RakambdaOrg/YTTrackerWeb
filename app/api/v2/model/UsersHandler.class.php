@@ -12,8 +12,16 @@
 		public function getUsers($groups, $params)
 		{
 			$users = array();
-			$stmt = $this->getConnection()->prepare("SELECT UUID, Username FROM YTT_Users");
-			$stmt->execute(array());
+			if(isset($params['range']))
+			{
+				$stmt = $this->getConnection()->prepare("SELECT DISTINCT(YTT_Users.UUID), Username FROM YTT_Users LEFT JOIN YTT_Records YR ON YTT_Users.UUID = YR.UUID WHERE DATE(YR.Time) >= DATE_SUB(NOW(), INTERVAL :range DAY)");
+				$stmt->execute(array('range' => min(intval($params['range']), 3650)));
+			}
+			else
+			{
+				$stmt = $this->getConnection()->prepare("SELECT UUID, Username FROM YTT_Users");
+				$stmt->execute(array());
+			}
 			$rows = $stmt->fetchAll();
 			foreach($rows as $key => $row)
 			{
