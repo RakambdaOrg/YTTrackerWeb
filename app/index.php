@@ -1,14 +1,9 @@
 <?php
 
-	use YTT\GraphSupplier;
-	use YTT\OpenedGraph;
-	use YTT\OpenedCountGraph;
-	use YTT\WatchedGraph;
-
 	require_once('api/v1/model/DBConnection.class.php');
 	require_once('api/v1/model/DBHandlerSite.class.php');
 	require_once('model/SiteHelper.class.php');
-	if(false)
+	if(true)
 	{
 		error_reporting(E_ALL);
 		ini_set('display_errors', '1');
@@ -58,56 +53,32 @@
 <?php
 	include __DIR__ . "/header.php";
 ?>
+
 <div class="container-fluid" style="margin-top:40px">
-	<?php
-//		include __DIR__ . "/table.php"
-	?>
-</div>
-<div class="chartHolder" id="chartHolderWatched">
-    <div class="chartDiv" id="chartDivWatched"></div>
-</div>
-<div class="legendHolder" id='legendHolderWatched'>
-    <div class="legendDiv" id='legendDivWatched'></div>
-</div>
-<hr/>
-<div class="chartHolder" id="chartHolderOpened">
-    <div class="chartDiv" id="chartDivOpened"></div>
-</div>
-<div class="legendHolder" id='legendHolderOpened'>
-    <div class="legendDiv" id='legendDivOpened'></div>
-</div>
-<hr/>
-<div class="chartHolder" id="chartHolderOpenedCount">
-    <div class="chartDiv" id="chartDivOpenedCount"></div>
-</div>
-<div class="legendHolder" id='legendHolderOpenedCount'>
-    <div class="legendDiv" id='legendDivOpenedCount'></div>
-</div>
-<?php
-	foreach(glob("graphs/*.php") as $filename)
-		/** @noinspection PhpIncludeInspection */
-		require_once __DIR__ . '/' . $filename;
+    <!-- Nav tabs -->
+    <ul class="nav nav-pills nav-fill nav-justified" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="graph-tab" data-toggle="pill" href="#nav-graph" role="tab" aria-controls="home" aria-selected="true">Graphs (last month)</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="table-tab" data-toggle="pill" href="#nav-table" role="tab" aria-controls="profile" aria-selected="false">Table</a>
+        </li>
+    </ul>
 
-	$plots[] = new OpenedGraph();
-	$plots[] = new OpenedCountGraph();
-	$plots[] = new WatchedGraph();
+    <hr/>
 
-	$plots = array_filter($plots, function($plot){
-		/**
-		 * @var $plot GraphSupplier
-		 */
-		return $plot->shouldPlot();
-	});
-
-	foreach($plots as $plotIndex => $plot)
-	{
-		/**
-		 * @var $plot GraphSupplier
-		 */
-		$name = $plot->getID();
-		echo "<!-- $name -->";
-		$plot->plot();
-	}
-?>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="nav-graph" role="tabpanel" aria-labelledby="graph-tab">
+			<?php
+				include __DIR__ . "/graphs.php"
+			?>
+        </div>
+        <div class="tab-pane fade" id="nav-table" role="tabpanel" aria-labelledby="table-tab">
+			<?php
+				include __DIR__ . "/table.php"
+			?>
+        </div>
+    </div>
 </body>
 </html>

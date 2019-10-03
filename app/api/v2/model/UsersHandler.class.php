@@ -6,6 +6,8 @@
 
 	class UsersHandler extends RouteHandler
 	{
+		private $MAX_RANGE = 3650;
+
 		public function __construct(){ }
 
 		/** @noinspection PhpUnused */
@@ -15,7 +17,7 @@
 			if(isset($params['range']))
 			{
 				$stmt = $this->getConnection()->prepare("SELECT DISTINCT(YTT_Users.UUID), Username FROM YTT_Users LEFT JOIN YTT_Records YR ON YTT_Users.UUID = YR.UUID WHERE DATE(YR.Time) >= DATE_SUB(NOW(), INTERVAL :range DAY)");
-				$stmt->execute(array('range' => min(intval($params['range']), 3650)));
+				$stmt->execute(array('range' => min(intval($params['range']), $this->MAX_RANGE)));
 			}
 			else
 			{

@@ -27,60 +27,6 @@
 			}
 
 			/**
-			 * @return array
-			 */
-			public function getUUIDS()
-			{
-				$query = $this->sqlConnection->query("SELECT DISTINCT `YTT_Users`.`ID`, `YTT_Users`.`UUID` FROM `YTT_Users` INNER JOIN `YTT_Records` ON `YTT_Users`.`UUID`=`YTT_Records`.`UUID` WHERE `TIME` >= DATE_SUB(NOW(), INTERVAL 1 MONTH);");
-				if(!$query)
-					return array('code' => 500, 'result' => 'err', 'error' => 'E0');
-				$uuids = array();
-				$i = 0;
-				foreach($query as $index => $row)
-					$uuids[$i++] = array('ID' => $row['ID'], 'UUID' => $row['UUID']);
-				if(count($uuids) > 0)
-					return array('code' => 200, 'result' => 'OK', 'uuids' => $uuids);
-				return array('code' => 400, 'result' => 'No entry');
-			}
-
-			/**
-			 * @param string $uuid
-			 * @return string|null
-			 */
-			public function getUsername($uuid)
-			{
-				$query = $this->sqlConnection->prepare("SELECT `Username` FROM  `YTT_Users` WHERE `UUID`=:uuid;");
-				if($query->execute(array(':uuid' => $uuid)))
-				{
-					if($row = $query->fetch())
-						return $row['Username'];
-				}
-				return null;
-			}
-
-			/**
-			 * @param string $uuid
-			 * @return array
-			 */
-			public function getTodayStats($uuid)
-			{
-				$query = $this->sqlConnection->prepare("SELECT * FROM `YTT_Records` WHERE `UUID`=:uuid AND `Time` >= CURDATE();");
-				if(!$query->execute(array(':uuid' => $uuid)))
-					return array('code' => 500, 'result' => 'err', 'error' => 'E2');
-				$stats = array();
-				foreach($query->fetchAll() as $index => $row)
-					$stats[$row['UID']] = array('uid' => $row['UID'], 'type' => $row['Type'], 'videoid' => $row['VideoID'], 'Stat' => $row['Stat'], 'time' => $row['Time']);
-				$username = $this->getUsername($uuid);
-				if($username)
-				{
-					$stats['username'] = $username;
-				}
-				if(count($stats) > 0)
-					return array('code' => 200, 'result' => 'OK', 'stats' => $stats);
-				return array('code' => 400, 'result' => 'No entry');
-			}
-
-			/**
 			 * @param string $uuid
 			 * @param int $type
 			 * @return int
