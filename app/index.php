@@ -1,17 +1,16 @@
 <?php
+	require_once(__DIR__ . '/api/v1/model/DBConnection.class.php');
+	require_once(__DIR__ . '/api/v1/model/DBHandlerSite.class.php');
 
-	require_once('api/v1/model/DBConnection.class.php');
-	require_once('api/v1/model/DBHandlerSite.class.php');
-	require_once('model/SiteHelper.class.php');
-	if(true)
+	if(false)
 	{
 		error_reporting(E_ALL);
 		ini_set('display_errors', '1');
 	}
+
 	$dev = isset($_GET['dev']);
 	$conn = YTT\DBConnection::getConnection();
 	$handler = new YTT\DBHandlerSite($conn);
-	$siteHelper = new YTT\SiteHelper();
 	$customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']);
 ?>
 <!DOCTYPE html>

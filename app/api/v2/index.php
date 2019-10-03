@@ -3,7 +3,7 @@
 	require_once __DIR__ . '/model/DBConnection.class.php';
 	use YTT\DBConnection;
 
-	if(true)
+	if(false)
 	{
 		error_reporting(E_ALL);
 		ini_set('display_errors', '1');

@@ -26,10 +26,9 @@
 	use YTT\WatchedGraph;
 
 	require_once(__DIR__ . '/model/GraphSupplier.php');
-
-	foreach(glob("graphs/*.php") as $filename)
+	foreach(glob(__DIR__ . "/graphs/*.php") as $filename)
 		/** @noinspection PhpIncludeInspection */
-		require_once __DIR__ . '/' . $filename;
+		require_once $filename;
 
 	$plots[] = new OpenedGraph();
 	$plots[] = new OpenedCountGraph();
