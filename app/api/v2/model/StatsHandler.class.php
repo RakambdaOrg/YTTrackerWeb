@@ -118,7 +118,7 @@
 				return array('code' => 400, 'result' => 'err', 'error' => 'E2.1');
 
 			$query2 = DBConnection::getConnection()->prepare("INSERT INTO `YTT_Records`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`, `Browser`) VALUES(:uuid, :type, :videoID, :stat, STR_TO_DATE(:timee, '%Y-%m-%d %H:%i:%s'), :browser);");
-			if(!$query2->execute(array(':uuid' => $userUUID, ':type' => $params['type'], ':videoID' => $params['videoId'], ':stat' => $params['stat'], ':timee' => $this->getTimestamp($params['date']), ':browser' => ($params['browser'] == null ? 'Unknown' : $params['browser']))))
+			if(!$query2->execute(array(':uuid' => $userUUID, ':type' => $this->getDataType($params['type']), ':videoID' => $params['videoId'], ':stat' => $params['stat'], ':timee' => $this->getTimestamp($params['date']), ':browser' => ($params['browser'] == null ? 'Unknown' : $params['browser']))))
 				return array('code' => 400, 'result' => 'err', 'error' => 'E2.2');
 			return array('code' => 200, 'result' => 'OK');
 		}
