@@ -34,7 +34,7 @@
 			$range = min($range, $this->MAX_RANGE);
 
 			$data = array();
-			$prepared = DBConnection::getConnection()->prepare("SELECT SUM(`YTT_Records`.`Stat`) AS `Stat`, DATE(`YTT_Records`.`Time`) AS `StatDay` FROM `YTT_Records` LEFT JOIN `YTT_Users` ON `YTT_Records`.`UUID` = `YTT_Users`.`UUID` WHERE YTT_Users.UUID = :uuid AND `YTT_Records`.`Type` = :type AND DATE(`YTT_Records`.`Time`) >= DATE_SUB(NOW(), INTERVAL :days DAY) GROUP BY `StatDay`");
+			$prepared = $this->getConnection()->prepare("SELECT SUM(`YTT_Records`.`Stat`) AS `Stat`, DATE(`YTT_Records`.`Time`) AS `StatDay` FROM `YTT_Records` LEFT JOIN `YTT_Users` ON `YTT_Records`.`UUID` = `YTT_Users`.`UUID` WHERE YTT_Users.UUID = :uuid AND `YTT_Records`.`Type` = :type AND DATE(`YTT_Records`.`Time`) >= DATE_SUB(NOW(), INTERVAL :days DAY) GROUP BY `StatDay`");
 			$prepared->execute(array(":uuid" => $userUUID, ':days' => $range, ':type' => $this->getDataType($category)));
 			$result = $prepared->fetchAll();
 			foreach($result as $key => $row)
@@ -63,7 +63,7 @@
 			$range = min(3650, isset($params["range"]) ? $params['range'] : $this->DEFAULT_RANGE);
 
 			$data = array();
-			$prepared = DBConnection::getConnection()->prepare("SELECT COUNT(`Stat`) AS Total, DATE(`YTT_Records`.`Time`) AS `StatDay` FROM `YTT_Records` WHERE `Type`=:type AND `UUID`=:uuid AND DATE(`YTT_Records`.`Time`) >= DATE_SUB(NOW(), INTERVAL :days DAY) GROUP BY `StatDay`");
+			$prepared = $this->getConnection()->prepare("SELECT COUNT(`Stat`) AS Total, DATE(`YTT_Records`.`Time`) AS `StatDay` FROM `YTT_Records` WHERE `Type`=:type AND `UUID`=:uuid AND DATE(`YTT_Records`.`Time`) >= DATE_SUB(NOW(), INTERVAL :days DAY) GROUP BY `StatDay`");
 			$prepared->execute(array(":uuid" => $userUUID, ':days' => $range, ':type' => $this->getDataType("opened")));
 			$result = $prepared->fetchAll();
 			foreach($result as $key => $row)
@@ -75,7 +75,7 @@
 
 		private function getUserSumStats($userUUID, $type, $hours)
 		{
-			$prepared = DBConnection::getConnection()->prepare("SELECT SUM(`Stat`)/1000 AS Total FROM `YTT_Records` WHERE `Type`=:type AND `UUID`=:uuid AND DATE(`YTT_Records`.`Time`) >= DATE_SUB(NOW(), INTERVAL :hours HOUR)");
+			$prepared = $this->getConnection()->prepare("SELECT SUM(`Stat`)/1000 AS Total FROM `YTT_Records` WHERE `Type`=:type AND `UUID`=:uuid AND DATE(`YTT_Records`.`Time`) >= DATE_SUB(NOW(), INTERVAL :hours HOUR)");
 			$prepared->execute(array(":uuid" => $userUUID, ':hours' => $hours, ':type' => $this->getDataType($type)));
 			if($row = $prepared->fetch())
 			{
@@ -86,7 +86,7 @@
 
 		private function getUserCountStats($userUUID, $hours)
 		{
-			$prepared = DBConnection::getConnection()->prepare("SELECT COUNT(*) AS Total FROM `YTT_Records` WHERE `Type`=:type AND `UUID`=:uuid AND DATE(`YTT_Records`.`Time`) >= DATE_SUB(NOW(), INTERVAL :hours HOUR) AND Stat > 0");
+			$prepared = $this->getConnection()->prepare("SELECT COUNT(*) AS Total FROM `YTT_Records` WHERE `Type`=:type AND `UUID`=:uuid AND DATE(`YTT_Records`.`Time`) >= DATE_SUB(NOW(), INTERVAL :hours HOUR) AND Stat > 0");
 			$prepared->execute(array(":uuid" => $userUUID, ':hours' => $hours, ':type' => $this->getDataType('opened')));
 			if($row = $prepared->fetch())
 			{
@@ -113,11 +113,11 @@
 				return array('code' => 400, 'message' => 'Missing fields');
 			}
 
-			$query = DBConnection::getConnection()->prepare("INSERT IGNORE INTO `YTT_Users`(`UUID`, `Username`) VALUES(:uuid, 'Anonymous');");
+			$query = $this->getConnection()->prepare("INSERT IGNORE INTO `YTT_Users`(`UUID`, `Username`) VALUES(:uuid, 'Anonymous');");
 			if(!$query->execute(array(':uuid' => $userUUID)))
 				return array('code' => 400, 'result' => 'err', 'error' => 'E2.1');
 
-			$query2 = DBConnection::getConnection()->prepare("INSERT INTO `YTT_Records`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`, `Browser`) VALUES(:uuid, :type, :videoID, :stat, STR_TO_DATE(:timee, '%Y-%m-%d %H:%i:%s'), :browser);");
+			$query2 = $this->getConnection()->prepare("INSERT INTO `YTT_Records`(`UUID`, `Type`, `VideoID`, `Stat`, `Time`, `Browser`) VALUES(:uuid, :type, :videoID, :stat, STR_TO_DATE(:timee, '%Y-%m-%d %H:%i:%s'), :browser);");
 			if(!$query2->execute(array(':uuid' => $userUUID, ':type' => $this->getDataType($params['type']), ':videoID' => $params['videoId'], ':stat' => $params['stat'], ':timee' => $this->getTimestamp($params['date']), ':browser' => ($params['browser'] == null ? 'Unknown' : $params['browser']))))
 				return array('code' => 400, 'result' => 'err', 'error' => 'E2.2');
 			return array('code' => 200, 'result' => 'OK');
