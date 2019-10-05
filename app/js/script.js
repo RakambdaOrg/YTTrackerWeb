@@ -1,6 +1,11 @@
 $(document).ready(function () {
 	const USERS_API = '/api/v2/users';
-	const USER_DATA_API = '/api/v2/stats';
+	/**
+	 * @return {string}
+	 */
+	const USER_DATA_API = function(uuid){
+		return '/api/v2/' + uuid + '/stats';
+	};
 
 	am4core.useTheme(am4themes_animated);
 	am4core.useTheme(am4themes_material);
@@ -41,7 +46,7 @@ $(document).ready(function () {
 
 	function getUserData(userId, userDataCallBack) {
         $.ajax({
-            url: USER_DATA_API + '/' + userId,
+            url: USER_DATA_API(userId),
             data: {},
             context: document.body,
             method: 'GET'

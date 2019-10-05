@@ -44,7 +44,7 @@
 			 */
 			function getUserDataURLFunction()
 			{
-				return "return '/api/v2/stats/' + uuid + '/watched';";
+				return "return '/api/v2/' + uuid + '/stats/watched';";
 			}
 		}
 	}

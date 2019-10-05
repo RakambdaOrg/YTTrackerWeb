@@ -21,10 +21,10 @@
 
 	$endpoints = array();
 
-	$endpoints[] = array('method' => 'GET', 'route' => "/stats\/$uuidRegex$/", 'object' => $statsHandler, 'function' => 'getUserStats');
-	$endpoints[] = array('method' => 'GET', 'route' => "/stats\/$uuidRegex\/watched$/", 'object' => $statsHandler, 'function' => 'getUserWatched');
-	$endpoints[] = array('method' => 'GET', 'route' => "/stats\/$uuidRegex\/opened$/", 'object' => $statsHandler, 'function' => 'getUserOpened');
-	$endpoints[] = array('method' => 'GET', 'route' => "/stats\/$uuidRegex\/opened-count$/", 'object' => $statsHandler, 'function' => 'getUserOpenedCount');
+	$endpoints[] = array('method' => 'GET', 'route' => "/$uuidRegex\/stats$/", 'object' => $statsHandler, 'function' => 'getUserStats');
+	$endpoints[] = array('method' => 'GET', 'route' => "/$uuidRegex\/stats\/watched$/", 'object' => $statsHandler, 'function' => 'getUserWatched');
+	$endpoints[] = array('method' => 'GET', 'route' => "/$uuidRegex\/stats\/opened$/", 'object' => $statsHandler, 'function' => 'getUserOpened');
+	$endpoints[] = array('method' => 'GET', 'route' => "/$uuidRegex\/stats\/opened-count$/", 'object' => $statsHandler, 'function' => 'getUserOpenedCount');
 	$endpoints[] = array('method' => 'POST', 'route' => "/$uuidRegex\/stats\/add$/", 'object' => $statsHandler, 'function' => 'addUserStat');
 
 	$endpoints[] = array('method' => 'GET', 'route' => "/users$/", 'object' => $usersHandler, 'function' => 'getUsers');

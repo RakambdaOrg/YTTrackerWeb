@@ -44,7 +44,7 @@
 			 */
 			function getUserDataURLFunction()
 			{
-				return "return '/api/v2/stats/' + uuid + '/opened-count';";
+				return "return '/api/v2/' + uuid + '/stats/opened-count';";
 			}
 		}
 	}
