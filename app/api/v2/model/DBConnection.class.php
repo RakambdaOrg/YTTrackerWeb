@@ -23,6 +23,8 @@
 					DBConnection::$conn = $pdo = new PDO("mysql:host=" . $infos['host'] . ";dbname=" . $infos['database'] . ";charset=utf8", $infos['username'], $infos['password']);
 					DBConnection::$conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 					DBConnection::$conn->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false);
+					DBConnection::$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+					DBConnection::$conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
 				}
 				return DBConnection::$conn;
 			}

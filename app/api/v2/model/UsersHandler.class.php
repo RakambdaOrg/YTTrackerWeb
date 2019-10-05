@@ -42,7 +42,7 @@
 				return array('code' => 400, 'message' => 'Missing fields');
 			}
 
-			$query = $this->getConnection()->prepare("INSERT INTO `YTT_Users`(`UUID`, `Username`) VALUES(:uuid, :username) ON DUPLICATE KEY UPDATE `Username`=:username;");
+			$query = $this->getConnection()->prepare("INSERT INTO `YTT_Users`(`UUID`, `Username`) VALUES(:uuid, :username) ON DUPLICATE KEY UPDATE `Username`=:username");
 			if(!$query->execute(array(':uuid' => $userUUID, ':username' => $params['username'])))
 				return array('code' => 500, 'result' => 'err', 'error' => 'E4');
 			return array('code' => 200, 'result' => 'OK');
