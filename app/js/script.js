@@ -6,6 +6,8 @@ $(document).ready(function () {
 	am4core.useTheme(am4themes_material);
 	// am4core.useTheme(am4themes_dark);
 
+	am4core.options.onlyShowOnViewport = true;
+
 	const chartColors = {
 		theme: 'material',
 		selectedBackgroundColor: '#3C5077',
