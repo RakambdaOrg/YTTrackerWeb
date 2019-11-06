@@ -29,7 +29,7 @@
 	$endpoints[] = array('method' => 'POST', 'route' => "/$uuidRegex\/stats\/add$/", 'object' => $statsHandler, 'function' => 'addUserStat');
 
 	$endpoints[] = array('method' => 'GET', 'route' => "/users$/", 'object' => $usersHandler, 'function' => 'getUsers');
-	$endpoints[] = array('method' => 'GET', 'route' => "/$uuidRegex\/username$/\"", 'object' => $usersHandler, 'function' => 'getUsername');
+	$endpoints[] = array('method' => 'GET', 'route' => "/$uuidRegex\/username$/", 'object' => $usersHandler, 'function' => 'getUsername');
 	$endpoints[] = array('method' => 'POST', 'route' => "/$uuidRegex\/username$/", 'object' => $usersHandler, 'function' => 'setUserUsername');
 
 	if(!isset($_REQUEST['request']))
