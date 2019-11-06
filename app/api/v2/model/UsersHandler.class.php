@@ -47,4 +47,19 @@
 				return array('code' => 500, 'result' => 'err', 'error' => 'E4');
 			return array('code' => 200, 'result' => 'OK');
 		}
+
+		/** @noinspection PhpUnused */
+		public function getUsername($groups, $params)
+		{
+			$userUUID = $groups[1];
+
+			$stmt = $this->getConnection()->prepare("SELECT UUID, Username FROM YTT_Users WHERE UUID=:uuid");
+			$stmt->execute(array(':uuid' => $userUUID));
+
+			if($row = $stmt->fetch())
+			{
+				return array('code' => 200, 'username' => $row['Username']);
+			}
+			return array('code' => 404, 'error' => 'UserID not found');
+		}
 	}

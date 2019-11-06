@@ -1,6 +1,7 @@
 <?php
 
 	require_once __DIR__ . '/model/DBConnection.class.php';
+
 	use YTT\DBConnection;
 
 	if(false)
@@ -9,9 +10,9 @@
 		ini_set('display_errors', '1');
 	}
 
-	require_once __DIR__ .'/model/DBConnection.class.php';
-	require_once __DIR__ .'/model/StatsHandler.class.php';
-	require_once __DIR__ .'/model/UsersHandler.class.php';
+	require_once __DIR__ . '/model/DBConnection.class.php';
+	require_once __DIR__ . '/model/StatsHandler.class.php';
+	require_once __DIR__ . '/model/UsersHandler.class.php';
 
 	$uuidRegex = "([0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12})";
 	$categoryRegex = "([A-Za-z]+)";
@@ -28,7 +29,8 @@
 	$endpoints[] = array('method' => 'POST', 'route' => "/$uuidRegex\/stats\/add$/", 'object' => $statsHandler, 'function' => 'addUserStat');
 
 	$endpoints[] = array('method' => 'GET', 'route' => "/users$/", 'object' => $usersHandler, 'function' => 'getUsers');
-	$endpoints[] = array('method' => 'POST', 'route' => "/$uuidRegex\/username/", 'object' => $usersHandler, 'function' => 'setUserUsername');
+	$endpoints[] = array('method' => 'GET', 'route' => "/$uuidRegex\/username$/\"", 'object' => $usersHandler, 'function' => 'getUsername');
+	$endpoints[] = array('method' => 'POST', 'route' => "/$uuidRegex\/username$/", 'object' => $usersHandler, 'function' => 'setUserUsername');
 
 	if(!isset($_REQUEST['request']))
 		sendResponse(404);
@@ -146,6 +148,48 @@
 	 */
 	function getStatusCodeMessage($status)
 	{
-		$codes = Array(100 => 'Continue', 101 => 'Switching Protocols', 200 => 'OK', 201 => 'Created', 202 => 'Accepted', 203 => 'Non-Authoritative Information', 204 => 'No Content', 205 => 'Reset Content', 206 => 'Partial Content', 300 => 'Multiple Choices', 301 => 'Moved Permanently', 302 => 'Found', 303 => 'See Other', 304 => 'Not Modified', 305 => 'Use Proxy', 306 => '(Unused)', 307 => 'Temporary Redirect', 400 => 'Bad Request', 401 => 'Unauthorized', 402 => 'Payment Required', 403 => 'Forbidden', 404 => 'Not Found', 405 => 'Method Not Allowed', 406 => 'Not Acceptable', 407 => 'Proxy Authentication Required', 408 => 'Request Timeout', 409 => 'Conflict', 410 => 'Gone', 411 => 'Length Required', 412 => 'Precondition Failed', 413 => 'Request Entity Too Large', 414 => 'Request-URI Too Long', 415 => 'Unsupported Media Type', 416 => 'Requested Range Not Satisfiable', 417 => 'Expectation Failed', 500 => 'Internal Server Error', 501 => 'Not Implemented', 502 => 'Bad Gateway', 503 => 'Service Unavailable', 504 => 'Gateway Timeout', 505 => 'HTTP Version Not Supported');
+		$codes = array(
+			100 => 'Continue',
+			101 => 'Switching Protocols',
+			200 => 'OK',
+			201 => 'Created',
+			202 => 'Accepted',
+			203 => 'Non-Authoritative Information',
+			204 => 'No Content',
+			205 => 'Reset Content',
+			206 => 'Partial Content',
+			300 => 'Multiple Choices',
+			301 => 'Moved Permanently',
+			302 => 'Found',
+			303 => 'See Other',
+			304 => 'Not Modified',
+			305 => 'Use Proxy',
+			306 => '(Unused)',
+			307 => 'Temporary Redirect',
+			400 => 'Bad Request',
+			401 => 'Unauthorized',
+			402 => 'Payment Required',
+			403 => 'Forbidden',
+			404 => 'Not Found',
+			405 => 'Method Not Allowed',
+			406 => 'Not Acceptable',
+			407 => 'Proxy Authentication Required',
+			408 => 'Request Timeout',
+			409 => 'Conflict',
+			410 => 'Gone',
+			411 => 'Length Required',
+			412 => 'Precondition Failed',
+			413 => 'Request Entity Too Large',
+			414 => 'Request-URI Too Long',
+			415 => 'Unsupported Media Type',
+			416 => 'Requested Range Not Satisfiable',
+			417 => 'Expectation Failed',
+			500 => 'Internal Server Error',
+			501 => 'Not Implemented',
+			502 => 'Bad Gateway',
+			503 => 'Service Unavailable',
+			504 => 'Gateway Timeout',
+			505 => 'HTTP Version Not Supported'
+		);
 		return (isset($codes[$status])) ? $codes[$status] : '';
 	}
