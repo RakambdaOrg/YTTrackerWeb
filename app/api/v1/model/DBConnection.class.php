@@ -7,11 +7,11 @@
 		final class DBConnection
 		{
 			/**
-			 * @var \PDO
+			 * @var PDO
 			 */
 			private static $conn;
 			/**
-			 * @return \PDO
+			 * @return PDO
 			 */
 			public static function getConnection()
 			{
