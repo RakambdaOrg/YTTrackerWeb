@@ -49,6 +49,8 @@
             }
 
             $username = $params['username'];
+            if($username === $this->DEFAULT_USERNAME)
+                $username = null;
             if(!$username)
                 $username = null;
 
