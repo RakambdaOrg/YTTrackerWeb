@@ -1,65 +1,104 @@
 <?php
 
-	namespace YTT;
+    namespace YTT;
 
-	require_once __DIR__ . "/RouteHandler.class.php";
+    require_once __DIR__ . "/RouteHandler.class.php";
 
-	class UsersHandler extends RouteHandler
-	{
-		private $MAX_RANGE = 3650;
+    class UsersHandler extends RouteHandler
+    {
+        private $MAX_RANGE = 3650;
+        private $DEFAULT_USERNAME = 'Anonymous';
 
-		public function __construct(){ }
+        public function __construct(){ }
 
-		/** @noinspection PhpUnused */
-		public function getUsers($groups, $params)
-		{
-			$users = array();
-			if(isset($params['range']))
-			{
-				$stmt = $this->getConnection()->prepare("SELECT DISTINCT(YTT_Users.UUID), Username FROM YTT_Users LEFT JOIN YTT_Records YR ON YTT_Users.UUID = YR.UUID WHERE DATE(YR.Time) >= DATE_SUB(NOW(), INTERVAL :range DAY)");
-				$stmt->execute(array('range' => min(intval($params['range']), $this->MAX_RANGE)));
-			}
-			else
-			{
-				$stmt = $this->getConnection()->prepare("SELECT UUID, Username FROM YTT_Users");
-				$stmt->execute(array());
-			}
-			$rows = $stmt->fetchAll();
-			foreach($rows as $key => $row)
-			{
-				$users[] = array('uuid' => $row['UUID'], 'username' => $row["Username"]);
-			}
-			return array('code' => 200, 'users' => $users, 'message' => "OK");
-		}
+        /** @noinspection PhpUnused */
+        public function getUsers($groups, $params)
+        {
+            $users = array();
+            if(isset($params['range']))
+            {
+                $stmt = $this->getConnection()->prepare("SELECT DISTINCT(YTT_Users.UUID), Username FROM YTT_Users LEFT JOIN YTT_Records YR ON YTT_Users.ID = YR.UserId WHERE DATE(YR.Time) >= DATE_SUB(NOW(), INTERVAL :range DAY)");
+                $stmt->execute(array('range' => min(intval($params['range']), $this->MAX_RANGE)));
+            }
+            else
+            {
+                $stmt = $this->getConnection()->prepare("SELECT UUID, Username FROM YTT_Users");
+                $stmt->execute(array());
+            }
+            $rows = $stmt->fetchAll();
+            foreach($rows as $key => $row)
+            {
+                $users[] = array('uuid' => $row['UUID'], 'username' => $this->parseUsername($row["Username"]));
+            }
+            return array('code' => 200, 'users' => $users, 'message' => "OK");
+        }
 
-		/** @noinspection PhpUnused */
-		public function setUserUsername($groups, $params)
-		{
-			$userUUID = $groups[1];
+        /** @noinspection PhpUnused */
+        /**
+         * @param array $groups 1: UUID
+         * @param array $params username
+         * @return array
+         */
+        public function setUserUsername($groups, $params)
+        {
+            $userUUID = $groups[1];
 
-			if(!StatsHandler::checkFields($params, ['username']))
-			{
-				return array('code' => 400, 'message' => 'Missing fields');
-			}
+            if(!StatsHandler::checkFields($params, ['username']))
+            {
+                return array('code' => 400, 'message' => 'Missing fields');
+            }
 
-			$query = $this->getConnection()->prepare("INSERT INTO `YTT_Users`(`UUID`, `Username`) VALUES(:uuid, :username) ON DUPLICATE KEY UPDATE `Username`=:username");
-			if(!$query->execute(array(':uuid' => $userUUID, ':username' => $params['username'])))
-				return array('code' => 500, 'result' => 'err', 'error' => 'E4');
-			return array('code' => 200, 'result' => 'OK');
-		}
+            $username = $params['username'];
+            if(!$username)
+                $username = null;
 
-		/** @noinspection PhpUnused */
-		public function getUsername($groups, $params)
-		{
-			$userUUID = $groups[1];
+            $query = $this->getConnection()->prepare("INSERT INTO `YTT_Users`(`UUID`, `Username`) VALUES(:uuid, :username) ON DUPLICATE KEY UPDATE `Username`=:username");
+            if(!$query->execute(array(':uuid' => $userUUID, ':username' => $username)))
+                return array('code' => 500, 'result' => 'err', 'error' => 'E4');
+            return array('code' => 200, 'result' => 'OK');
+        }
 
-			$stmt = $this->getConnection()->prepare("SELECT UUID, Username FROM YTT_Users WHERE UUID=:uuid");
-			$stmt->execute(array(':uuid' => $userUUID));
+        /** @noinspection PhpUnused */
+        public function getUsername($groups, $params)
+        {
+            $userUUID = $groups[1];
 
-			if($row = $stmt->fetch())
-			{
-				return array('code' => 200, 'username' => $row['Username']);
-			}
-			return array('code' => 404, 'error' => 'UserID not found');
-		}
-	}
+            $stmt = $this->getConnection()->prepare("SELECT UUID, Username FROM YTT_Users WHERE UUID=:uuid");
+            $stmt->execute(array(':uuid' => $userUUID));
+
+            if($row = $stmt->fetch())
+            {
+                return array('code' => 200, 'username' => $this->parseUsername($row['Username']));
+            }
+            return array('code' => 404, 'error' => 'UserID not found');
+        }
+
+        private function parseUsername($username)
+        {
+            if(!$username)
+                return $this->DEFAULT_USERNAME;
+            return $username;
+        }
+
+        public function getUserId($userUUID)
+        {
+            $stmt = $this->getConnection()->prepare("SELECT ID FROM YTT_Users WHERE UUID=:uuid");
+            $stmt->execute(array(':uuid' => $userUUID));
+
+            if($row = $stmt->fetch())
+            {
+                return $row['ID'];
+            }
+            return null;
+        }
+
+        public function getUserIdOrCreate($userUUID)
+        {
+            $userId = $this->getUserId($userUUID);
+            if($userId)
+                return $userId;
+            $stmt = $this->getConnection()->prepare('INSERT INTO YTT_Users(`UUID`) VALUES(:uuid)');
+            $stmt->execute(array(':uuid' => $userUUID));
+            return $this->getConnection()->lastInsertId();
+        }
+    }

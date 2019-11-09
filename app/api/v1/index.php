@@ -16,9 +16,6 @@
 			case 'POST':
 				processPut($_REQUEST);
 				break;
-			case 'GET':
-				processGet($_REQUEST);
-				break;
 			default:
 				sendResponse(501);
 				break;
@@ -48,29 +45,6 @@
 						return;
 					}
 					processRequest('setUsername', $params);
-					break;
-
-				default:
-					sendResponse(404);
-			}
-		}
-
-		/**
-		 * @param array $params
-		 */
-		function processGet($params)
-		{
-			if(!isset($params['request']))
-				sendResponse(404);
-			switch($params['request'])
-			{
-				case 'stats/get':
-					if(!isset($params['uuid']))
-					{
-						sendResponse(400);
-						return;
-					}
-					processRequest('getStats', $params);
 					break;
 
 				default:
@@ -144,18 +118,6 @@
 		function addStats($dbHandler, $params)
 		{
 			$result = $dbHandler->addStat($params['uuid'], $params['type'], $params['stats'], $params['videoID'], isset($params['date']) ? $params['date'] : null, isset($params['browser']) ? $params['browser'] : null);
-			sendResponse($result['code'], json_encode($result));
-			return true;
-		}
-
-		/**
-		 * @param DBHandler $dbHandler
-		 * @param array $params
-		 * @return bool
-		 */
-		function getStats($dbHandler, $params)
-		{
-			$result = $dbHandler->getStats($params['uuid']);
 			sendResponse($result['code'], json_encode($result));
 			return true;
 		}

@@ -1,6 +1,5 @@
 <?php
-	require_once(__DIR__ . '/api/v1/model/DBConnection.class.php');
-	require_once(__DIR__ . '/api/v1/model/DBHandlerSite.class.php');
+	require_once(__DIR__ . '/api/v2/model/DBConnection.class.php');
 
 	if(false)
 	{
@@ -10,7 +9,6 @@
 
 	$dev = isset($_GET['dev']);
 	$conn = YTT\DBConnection::getConnection();
-	$handler = new YTT\DBHandlerSite($conn);
 	$customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']);
 ?>
 <!DOCTYPE html>
