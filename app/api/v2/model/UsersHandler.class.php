@@ -36,19 +36,14 @@
         /** @noinspection PhpUnused */
         /**
          * @param array $groups 1: UUID
-         * @param array $params username
+         * @param array $params username?
          * @return array
          */
         public function setUserUsername($groups, $params)
         {
             $userUUID = $groups[1];
 
-            if(!StatsHandler::checkFields($params, ['username']))
-            {
-                return array('code' => 400, 'message' => 'Missing fields');
-            }
-
-            $username = $params['username'];
+            $username = isset($params['username']) ? $params['username'] : null;
             if($username === $this->DEFAULT_USERNAME)
                 $username = null;
             if(!$username)
