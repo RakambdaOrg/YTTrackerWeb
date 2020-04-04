@@ -66,12 +66,12 @@
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div class="tab-pane fade show active" id="nav-graph" role="tabpanel" aria-labelledby="graph-tab">
+        <div class="tab-pane fade" id="nav-graph" role="tabpanel" aria-labelledby="graph-tab">
 			<?php
 				include __DIR__ . "/graphs.php"
 			?>
         </div>
-        <div class="tab-pane fade" id="nav-table" role="tabpanel" aria-labelledby="table-tab">
+        <div class="tab-pane fade show active" id="nav-table" role="tabpanel" aria-labelledby="table-tab">
 			<?php
 				include __DIR__ . "/table.php"
 			?>
