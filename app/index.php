@@ -55,10 +55,10 @@
     <!-- Nav tabs -->
     <ul class="nav nav-pills nav-fill nav-justified" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="graph-tab" data-toggle="pill" href="#nav-graph" role="tab" aria-controls="home" aria-selected="true">Graphs (last month)</a>
+            <a class="nav-link" id="graph-tab" data-toggle="pill" href="#nav-graph" role="tab" aria-controls="home" aria-selected="true">Graphs (last month)</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="table-tab" data-toggle="pill" href="#nav-table" role="tab" aria-controls="profile" aria-selected="false">Table</a>
+            <a class="nav-link active" id="table-tab" data-toggle="pill" href="#nav-table" role="tab" aria-controls="profile" aria-selected="false">Table</a>
         </li>
     </ul>
 
