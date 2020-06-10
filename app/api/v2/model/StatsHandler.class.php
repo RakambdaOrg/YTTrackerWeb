@@ -129,9 +129,13 @@
             $userHandler = new UsersHandler();
             $userId = $userHandler->getUserIdOrCreate($userUUID);
 
-            $query2 = $this->getConnection()->prepare("INSERT INTO `YTT_Records`(`UserId`, `Type`, `VideoID`, `Stat`, `Time`, `Browser`) VALUES(:userId, :type, :videoID, :stat, STR_TO_DATE(:timee, '%Y-%m-%d %H:%i:%s'), :browser);");
-            if(!$query2->execute(array(':userId' => $userId, ':type' => $this->getDataType($params['type']), ':videoID' => $params['videoId'], ':stat' => $params['stat'], ':timee' => $this->getTimestamp($params['date']), ':browser' => ($params['browser'] == null ? 'Unknown' : $params['browser']))))
+            $query = $this->getConnection()->prepare("INSERT INTO `YTT_Records`(`UserId`, `Type`, `VideoID`, `Stat`, `Time`, `Browser`) VALUES(:userId, :type, :videoID, :stat, STR_TO_DATE(:timee, '%Y-%m-%d %H:%i:%s'), :browser);");
+            if(!$query->execute(array(':userId' => $userId, ':type' => $this->getDataType($params['type']), ':videoID' => $params['videoId'], ':stat' => $params['stat'], ':timee' => $this->getTimestamp($params['date']), ':browser' => ($params['browser'] == null ? 'Unknown' : $params['browser']))))
+            {
                 return array('code' => 400, 'result' => 'err', 'error' => 'E2.2');
+            }
+            $query = $this->getConnection()->prepare("UPDATE `YTT_Users` SET `LastActivity`=CURRENT_TIMESTAMP() WHERE ID=:userId");
+            $query->execute(array(':userId' => $userId));
             return array('code' => 200, 'result' => 'OK');
         }
 
