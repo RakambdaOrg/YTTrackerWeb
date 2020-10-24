@@ -24,9 +24,9 @@
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <script src="//cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
-    <!-- Material Design Bootstrap -->
-    <link href="//cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+    <!-- Datatables -->
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/v/bs4/dt-1.10.22/datatables.min.css"/>
+    <script type="text/javascript" src="//cdn.datatables.net/v/bs4/dt-1.10.22/datatables.min.js"></script>
 
     <!-- AmCharts -->
     <script src="//www.amcharts.com/lib/4/core.js"></script>

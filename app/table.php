@@ -1,6 +1,6 @@
 <p>Only active users of the last 14 days are displayed</p>
-<div class="table-responsive">
-    <table class="table table-striped table-bordered table-hover table-sm">
+<!--<div class="table-responsive">-->
+    <table id="usersTable" class="table table-striped table-bordered table-hover table-sm">
         <thead class="thead-dark">
         <tr>
             <th class="th-sm" scope="col" rowspan="1">User</th>
@@ -24,4 +24,4 @@
         <tbody id='data-table-body'>
         </tbody>
     </table>
-</div>
+<!--</div>-->
