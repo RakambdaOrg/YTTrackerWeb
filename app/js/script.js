@@ -33,7 +33,7 @@ $(document).ready(function () {
 		$.ajax({
 			url: USERS_API,
 			data: {
-				range: 31
+				range: 14
 			},
 			context: document.body,
 			method: 'GET'

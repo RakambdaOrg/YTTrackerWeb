@@ -67,7 +67,7 @@
             {
                 return array('code' => 200, 'username' => $this->parseUsername($row['Username']));
             }
-            return array('code' => 404, 'error' => 'UserID not found');
+            return array('code' => 204, 'error' => 'UserID not found');
         }
 
         private function parseUsername($username)

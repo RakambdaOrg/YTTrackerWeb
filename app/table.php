@@ -1,4 +1,4 @@
-<p>Only active users of the last 31 days are displayed</p>
+<p>Only active users of the last 14 days are displayed</p>
 <div class="table-responsive">
     <table class="table table-striped table-bordered table-hover table-sm">
         <thead class="thead-dark">
