@@ -15,7 +15,7 @@
 <html lang="en">
 <head>
     <!-- JQuery -->
-    <script src="//code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="//code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="css/libs/fontawesome-free-5.11.1-web/css/fontawesome.min.css">
