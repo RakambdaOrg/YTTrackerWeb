@@ -114,7 +114,7 @@
 
         /**
          * @param array $groups 1: UUID
-         * @param array $params type, stat, date, browser?
+         * @param array $params type, stat, date
          * @return array
          */
         public function addUserStat($groups, $params)
@@ -129,8 +129,8 @@
             $userHandler = new UsersHandler();
             $userId = $userHandler->getUserIdOrCreate($userUUID);
 
-            $query = $this->getConnection()->prepare("INSERT INTO `YTT_Records`(`UserId`, `Type`, `Stat`, `Time`, `Browser`) VALUES(:userId, :type, :stat, STR_TO_DATE(:timee, '%Y-%m-%d %H:%i:%s'), :browser);");
-            if(!$query->execute(array(':userId' => $userId, ':type' => $this->getDataType($params['type']), ':stat' => $params['stat'], ':timee' => $this->getTimestamp($params['date']), ':browser' => ($params['browser'] == null ? 'Unknown' : $params['browser']))))
+            $query = $this->getConnection()->prepare("INSERT INTO `YTT_Records`(`UserId`, `Type`, `Stat`, `Time`) VALUES(:userId, :type, :stat, STR_TO_DATE(:timee, '%Y-%m-%d %H:%i:%s'));");
+            if(!$query->execute(array(':userId' => $userId, ':type' => $this->getDataType($params['type']), ':stat' => $params['stat'], ':timee' => $this->getTimestamp($params['date']))))
             {
                 return array('code' => 400, 'result' => 'err', 'error' => 'E2.2');
             }

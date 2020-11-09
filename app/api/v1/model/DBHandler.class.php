@@ -28,13 +28,12 @@
 			 * @param int $type
 			 * @param int $stat
 			 * @param int $date
-			 * @param string $browser
 			 * @return array
 			 */
-			function addStat($uuid, $type, $stat, $date, $browser)
+			function addStat($uuid, $type, $stat, $date)
 			{
 			    $handler = new StatsHandler();
-			    return $handler->addUserStat(['', $uuid], array('type' => $type, 'stat' => $stat, 'date' => $date, 'browser' => $browser));
+			    return $handler->addUserStat(['', $uuid], array('type' => $type, 'stat' => $stat, 'date' => $date));
 			}
 
 			/**

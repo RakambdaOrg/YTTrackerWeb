@@ -117,7 +117,7 @@
 		 */
 		function addStats($dbHandler, $params)
 		{
-			$result = $dbHandler->addStat($params['uuid'], $params['type'], $params['stats'], isset($params['date']) ? $params['date'] : null, isset($params['browser']) ? $params['browser'] : null);
+			$result = $dbHandler->addStat($params['uuid'], $params['type'], $params['stats'], isset($params['date']) ? $params['date'] : null);
 			sendResponse($result['code'], json_encode($result));
 			return true;
 		}
