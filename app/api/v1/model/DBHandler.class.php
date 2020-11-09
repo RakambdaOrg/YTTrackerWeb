@@ -27,15 +27,14 @@
 			 * @param string $uuid
 			 * @param int $type
 			 * @param int $stat
-			 * @param string $videoID
 			 * @param int $date
 			 * @param string $browser
 			 * @return array
 			 */
-			function addStat($uuid, $type, $stat, $videoID, $date, $browser)
+			function addStat($uuid, $type, $stat, $date, $browser)
 			{
 			    $handler = new StatsHandler();
-			    return $handler->addUserStat(['', $uuid], array('type' => $type, 'videoId' => $videoID, 'stat' => $stat, 'date' => $date, 'browser' => $browser));
+			    return $handler->addUserStat(['', $uuid], array('type' => $type, 'stat' => $stat, 'date' => $date, 'browser' => $browser));
 			}
 
 			/**

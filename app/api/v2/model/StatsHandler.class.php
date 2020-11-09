@@ -114,14 +114,14 @@
 
         /**
          * @param array $groups 1: UUID
-         * @param array $params type, videoId, stat, date, browser?
+         * @param array $params type, stat, date, browser?
          * @return array
          */
         public function addUserStat($groups, $params)
         {
             $userUUID = $groups[1];
 
-            if(!StatsHandler::checkFields($params, ['type', 'videoId', 'stat', 'date']))
+            if(!StatsHandler::checkFields($params, ['type', 'stat', 'date']))
             {
                 return array('code' => 400, 'message' => 'Missing fields');
             }
@@ -129,8 +129,8 @@
             $userHandler = new UsersHandler();
             $userId = $userHandler->getUserIdOrCreate($userUUID);
 
-            $query = $this->getConnection()->prepare("INSERT INTO `YTT_Records`(`UserId`, `Type`, `VideoID`, `Stat`, `Time`, `Browser`) VALUES(:userId, :type, :videoID, :stat, STR_TO_DATE(:timee, '%Y-%m-%d %H:%i:%s'), :browser);");
-            if(!$query->execute(array(':userId' => $userId, ':type' => $this->getDataType($params['type']), ':videoID' => $params['videoId'], ':stat' => $params['stat'], ':timee' => $this->getTimestamp($params['date']), ':browser' => ($params['browser'] == null ? 'Unknown' : $params['browser']))))
+            $query = $this->getConnection()->prepare("INSERT INTO `YTT_Records`(`UserId`, `Type`, `Stat`, `Time`, `Browser`) VALUES(:userId, :type, :stat, STR_TO_DATE(:timee, '%Y-%m-%d %H:%i:%s'), :browser);");
+            if(!$query->execute(array(':userId' => $userId, ':type' => $this->getDataType($params['type']), ':stat' => $params['stat'], ':timee' => $this->getTimestamp($params['date']), ':browser' => ($params['browser'] == null ? 'Unknown' : $params['browser']))))
             {
                 return array('code' => 400, 'result' => 'err', 'error' => 'E2.2');
             }

@@ -31,7 +31,7 @@
 			switch($params['request'])
 			{
 				case 'stats/add':
-					if(!isset($params['stats']) || !isset($params['uuid']) || !isset($params['type']) || !isset($params['videoID']))
+					if(!isset($params['stats']) || !isset($params['uuid']) || !isset($params['type']))
 					{
 						sendResponse(400);
 						return;
@@ -117,7 +117,7 @@
 		 */
 		function addStats($dbHandler, $params)
 		{
-			$result = $dbHandler->addStat($params['uuid'], $params['type'], $params['stats'], $params['videoID'], isset($params['date']) ? $params['date'] : null, isset($params['browser']) ? $params['browser'] : null);
+			$result = $dbHandler->addStat($params['uuid'], $params['type'], $params['stats'], isset($params['date']) ? $params['date'] : null, isset($params['browser']) ? $params['browser'] : null);
 			sendResponse($result['code'], json_encode($result));
 			return true;
 		}
