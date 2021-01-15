@@ -6,7 +6,7 @@
             <th class="th-sm" scope="col" rowspan="1">User</th>
             <th class="th-sm" scope="col" colspan="3">Total</th>
             <th class="th-sm" scope="col" colspan="3">Last 7 days</th>
-            <th class="th-sm" scope="col" colspan="3">Last 24h</th>
+            <th class="th-sm" scope="col" colspan="3">Today (<?php echo date('Y-m-d'); ?>)</th>
         </tr>
         <tr>
             <th class="th-sm" scope="col" rowspan="1"></th>

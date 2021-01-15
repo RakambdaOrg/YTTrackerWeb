@@ -105,6 +105,9 @@ $(document).ready(function () {
             {render: renderDuration}, //Day Open
             {render: renderDuration}, //Day Watch
             {}, //Day Count
+        ],
+        order: [
+            [8, "desc"]
         ]
     });
 

@@ -17,7 +17,7 @@
             $users = array();
             if(isset($params['range']))
             {
-                $stmt = $this->getConnection()->prepare("SELECT DISTINCT(YTT_Users.UUID), Username FROM YTT_Users LEFT JOIN YTT_Records YR ON YTT_Users.ID = YR.UserId WHERE DATE(YR.Time) >= DATE_SUB(NOW(), INTERVAL :range DAY)");
+                $stmt = $this->getConnection()->prepare("SELECT DISTINCT(YTT_Users.UUID), Username FROM YTT_Users LEFT JOIN YTT_Records YR ON YTT_Users.ID = YR.UserId WHERE StatDay >= DATE_SUB(NOW(), INTERVAL :range DAY)");
                 $stmt->execute(array('range' => min(intval($params['range']), $this->MAX_RANGE)));
             }
             else

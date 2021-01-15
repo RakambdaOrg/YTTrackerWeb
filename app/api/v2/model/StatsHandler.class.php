@@ -9,7 +9,7 @@
     class StatsHandler extends RouteHandler
     {
         private $DEFAULT_RANGE = 31;
-        private $MAX_RANGE = 3650;
+        private $MAX_RANGE_DAYS = 3650;
 
         public function __construct(){ }
 
@@ -34,10 +34,10 @@
                 $range = $this->DEFAULT_RANGE;
             }
 
-            $range = min($range, $this->MAX_RANGE);
+            $range = min($range, $this->MAX_RANGE_DAYS);
 
             $data = array();
-            $prepared = $this->getConnection()->prepare("SELECT SUM(`YTT_Records`.`Stat`) AS `Stat`, DATE(`YTT_Records`.`Time`) AS `StatDay` FROM `YTT_Records` LEFT JOIN `YTT_Users` ON `YTT_Records`.`UserId` = `YTT_Users`.`ID` WHERE YTT_Users.UUID = :uuid AND `YTT_Records`.`Type` = :type AND DATE(`YTT_Records`.`Time`) >= DATE_SUB(NOW(), INTERVAL :days DAY) GROUP BY `StatDay`");
+            $prepared = $this->getConnection()->prepare("SELECT SUM(`YTT_Records`.`Stat`) AS `Stat`, `StatDay` AS `StatDay` FROM `YTT_Records` LEFT JOIN `YTT_Users` ON `YTT_Records`.`UserId` = `YTT_Users`.`ID` WHERE YTT_Users.UUID = :uuid AND `YTT_Records`.`Type` = :type AND `StatDay` >= DATE_SUB(NOW(), INTERVAL :days DAY) GROUP BY `StatDay`");
             $prepared->execute(array(":uuid" => $userUUID, ':days' => $range, ':type' => $this->getDataType($category)));
             $result = $prepared->fetchAll();
             foreach($result as $key => $row)
@@ -69,7 +69,7 @@
             $userId = $userHandler->getUserId($userUUID);
 
             $data = array();
-            $prepared = $this->getConnection()->prepare("SELECT SUM(`Amount`) AS Total, DATE(`YTT_Records`.`Time`) AS `StatDay` FROM `YTT_Records` WHERE `Type`=:type AND `UserId`=:userId AND DATE(`YTT_Records`.`Time`) >= DATE_SUB(NOW(), INTERVAL :days DAY) GROUP BY `StatDay`");
+            $prepared = $this->getConnection()->prepare("SELECT SUM(`Amount`) AS Total, StatDay AS `StatDay` FROM `YTT_Records` WHERE `Type`=:type AND `UserId`=:userId AND StatDay >= DATE_SUB(NOW(), INTERVAL :days DAY) GROUP BY `StatDay`");
             $prepared->execute(array(":userId" => $userId, ':days' => $range, ':type' => $this->getDataType("opened")));
             $result = $prepared->fetchAll();
             foreach($result as $key => $row)
@@ -79,10 +79,10 @@
             return $data;
         }
 
-        private function getUserSumStats($userId, $type, $hours)
+        private function getUserSumStats($userId, $type, $days)
         {
-            $prepared = $this->getConnection()->prepare("SELECT SUM(`Stat`)/1000 AS Total FROM `YTT_Records` WHERE `Type`=:type AND `UserId`=:userId AND DATE(`YTT_Records`.`Time`) >= DATE_SUB(NOW(), INTERVAL :hours HOUR)");
-            $prepared->execute(array(":userId" => $userId, ':hours' => $hours, ':type' => $this->getDataType($type)));
+            $prepared = $this->getConnection()->prepare("SELECT SUM(`Stat`)/1000 AS Total FROM `YTT_Records` WHERE `Type`=:type AND `UserId`=:userId AND StatDay >= DATE_SUB(NOW(), INTERVAL :days DAY )");
+            $prepared->execute(array(":userId" => $userId, ':days' => $days, ':type' => $this->getDataType($type)));
             if($row = $prepared->fetch())
             {
                 return doubleval($row['Total']);
@@ -90,10 +90,10 @@
             return 0;
         }
 
-        private function getUserCountStats($userId, $hours)
+        private function getUserCountStats($userId, $days)
         {
-            $prepared = $this->getConnection()->prepare("SELECT SUM(`Amount`) AS Total FROM `YTT_Records` WHERE `Type`=:type AND `UserId`=:userId AND DATE(`YTT_Records`.`Time`) >= DATE_SUB(NOW(), INTERVAL :hours HOUR) AND Stat > 0");
-            $prepared->execute(array(":userId" => $userId, ':hours' => $hours, ':type' => $this->getDataType('opened')));
+            $prepared = $this->getConnection()->prepare("SELECT SUM(`Amount`) AS Total FROM `YTT_Records` WHERE `Type`=:type AND `UserId`=:userId AND StatDay >= DATE_SUB(NOW(), INTERVAL :days DAY ) AND Stat > 0");
+            $prepared->execute(array(":userId" => $userId, ':days' => $days, ':type' => $this->getDataType('opened')));
             if($row = $prepared->fetch())
             {
                 return doubleval($row['Total']);
@@ -109,7 +109,7 @@
             $userHandler = new UsersHandler();
             $userId = $userHandler->getUserId($userUUID);
 
-            return array('total' => array('opened' => $this->getUserSumStats($userId, 'opened', 24 * $this->MAX_RANGE), 'watched' => $this->getUserSumStats($userId, 'watched', 24 * $this->MAX_RANGE), 'count' => $this->getUserCountStats($userId, 24 * $this->MAX_RANGE)), 'week' => array('opened' => $this->getUserSumStats($userId, 'opened', 24 * 7), 'watched' => $this->getUserSumStats($userId, 'watched', 24 * 7), 'count' => $this->getUserCountStats($userId, 24 * 7)), 'day' => array('opened' => $this->getUserSumStats($userId, 'opened', 24), 'watched' => $this->getUserSumStats($userId, 'watched', 24), 'count' => $this->getUserCountStats($userId, 24)));
+            return array('total' => array('opened' => $this->getUserSumStats($userId, 'opened', $this->MAX_RANGE_DAYS), 'watched' => $this->getUserSumStats($userId, 'watched', $this->MAX_RANGE_DAYS), 'count' => $this->getUserCountStats($userId, $this->MAX_RANGE_DAYS)), 'week' => array('opened' => $this->getUserSumStats($userId, 'opened', 7), 'watched' => $this->getUserSumStats($userId, 'watched', 7), 'count' => $this->getUserCountStats($userId, 7)), 'day' => array('opened' => $this->getUserSumStats($userId, 'opened', 1), 'watched' => $this->getUserSumStats($userId, 'watched', 1), 'count' => $this->getUserCountStats($userId, 1)));
         }
 
         /**
@@ -129,7 +129,7 @@
             $userHandler = new UsersHandler();
             $userId = $userHandler->getUserIdOrCreate($userUUID);
 
-            $query = $this->getConnection()->prepare("INSERT INTO `YTT_Records`(`UserId`, `Type`, `Stat`, `Time`) VALUES(:userId, :type, :stat, STR_TO_DATE(:timee, '%Y-%m-%d %H:%i:%s'));");
+            $query = $this->getConnection()->prepare("INSERT INTO `YTT_Records`(`UserId`, `Type`, `Stat`, `StatDay`) VALUES(:userId, :type, :stat, STR_TO_DATE(:timee, '%Y-%m-%d')) ON DUPLICATE KEY UPDATE `Stat`=`Stat`+VALUES(`Stat`);");
             if(!$query->execute(array(':userId' => $userId, ':type' => $this->getDataType($params['type']), ':stat' => $params['stat'], ':timee' => $this->getTimestamp($params['date']))))
             {
                 return array('code' => 400, 'result' => 'err', 'error' => 'E2.2');
@@ -147,7 +147,7 @@
         {
             if(!$date)
             {
-                return date('%Y-%m-%d %H:%i:%s');
+                return date('%Y-%m-%d');
             }
             return $date;
         }
