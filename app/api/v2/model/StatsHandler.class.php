@@ -129,7 +129,7 @@
             $userHandler = new UsersHandler();
             $userId = $userHandler->getUserIdOrCreate($userUUID);
 
-            $query = $this->getConnection()->prepare("INSERT INTO `YTT_Records`(`UserId`, `Type`, `Stat`, `StatDay`) VALUES(:userId, :type, :stat, STR_TO_DATE(:timee, '%Y-%m-%d')) ON DUPLICATE KEY UPDATE `Stat`=`Stat`+VALUES(`Stat`);");
+            $query = $this->getConnection()->prepare("INSERT INTO `YTT_Records`(`UserId`, `Type`, `Stat`, `StatDay`, `Amount`) VALUES(:userId, :type, :stat, STR_TO_DATE(:timee, '%Y-%m-%d'), 1) ON DUPLICATE KEY UPDATE `Stat`=`Stat`+VALUES(`Stat`), `Amount`=`Amount`+1;");
             if(!$query->execute(array(':userId' => $userId, ':type' => $this->getDataType($params['type']), ':stat' => $params['stat'], ':timee' => $this->getTimestamp($params['date']))))
             {
                 return array('code' => 400, 'result' => 'err', 'error' => 'E2.2');
