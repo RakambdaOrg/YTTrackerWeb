@@ -37,7 +37,7 @@
             $range = min($range, $this->MAX_RANGE_DAYS);
 
             $data = array();
-            $prepared = $this->getConnection()->prepare("SELECT SUM(`YTT_Records`.`Stat`) AS `Stat`, `StatDay` AS `StatDay` FROM `YTT_Records` LEFT JOIN `YTT_Users` ON `YTT_Records`.`UserId` = `YTT_Users`.`ID` WHERE YTT_Users.UUID = :uuid AND `YTT_Records`.`Type` = :type AND `StatDay` >= DATE_SUB(NOW(), INTERVAL :days DAY) GROUP BY `StatDay`");
+            $prepared = $this->getConnection()->prepare("SELECT SUM(`YTT_Records`.`Stat`) AS `Stat`, `StatDay` AS `StatDay` FROM `YTT_Records` LEFT JOIN `YTT_Users` ON `YTT_Records`.`UserId` = `YTT_Users`.`ID` WHERE YTT_Users.UUID = :uuid AND `YTT_Records`.`Type` = :type AND `StatDay` >= DATE_SUB(NOW(), INTERVAL :days DAY) AND `StatDay` <= DATE_ADD(NOW(), INTERVAL 1 DAY) GROUP BY `StatDay`");
             $prepared->execute(array(":uuid" => $userUUID, ':days' => $range, ':type' => $this->getDataType($category)));
             $result = $prepared->fetchAll();
             foreach($result as $key => $row)
@@ -69,7 +69,7 @@
             $userId = $userHandler->getUserId($userUUID);
 
             $data = array();
-            $prepared = $this->getConnection()->prepare("SELECT SUM(`Amount`) AS Total, StatDay AS `StatDay` FROM `YTT_Records` WHERE `Type`=:type AND `UserId`=:userId AND StatDay >= DATE_SUB(NOW(), INTERVAL :days DAY) GROUP BY `StatDay`");
+            $prepared = $this->getConnection()->prepare("SELECT SUM(`Amount`) AS Total, StatDay AS `StatDay` FROM `YTT_Records` WHERE `Type`=:type AND `UserId`=:userId AND StatDay >= DATE_SUB(NOW(), INTERVAL :days DAY) AND StatDay <= DATE_ADD(NOW(), INTERVAL 1 DAY) GROUP BY `StatDay`");
             $prepared->execute(array(":userId" => $userId, ':days' => $range, ':type' => $this->getDataType("opened")));
             $result = $prepared->fetchAll();
             foreach($result as $key => $row)
@@ -81,7 +81,7 @@
 
         private function getUserSumStats($userId, $type, $days)
         {
-            $prepared = $this->getConnection()->prepare("SELECT SUM(`Stat`)/1000 AS Total FROM `YTT_Records` WHERE `Type`=:type AND `UserId`=:userId AND StatDay >= DATE_SUB(NOW(), INTERVAL :days DAY )");
+            $prepared = $this->getConnection()->prepare("SELECT SUM(`Stat`)/1000 AS Total FROM `YTT_Records` WHERE `Type`=:type AND `UserId`=:userId AND StatDay >= DATE_SUB(NOW(), INTERVAL :days DAY ) AND StatDay <= DATE_ADD(NOW(), INTERVAL 1 DAY)");
             $prepared->execute(array(":userId" => $userId, ':days' => $days, ':type' => $this->getDataType($type)));
             if($row = $prepared->fetch())
             {
@@ -92,7 +92,7 @@
 
         private function getUserCountStats($userId, $days)
         {
-            $prepared = $this->getConnection()->prepare("SELECT SUM(`Amount`) AS Total FROM `YTT_Records` WHERE `Type`=:type AND `UserId`=:userId AND StatDay >= DATE_SUB(NOW(), INTERVAL :days DAY ) AND Stat > 0");
+            $prepared = $this->getConnection()->prepare("SELECT SUM(`Amount`) AS Total FROM `YTT_Records` WHERE `Type`=:type AND `UserId`=:userId AND StatDay >= DATE_SUB(NOW(), INTERVAL :days DAY ) AND StatDay <= DATE_ADD(NOW(), INTERVAL 1 DAY) AND Stat > 0");
             $prepared->execute(array(":userId" => $userId, ':days' => $days, ':type' => $this->getDataType('opened')));
             if($row = $prepared->fetch())
             {
