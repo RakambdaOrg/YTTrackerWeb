@@ -1,10 +1,10 @@
 <p align="center">
-    <a href="https://chrome.google.com/webstore/detail/youtube-tracker/knnlnielflnfhdohmihofhdelgahgjdb"><img alt="YTTracker logo" src="https://github.com/RakSrinaNa/YTTracker/raw/master/extras/timer.svg" height="175"/></a>
+    <a href="https://chrome.google.com/webstore/detail/youtube-tracker/knnlnielflnfhdohmihofhdelgahgjdb"><img alt="YTTracker logo" src="https://github.com/Rakambda/YTTracker/raw/master/extras/timer.svg" height="175"/></a>
 </p>
 <a style="color: white; text-decoration:none;" href="https://chrome.google.com/webstore/detail/youtube-tracker/knnlnielflnfhdohmihofhdelgahgjdb"><h1 align="center">YTTrackerWeb</h1></a>
 
 ## Description
-Webpage used to display public statistics for the chrome extension [YTTracker](https://github.com/RakSrinaNa/YTTracker).
+Webpage used to display public statistics for the chrome extension [YTTracker](https://github.com/Rakambda/YTTracker).
 
 ## Libraries
 Amcharts - [https://www.amcharts.com](https://www.amcharts.com)

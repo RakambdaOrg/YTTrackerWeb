@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark" role="navigation">
-    <a class="navbar-brand" href="#"><img src="https://github.com/RakSrinaNa/YTTracker/raw/master/includes/assets/icon128.png" alt="Logo" style="width:40px;"></a>
+    <a class="navbar-brand" href="#"><img src="https://github.com/Rakambda/YTTracker/raw/master/includes/assets/icon128.png" alt="Logo" style="width:40px;"></a>
     <ul class="nav navbar-nav">
     </ul>
     <ul class="nav navbar-nav ml-auto">
