@@ -2,12 +2,6 @@
 
 	namespace YTT
 	{
-		/**
-		 * Created by PhpStorm.
-		 * User: mrcraftcod
-		 * Date: 07/05/2017
-		 * Time: 16:34
-		 */
 		abstract class GraphSupplier
 		{
 			function plot()

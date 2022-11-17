@@ -126,7 +126,10 @@
 		header('Content-type:' . 'application/json');
 		header('Access-Control-Allow-Methods:' . 'POST,PUT,GET,DELETE,OPTIONS');
 		$http_origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
-		if($http_origin !== null && ($http_origin === "http://*.mrcraftcod.fr" || $http_origin === "chrome-extension://moboafdnejnjnppicfiadaalobjeemec" || $http_origin === "chrome-extension://knnlnielflnfhdohmihofhdelgahgjdb/*"))
+		if($http_origin !== null && ($http_origin === "https://*.mrcraftcod.fr"
+                || $http_origin === "https://*.rakambda.fr"
+                || $http_origin === "chrome-extension://moboafdnejnjnppicfiadaalobjeemec"
+                || $http_origin === "chrome-extension://knnlnielflnfhdohmihofhdelgahgjdb/*"))
 		{
 			header("Access-Control-Allow-Origin: $http_origin");
 		}
