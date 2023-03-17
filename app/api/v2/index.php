@@ -129,7 +129,9 @@
 		if($http_origin !== null && ($http_origin === "https://*.mrcraftcod.fr"
                 || $http_origin === "https://*.rakambda.fr"
                 || $http_origin === "chrome-extension://moboafdnejnjnppicfiadaalobjeemec"
-                || $http_origin === "chrome-extension://knnlnielflnfhdohmihofhdelgahgjdb/*"))
+                || $http_origin === "chrome-extension://knnlnielflnfhdohmihofhdelgahgjdb/*"
+                || $http_origin === "moz-extension://5d0b45c3-3111-4e59-a44f-e6f2c818eba1/*"
+            ))
 		{
 			header("Access-Control-Allow-Origin: $http_origin");
 		}
