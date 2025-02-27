@@ -10,3 +10,7 @@ updates:
       timezone: Europe/Paris
     pull-request-branch-name:
       separator: '-'
+    groups:
+      docker:
+        patterns:
+          - docker/*
