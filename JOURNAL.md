@@ -29,7 +29,9 @@ Done (2026-11-11): plan step 4 (`index.php`, `assets/style.css`, `assets/main.js
 
 Done (2026-11-11): plan step 5 (three Chart.js charts with a period selector; old `graphs.php`, `graphs/`, `model/` deleted). One colour per user from the dataviz reference palette (validated against the site's light and dark card colours), stable per user; past 8 users the colours repeat with dashes.
 
-Next: plan step 6 (README, AGENTS.md), then the user's check in a browser.
+Done (2026-11-11): plan step 6 (README, AGENTS.md). Branch not pushed.
+
+Next: the user checks the page in a browser (see PLAN.md, Verification). To serve it locally with test data: `tests/db.sh start`, seed with `tests/db.sh sql < tests/compat/schema.sql`, then `YTT_DB_CONFIG=<config file> php -S 127.0.0.1:8703 -t app tests/compat/router.php` (config like the one `tests/compat/run.sh` writes), and `tests/db.sh stop` after. Then push and merge (merging to `master` deploys), check production, and delete `PLAN.md` and this file.
 
 ## Tasks
 
@@ -44,7 +46,8 @@ Next: plan step 6 (README, AGENTS.md), then the user's check in a browser.
 - [x] Charts: Chart.js, watched/opened/count per user over a period selector (like the extension: 7d/30d/90d/1y/all), instead of three amCharts charts.
 - [x] Delete the unused files (step 1): `temp.php`, `.gitlab-ci.yml`, `css/bootstrap.min.css`, `css/libs/fontawesome-*`.
 - [x] Delete the rest as each part is replaced: `graphs/`, `model/GraphSupplier.php`, `header.php`, `graphs.php`, `table.php`, the old `api/v2/model/`, `js/`, `css/`.
-- [ ] Update `README.md` (libraries list) and `AGENTS.md`.
+- [x] Update `README.md` (libraries list) and `AGENTS.md`.
+- [ ] Check the page in a browser: table numbers, sorting, period selector, tooltips, light and dark themes, phone width.
 - [ ] Verify against production: compare old and new JSON for every GET route on a few UUIDs, then a POST on a test UUID.
 - [ ] Deploy (merge to `master` syncs by FTP).
 
