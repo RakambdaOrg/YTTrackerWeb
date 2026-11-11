@@ -14,8 +14,9 @@
 	<img src="assets/icon128.png" alt="">
 	<strong>YouTube Tracker</strong>
 	<span class="spacer"></span>
-	<a class="button" href="https://chrome.google.com/webstore/detail/youtube-tracker/knnlnielflnfhdohmihofhdelgahgjdb/" target="_blank" rel="noopener">Chrome extension</a>
-	<a class="button" href="https://addons.mozilla.org/en-US/firefox/addon/youtube-tracker/" target="_blank" rel="noopener">Firefox add-on</a>
+	<!-- Official store badges, unmodified (only resized), each linking to its listing as the stores require. -->
+	<a class="badge" href="https://chrome.google.com/webstore/detail/youtube-tracker/knnlnielflnfhdohmihofhdelgahgjdb/" target="_blank" rel="noopener"><img src="assets/chrome-web-store.png" alt="Available in the Chrome Web Store" width="142" height="40"></a>
+	<a class="badge" href="https://addons.mozilla.org/en-US/firefox/addon/youtube-tracker/" target="_blank" rel="noopener"><img src="assets/firefox-addon.svg" alt="Get the add-on for Firefox" width="115" height="40"></a>
 </nav>
 <main>
 	<section class="card">

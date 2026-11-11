@@ -79,8 +79,25 @@ nav {
 	border-bottom: 1px solid var(--border);
 }
 
-nav img {
+nav > img {
 	width: 32px;
+}
+
+/* Store badges: kept at their own aspect ratio, never recoloured. */
+.badge {
+	display: inline-flex;
+	border-radius: 6px;
+}
+
+.badge img {
+	display: block;
+	height: 40px;
+	width: auto;
+}
+
+.badge:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
 }
 
 a {
@@ -125,22 +142,8 @@ a {
 	font-size: 0.85rem;
 }
 
-.button {
-	font: inherit;
-	padding: 6px 14px;
-	border-radius: var(--radius);
-	border: 1px solid var(--border);
-	background: var(--surface);
-	color: var(--text);
-	line-height: 1.25;
-	text-align: center;
-	text-decoration: none;
-	display: inline-block;
-}
-
 button:focus-visible,
-select:focus-visible,
-.button:focus-visible {
+select:focus-visible {
 	outline: 2px solid var(--accent);
 	outline-offset: 2px;
 }
