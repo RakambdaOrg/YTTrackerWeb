@@ -21,13 +21,15 @@ Done (2026-11-11): `PLAN.md` written and approved by the user.
 
 Done (2026-11-11): plan step 1 (unused files deleted).
 
-Next: plan step 2 (backend core).
+Done (2026-11-11): plan step 2 (backend core in `app/src/`, tests in `tests/`, run with `php tests/run.php`).
+
+Next: plan step 3 (repositories, new `api/v2/index.php`, compatibility check with the local MariaDB).
 
 ## Tasks
 
 - [x] Answer the open questions.
 - [x] Write `PLAN.md` (layout, steps, verification) and get it approved.
-- [ ] Backend core: `app/src/` (namespace `YTT`, autoloader, `strict_types`), one PDO factory (exceptions mode, same config file), a small router and JSON response helper. Deny HTTP access to `app/src/`.
+- [x] Backend core: `app/src/` (namespace `YTT`, autoloader, `strict_types`), one PDO factory (exceptions mode, same config file), a small router and JSON response helper. Deny HTTP access to `app/src/`.
 - [ ] Repositories: `UserRepository`, `StatsRepository` with the exact same SQL results as today. Use an enum for the stat type (`Watched = 1`, `Opened = 2`).
 - [ ] API v2 on the new core, same routes, params, response shapes and codes.
 - [x] Drop API v1: delete `app/api/v1/` and its two `.htaccess` rules.
