@@ -27,7 +27,9 @@ Done (2026-11-11): plan step 3 (`UserRepository`, `StatsRepository`, new `app/ap
 
 Done (2026-11-11): plan step 4 (`index.php`, `assets/style.css`, `assets/main.js`, `assets/icon128.png`; old `header.php`, `table.php`, `js/`, `css/` deleted). Served locally against the seeded DB: page, assets and API calls OK. Not seen in a browser yet (none in the container).
 
-Next: plan step 5 (Chart.js charts).
+Done (2026-11-11): plan step 5 (three Chart.js charts with a period selector; old `graphs.php`, `graphs/`, `model/` deleted). One colour per user from the dataviz reference palette (validated against the site's light and dark card colours), stable per user; past 8 users the colours repeat with dashes.
+
+Next: plan step 6 (README, AGENTS.md), then the user's check in a browser.
 
 ## Tasks
 
@@ -39,9 +41,9 @@ Next: plan step 5 (Chart.js charts).
 - [x] Drop API v1: delete `app/api/v1/` and its two `.htaccess` rules.
 - [x] Page: one `index.php` with the extension's look (nav, cards, light/dark theme).
 - [x] Table: vanilla JS, sortable columns, users active in the last 14 days, durations as `1D 2H 3M 4S`.
-- [ ] Charts: Chart.js, watched/opened/count per user over a period selector (like the extension: 7d/30d/90d/1y/all), instead of three amCharts charts.
+- [x] Charts: Chart.js, watched/opened/count per user over a period selector (like the extension: 7d/30d/90d/1y/all), instead of three amCharts charts.
 - [x] Delete the unused files (step 1): `temp.php`, `.gitlab-ci.yml`, `css/bootstrap.min.css`, `css/libs/fontawesome-*`.
-- [ ] Delete the rest as each part is replaced: `graphs/`, `model/GraphSupplier.php`, `header.php`, `graphs.php`, `table.php`, the old `api/v2/model/`, `js/`, `css/`.
+- [x] Delete the rest as each part is replaced: `graphs/`, `model/GraphSupplier.php`, `header.php`, `graphs.php`, `table.php`, the old `api/v2/model/`, `js/`, `css/`.
 - [ ] Update `README.md` (libraries list) and `AGENTS.md`.
 - [ ] Verify against production: compare old and new JSON for every GET route on a few UUIDs, then a POST on a test UUID.
 - [ ] Deploy (merge to `master` syncs by FTP).

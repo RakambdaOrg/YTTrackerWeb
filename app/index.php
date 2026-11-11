@@ -6,6 +6,7 @@
 	<title>YouTube Tracker stats</title>
 	<link rel="icon" href="favicon.ico">
 	<link rel="stylesheet" href="assets/style.css">
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.6.1/dist/chart.umd.min.js" integrity="sha384-Emf5ZVIUiarAdhkgtqK+5/Z5qIvM6QoVrS+qAVtfyZVuD5lIHrac0me485+Antp0" crossorigin="anonymous"></script>
 	<script type="module" src="assets/main.js"></script>
 </head>
 <body>
@@ -48,6 +49,28 @@
 				</tbody>
 			</table>
 		</div>
+	</section>
+	<section class="card">
+		<div class="card-title">
+			<h2>Charts</h2>
+			<span class="spacer"></span>
+			<label>Period
+				<select id="period">
+					<option value="7">Last 7 days</option>
+					<option value="30" selected>Last 30 days</option>
+					<option value="90">Last 90 days</option>
+					<option value="365">Last year</option>
+					<option value="3650">Everything</option>
+				</select>
+			</label>
+		</div>
+		<p class="muted" id="chartsStatus" hidden></p>
+		<h3>Watched time</h3>
+		<div class="chart"><canvas id="chartWatched" role="img" aria-label="Watched time per day, one line per user. The table above has the totals."></canvas></div>
+		<h3>Opened time</h3>
+		<div class="chart"><canvas id="chartOpened" role="img" aria-label="Opened time per day, one line per user. The table above has the totals."></canvas></div>
+		<h3>Opened videos</h3>
+		<div class="chart"><canvas id="chartCount" role="img" aria-label="Opened videos per day, one line per user. The table above has the totals."></canvas></div>
 	</section>
 </main>
 </body>

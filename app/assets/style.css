@@ -12,6 +12,15 @@
 	--series-watched: #2e8540;
 	--series-opened: #c4302b;
 	--series-count: #2f6fdb;
+	/* One colour per user in the charts: the dataviz reference categorical palette, in its validated order. */
+	--user-1: #2a78d6;
+	--user-2: #eb6834;
+	--user-3: #1baf7a;
+	--user-4: #eda100;
+	--user-5: #e87ba4;
+	--user-6: #008300;
+	--user-7: #6250d6;
+	--user-8: #e34948;
 	font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
 	font-size: 15px;
 }
@@ -27,6 +36,14 @@
 		--series-watched: #4fbf67;
 		--series-opened: #f06a63;
 		--series-count: #6c9ef8;
+		--user-1: #3987e5;
+		--user-2: #d95926;
+		--user-3: #199e70;
+		--user-4: #c98500;
+		--user-5: #d55181;
+		--user-6: #008300;
+		--user-7: #9085e9;
+		--user-8: #e66767;
 	}
 }
 
@@ -90,6 +107,17 @@ a {
 	align-items: center;
 	gap: 8px;
 	margin-bottom: 8px;
+}
+
+.card h3 {
+	margin: 16px 0 0;
+	font-size: 0.9rem;
+}
+
+.chart {
+	position: relative;
+	height: 360px;
+	margin-top: 8px;
 }
 
 .muted {

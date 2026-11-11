@@ -103,3 +103,131 @@ async function loadTable() {
 }
 
 loadTable();
+
+// Charts: one line per user, one chart per measure (never two scales on one chart).
+const {Chart} = window;
+const HOUR = 3_600_000;
+const USER_COLORS = 8;
+// Past 8 users the colours repeat with a dash pattern, so no two users look the same.
+const DASHES = [[], [6, 4], [2, 3]];
+const CHARTS = [
+	{id: 'chartWatched', path: 'stats/watched', duration: true},
+	{id: 'chartOpened', path: 'stats/opened', duration: true},
+	{id: 'chartCount', path: 'stats/opened-count', duration: false},
+];
+
+let token;
+const charts = new Map();
+let allUuids = [];
+let loadId = 0;
+
+// Vertical line on the hovered day, as in the extension.
+const hoverLine = {
+	id: 'hoverLine',
+	afterDatasetsDraw: ({ctx, chartArea, tooltip}) => {
+		const x = tooltip?.getActiveElements()[0]?.element.x;
+		if (x === undefined) {
+			return;
+		}
+		ctx.save();
+		ctx.strokeStyle = token('--muted');
+		ctx.beginPath();
+		ctx.moveTo(x, chartArea.top);
+		ctx.lineTo(x, chartArea.bottom);
+		ctx.stroke();
+		ctx.restore();
+	},
+};
+
+/** A user's style follows the user, not their rank: it comes from their place in the full user list. */
+function userStyle(uuid) {
+	const index = Math.max(0, allUuids.indexOf(uuid));
+	return {
+		color: token(`--user-${(index % USER_COLORS) + 1}`),
+		dash: DASHES[Math.floor(index / USER_COLORS) % DASHES.length],
+	};
+}
+
+function drawChart({id, duration}, users, series) {
+	const labels = [...new Set(series.flat().map(point => point.date))].sort();
+	const pointRadius = labels.length > 60 ? 0 : 3;
+	const datasets = users.map((user, i) => {
+		const byDate = new Map(series[i].map(point => [point.date, Number(point.value)]));
+		const {color, dash} = userStyle(user.uuid);
+		return {
+			label: user.username,
+			data: labels.map(date => {
+				const value = byDate.get(date);
+				return value === undefined ? null : duration ? value / HOUR : value;
+			}),
+			borderColor: color,
+			backgroundColor: color,
+			borderDash: dash,
+			borderWidth: 2,
+			pointRadius,
+			pointHoverRadius: 5,
+			spanGaps: true,
+		};
+	});
+	charts.get(id)?.destroy();
+	charts.set(id, new Chart(byId(id), {
+		type: 'line',
+		plugins: [hoverLine],
+		data: {labels, datasets},
+		options: {
+			maintainAspectRatio: false,
+			animation: false,
+			interaction: {mode: 'index', intersect: false},
+			color: token('--text'),
+			scales: {
+				x: {ticks: {color: token('--muted')}, grid: {color: token('--border')}},
+				y: {
+					min: 0,
+					title: {display: true, text: duration ? 'Hours' : 'Videos', color: token('--muted')},
+					ticks: {precision: duration ? undefined : 0, color: token('--muted')},
+					grid: {color: token('--border')},
+				},
+			},
+			plugins: {
+				legend: {position: 'bottom', labels: {color: token('--text')}},
+				tooltip: {
+					itemSort: (a, b) => b.parsed.y - a.parsed.y,
+					filter: item => item.parsed.y !== null,
+					callbacks: {
+						label: item => `${item.dataset.label}: ${duration ? formatDuration(item.parsed.y * HOUR) : item.parsed.y}`,
+					},
+				},
+			},
+		},
+	}));
+}
+
+async function loadCharts() {
+	const id = ++loadId;
+	const range = Number(byId('period').value);
+	const status = byId('chartsStatus');
+	status.hidden = true;
+	try {
+		const css = getComputedStyle(document.documentElement);
+		token = name => css.getPropertyValue(name).trim();
+		if (allUuids.length === 0) {
+			allUuids = (await getJson('/users')).users.map(user => user.uuid);
+		}
+		const users = await getUsers(range);
+		const results = await Promise.all(CHARTS.map(chart => Promise.all(users.map(user =>
+			getJson(`/${encodeURIComponent(user.uuid)}/${chart.path}?range=${range}`)))));
+		if (id !== loadId) {
+			return; // A newer period was picked meanwhile.
+		}
+		CHARTS.forEach((chart, i) => drawChart(chart, users, results[i]));
+	} catch (error) {
+		console.error(error);
+		status.textContent = 'Could not load the charts.';
+		status.hidden = false;
+	}
+}
+
+byId('period').addEventListener('change', loadCharts);
+// The charts read their colours from the CSS tokens: redraw when the theme changes.
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', loadCharts);
+loadCharts();
