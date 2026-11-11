@@ -1,16 +1,3 @@
-<?php
-	require_once(__DIR__ . '/api/v2/model/DBConnection.class.php');
-
-	if(false)
-	{
-		error_reporting(E_ALL);
-		ini_set('display_errors', '1');
-	}
-
-	$dev = isset($_GET['dev']);
-	$conn = YTT\DBConnection::getConnection();
-	$customPeriodDisplayed = isset($_GET['startPeriod']) && isset($_GET['endPeriod']);
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

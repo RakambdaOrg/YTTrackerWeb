@@ -23,15 +23,17 @@ Done (2026-11-11): plan step 1 (unused files deleted).
 
 Done (2026-11-11): plan step 2 (backend core in `app/src/`, tests in `tests/`, run with `php tests/run.php`).
 
-Next: plan step 3 (repositories, new `api/v2/index.php`, compatibility check with the local MariaDB).
+Done (2026-11-11): plan step 3 (`UserRepository`, `StatsRepository`, new `app/api/v2/index.php`, old `api/v2/model/` deleted). `tests/compat/run.sh`: 39 identical, 7 known differences (listed below), 0 unexpected.
+
+Next: plan step 4 (page and table in the extension's style).
 
 ## Tasks
 
 - [x] Answer the open questions.
 - [x] Write `PLAN.md` (layout, steps, verification) and get it approved.
 - [x] Backend core: `app/src/` (namespace `YTT`, autoloader, `strict_types`), one PDO factory (exceptions mode, same config file), a small router and JSON response helper. Deny HTTP access to `app/src/`.
-- [ ] Repositories: `UserRepository`, `StatsRepository` with the exact same SQL results as today. Use an enum for the stat type (`Watched = 1`, `Opened = 2`).
-- [ ] API v2 on the new core, same routes, params, response shapes and codes.
+- [x] Repositories: `UserRepository`, `StatsRepository` with the exact same SQL results as today. Use an enum for the stat type (`Watched = 1`, `Opened = 2`).
+- [x] API v2 on the new core, same routes, params, response shapes and codes.
 - [x] Drop API v1: delete `app/api/v1/` and its two `.htaccess` rules.
 - [ ] Page: one `index.php` with the extension's look (nav, cards, light/dark theme).
 - [ ] Table: vanilla JS, sortable columns, users active in the last 14 days, durations as `1D 2H 3M 4S`.
@@ -57,7 +59,15 @@ Next: plan step 3 (repositories, new `api/v2/index.php`, compatibility check wit
 - (2026-11-11) `.gitlab-ci.yml` is unused (project is on GitHub): delete it.
 - (2026-11-11) `temp.php` can be deleted.
 - (2026-11-11) `PLAN.md` approved.
+- (2026-11-11) The local MariaDB runs with a non-strict `sql_mode`: in strict mode the extension's `Y-M-D H:m:s` date fails `STR_TO_DATE(..., '%Y-%m-%d')`, in the old and new code alike, so production must be non-strict. Assumed, not checked on the host.
 - (2026-11-11) Local MariaDB for the API compatibility check, from `mariadb-server-core` + `mariadb-client-core` (binaries only, no systemd service). It must only run while needed: start it, run the check, stop it. Never leave it running.
+
+## Intended API differences (part one)
+
+- `range` on `/stats/watched` and `/stats/opened` is now read from the query string (or a header) too. The old code only took a JSON int, so `?range=7` returned 31 days. The new page's period selector needs it. Nothing else calls these routes (the extension doesn't).
+- `stats/add` with an empty `date` stores today instead of a NULL day (old `date('%Y-%m-%d')` bug).
+- `stats/add` for a UUID not in the database stores the stat under the new user. The old `DBConnection` checked `is_resource()` on a PDO object (never true), so it opened a new connection for every query, `lastInsertId()` returned 0, and that first stat went to `UserId 0`. Production probably has orphan `YTT_Records` rows with `UserId = 0` (part two: check, and decide whether to clean them up).
+- A database error now returns `{code: 500, message: 'Failed to execute route'}` instead of a PHP fatal or a silently empty result. `stats/add` and `username` POST keep their `E2.2` and `E4` errors.
 
 ## Bugs found in the current code (keep or fix? ask before changing API behaviour)
 

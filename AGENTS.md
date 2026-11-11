@@ -67,6 +67,16 @@ See `JOURNAL.md` for the plan and status. In short:
 - PHP 8.5 with `declare(strict_types=1)`, typed classes, one autoloaded namespace, one small router and JSON response helper.
 - For this first part, the v2 API (routes, params, response shapes, status codes) and the database schema stay exactly the same. v1 is dropped.
 
+## Checks
+
+```
+php tests/run.php        # unit checks of app/src (plain PHP, no framework)
+tests/compat/run.sh      # old API (master) vs new API, side by side on a seeded local MariaDB
+tests/db.sh start|stop   # the local MariaDB alone (run.sh starts and stops it itself)
+```
+
+MariaDB runs as the current user (data in `~/.local/share/yttrackerweb-mariadb`, port 3399), never as a service. Always stop it after use.
+
 ## Conventions
 
 - Work in a git worktree under `.claude/worktrees/`, never in the main checkout.

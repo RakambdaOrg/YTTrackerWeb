@@ -1,200 +1,42 @@
 <?php
 
-	require_once __DIR__ . '/model/DBConnection.class.php';
+declare(strict_types=1);
 
-	use YTT\DBConnection;
+require __DIR__ . '/../../src/bootstrap.php';
 
-	if(false)
-	{
-		error_reporting(E_ALL);
-		ini_set('display_errors', '1');
-	}
+use YTT\Http\Request;
+use YTT\Http\Response;
+use YTT\Http\Router;
+use YTT\StatsRepository;
+use YTT\StatType;
+use YTT\UserRepository;
 
-	require_once __DIR__ . '/model/DBConnection.class.php';
-	require_once __DIR__ . '/model/StatsHandler.class.php';
-	require_once __DIR__ . '/model/UsersHandler.class.php';
+const UUID = '([0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12})';
 
-	$uuidRegex = "([0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12})";
-	$categoryRegex = "([A-Za-z]+)";
+$users = new UserRepository();
+$stats = new StatsRepository($users);
 
-	$statsHandler = new YTT\StatsHandler();
-	$usersHandler = new YTT\UsersHandler();
+$router = new Router()
+	->add('GET', '/' . UUID . '\/stats$/', static fn(array $g) => $stats->summary($g[1]))
+	->add('GET', '/' . UUID . '\/stats\/watched$/', static fn(array $g, array $p) => $stats->durationSeries($g[1], StatType::Watched, StatsRepository::range($p['range'] ?? null)))
+	->add('GET', '/' . UUID . '\/stats\/opened$/', static fn(array $g, array $p) => $stats->durationSeries($g[1], StatType::Opened, StatsRepository::range($p['range'] ?? null)))
+	->add('GET', '/' . UUID . '\/stats\/opened-count$/', static fn(array $g, array $p) => $stats->countSeries($g[1], StatsRepository::range($p['range'] ?? null)))
+	->add('POST', '/' . UUID . '\/stats\/add$/', static fn(array $g, array $p) => match (true) {
+		!isset($p['type'], $p['stat'], $p['date']) => ['code' => 400, 'message' => 'Missing fields'],
+		$stats->add($g[1], $p['type'], $p['stat'], (string) $p['date']) => ['code' => 200, 'result' => 'OK'],
+		default => ['code' => 400, 'result' => 'err', 'error' => 'E2.2'],
+	})
+	->add('GET', '/users$/', static fn(array $g, array $p) => [
+		'code' => 200,
+		'users' => $users->list(isset($p['range']) ? intval($p['range']) : null),
+		'message' => 'OK',
+	])
+	->add('GET', '/' . UUID . '\/username$/', static fn(array $g) => ($name = $users->username($g[1])) === null
+		? ['code' => 204, 'error' => 'UserID not found']
+		: ['code' => 200, 'username' => $name])
+	->add('POST', '/' . UUID . '\/username$/', static fn(array $g, array $p) => $users->setUsername($g[1], $p['username'] ?? null)
+		? ['code' => 200, 'result' => 'OK']
+		: ['code' => 500, 'result' => 'err', 'error' => 'E4']);
 
-	$endpoints = array();
-
-	$endpoints[] = array('method' => 'GET', 'route' => "/$uuidRegex\/stats$/", 'object' => $statsHandler, 'function' => 'getUserStats');
-	$endpoints[] = array('method' => 'GET', 'route' => "/$uuidRegex\/stats\/watched$/", 'object' => $statsHandler, 'function' => 'getUserWatched');
-	$endpoints[] = array('method' => 'GET', 'route' => "/$uuidRegex\/stats\/opened$/", 'object' => $statsHandler, 'function' => 'getUserOpened');
-	$endpoints[] = array('method' => 'GET', 'route' => "/$uuidRegex\/stats\/opened-count$/", 'object' => $statsHandler, 'function' => 'getUserOpenedCount');
-	$endpoints[] = array('method' => 'POST', 'route' => "/$uuidRegex\/stats\/add$/", 'object' => $statsHandler, 'function' => 'addUserStat');
-
-	$endpoints[] = array('method' => 'GET', 'route' => "/users$/", 'object' => $usersHandler, 'function' => 'getUsers');
-	$endpoints[] = array('method' => 'GET', 'route' => "/$uuidRegex\/username$/", 'object' => $usersHandler, 'function' => 'getUsername');
-	$endpoints[] = array('method' => 'POST', 'route' => "/$uuidRegex\/username$/", 'object' => $usersHandler, 'function' => 'setUserUsername');
-
-	if(!isset($_REQUEST['request']))
-		sendResponse(404);
-
-	$params = json_decode(file_get_contents('php://input'), true);
-	if($params === null)
-		$params = array();
-	$params = array_merge($params, apache_request_headers());
-	switch($_SERVER['REQUEST_METHOD'])
-	{
-		case 'POST':
-			$params = array_merge($params, $_POST);
-			break;
-		case 'GET':
-			$params = array_merge($params, $_GET);
-			break;
-	}
-	processHttpRequest($endpoints, $_SERVER['REQUEST_METHOD'], $_REQUEST['request'], $params);
-
-	/**
-	 * @param array $endpoints
-	 * @param string $method
-	 * @param string $route
-	 * @param array $params
-	 */
-	function processHttpRequest($endpoints, $method, $route, $params)
-	{
-		foreach($endpoints as $endpointIndex => $endpoint)
-		{
-			$groups = array();
-			if($endpoint['method'] === $method && preg_match($endpoint['route'], $route, $groups))
-			{
-				if(isset($endpoint['authRequired']) && $endpoint['authRequired'])
-				{
-					if(!checkAuth())
-					{
-						sendResponse(403);
-						return;
-					}
-				}
-
-				$result = $endpoint['object']->{$endpoint['function']}($groups, $params);
-				if($result !== false)
-				{
-					$code = 200;
-					if(isset($result['code']))
-					{
-						$code = $result['code'];
-					}
-					sendResponse($code, json_encode($result));
-					return;
-				}
-				else
-				{
-					sendResponse(500, json_encode(array('code' => 500, 'message' => 'Failed to execute route')));
-					return;
-				}
-			}
-		}
-
-		sendResponse(404, json_encode(array('code' => 404, "error" => 'No route found')));
-	}
-
-	/**
-	 * @return bool
-	 */
-	function checkAuth()
-	{
-		if(isset($_SERVER['HTTP_AUTHORIZATION']))
-		{
-			$auth = $_SERVER['HTTP_AUTHORIZATION'];
-			$parts = explode(' ', $auth);
-			if(count($parts) === 2)
-				switch($parts[0])
-				{
-					case 'Bearer':
-						return true;
-					default:
-						break;
-				}
-		}
-		return false;
-	}
-
-	/**
-	 * @param int $status
-	 * @param string $body
-	 */
-	function sendResponse($status = 200, $body = '')
-	{
-		DBConnection::close();
-		header('HTTP/1.1 ' . $status . ' ' . getStatusCodeMessage($status));
-		header('Content-type:' . 'application/json');
-		header('Access-Control-Allow-Methods:' . 'POST,PUT,GET,DELETE,OPTIONS');
-		$http_origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
-		if($http_origin !== null && ($http_origin === "https://*.mrcraftcod.fr"
-                || $http_origin === "https://*.rakambda.fr"
-                || $http_origin === "chrome-extension://moboafdnejnjnppicfiadaalobjeemec"
-                || $http_origin === "chrome-extension://knnlnielflnfhdohmihofhdelgahgjdb/*"
-                || $http_origin === "moz-extension://5d0b45c3-3111-4e59-a44f-e6f2c818eba1/*"
-            ))
-		{
-			header("Access-Control-Allow-Origin: $http_origin");
-		}
-		if($body != '')
-		{
-			echo $body;
-			exit;
-		}
-		else
-		{
-			echo json_encode(array('code' => $status, 'result' => ''));
-			exit;
-		}
-	}
-
-	/**
-	 * @param int $status
-	 * @return string
-	 */
-	function getStatusCodeMessage($status)
-	{
-		$codes = array(
-			100 => 'Continue',
-			101 => 'Switching Protocols',
-			200 => 'OK',
-			201 => 'Created',
-			202 => 'Accepted',
-			203 => 'Non-Authoritative Information',
-			204 => 'No Content',
-			205 => 'Reset Content',
-			206 => 'Partial Content',
-			300 => 'Multiple Choices',
-			301 => 'Moved Permanently',
-			302 => 'Found',
-			303 => 'See Other',
-			304 => 'Not Modified',
-			305 => 'Use Proxy',
-			306 => '(Unused)',
-			307 => 'Temporary Redirect',
-			400 => 'Bad Request',
-			401 => 'Unauthorized',
-			402 => 'Payment Required',
-			403 => 'Forbidden',
-			404 => 'Not Found',
-			405 => 'Method Not Allowed',
-			406 => 'Not Acceptable',
-			407 => 'Proxy Authentication Required',
-			408 => 'Request Timeout',
-			409 => 'Conflict',
-			410 => 'Gone',
-			411 => 'Length Required',
-			412 => 'Precondition Failed',
-			413 => 'Request Entity Too Large',
-			414 => 'Request-URI Too Long',
-			415 => 'Unsupported Media Type',
-			416 => 'Requested Range Not Satisfiable',
-			417 => 'Expectation Failed',
-			500 => 'Internal Server Error',
-			501 => 'Not Implemented',
-			502 => 'Bad Gateway',
-			503 => 'Service Unavailable',
-			504 => 'Gateway Timeout',
-			505 => 'HTTP Version Not Supported'
-		);
-		return (isset($codes[$status])) ? $codes[$status] : '';
-	}
+[$status, $body] = $router->dispatch(Request::fromGlobals());
+Response::json($status, $body);
