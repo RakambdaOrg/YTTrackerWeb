@@ -25,7 +25,9 @@ Done (2026-11-11): plan step 2 (backend core in `app/src/`, tests in `tests/`, r
 
 Done (2026-11-11): plan step 3 (`UserRepository`, `StatsRepository`, new `app/api/v2/index.php`, old `api/v2/model/` deleted). `tests/compat/run.sh`: 39 identical, 7 known differences (listed below), 0 unexpected.
 
-Next: plan step 4 (page and table in the extension's style).
+Done (2026-11-11): plan step 4 (`index.php`, `assets/style.css`, `assets/main.js`, `assets/icon128.png`; old `header.php`, `table.php`, `js/`, `css/` deleted). Served locally against the seeded DB: page, assets and API calls OK. Not seen in a browser yet (none in the container).
+
+Next: plan step 5 (Chart.js charts).
 
 ## Tasks
 
@@ -35,8 +37,8 @@ Next: plan step 4 (page and table in the extension's style).
 - [x] Repositories: `UserRepository`, `StatsRepository` with the exact same SQL results as today. Use an enum for the stat type (`Watched = 1`, `Opened = 2`).
 - [x] API v2 on the new core, same routes, params, response shapes and codes.
 - [x] Drop API v1: delete `app/api/v1/` and its two `.htaccess` rules.
-- [ ] Page: one `index.php` with the extension's look (nav, cards, light/dark theme).
-- [ ] Table: vanilla JS, sortable columns, users active in the last 14 days, durations as `1D 2H 3M 4S`.
+- [x] Page: one `index.php` with the extension's look (nav, cards, light/dark theme).
+- [x] Table: vanilla JS, sortable columns, users active in the last 14 days, durations as `1D 2H 3M 4S`.
 - [ ] Charts: Chart.js, watched/opened/count per user over a period selector (like the extension: 7d/30d/90d/1y/all), instead of three amCharts charts.
 - [x] Delete the unused files (step 1): `temp.php`, `.gitlab-ci.yml`, `css/bootstrap.min.css`, `css/libs/fontawesome-*`.
 - [ ] Delete the rest as each part is replaced: `graphs/`, `model/GraphSupplier.php`, `header.php`, `graphs.php`, `table.php`, the old `api/v2/model/`, `js/`, `css/`.

@@ -1,63 +1,54 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <!-- JQuery -->
-    <script src="//code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
-
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <script src="//cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-
-    <!-- Datatables -->
-    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/v/bs4/dt-1.10.22/datatables.min.css"/>
-    <script type="text/javascript" src="//cdn.datatables.net/v/bs4/dt-1.10.22/datatables.min.js"></script>
-
-    <!-- AmCharts -->
-    <script src="//www.amcharts.com/lib/4/core.js"></script>
-    <script src="//www.amcharts.com/lib/4/charts.js"></script>
-    <script src="//www.amcharts.com/lib/4/themes/animated.js"></script>
-    <script src="//www.amcharts.com/lib/4/themes/dark.js"></script>
-    <script src="//www.amcharts.com/lib/4/themes/material.js"></script>
-
-    <!-- Custom -->
-    <link rel="stylesheet" href="css/main.css"/>
-    <script type="text/javascript" src="js/script.js"></script>
-
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width = device-width, initial-scale = 1">
-    <title>YTTracker stats</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>YouTube Tracker stats</title>
+	<link rel="icon" href="favicon.ico">
+	<link rel="stylesheet" href="assets/style.css">
+	<script type="module" src="assets/main.js"></script>
 </head>
 <body>
-<?php
-	include __DIR__ . "/header.php";
-?>
-
-<div class="container-fluid" style="margin-top:40px">
-    <!-- Nav tabs -->
-    <ul class="nav nav-pills nav-fill nav-justified" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link" id="graph-tab" data-toggle="pill" href="#nav-graph" role="tab" aria-controls="home" aria-selected="true">Graphs (last month)</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active" id="table-tab" data-toggle="pill" href="#nav-table" role="tab" aria-controls="profile" aria-selected="false">Table</a>
-        </li>
-    </ul>
-
-    <hr/>
-
-    <!-- Tab panes -->
-    <div class="tab-content">
-        <div class="tab-pane fade" id="nav-graph" role="tabpanel" aria-labelledby="graph-tab">
-			<?php
-				include __DIR__ . "/graphs.php"
-			?>
-        </div>
-        <div class="tab-pane fade show active" id="nav-table" role="tabpanel" aria-labelledby="table-tab">
-			<?php
-				include __DIR__ . "/table.php"
-			?>
-        </div>
-    </div>
+<nav>
+	<img src="assets/icon128.png" alt="">
+	<strong>YouTube Tracker</strong>
+	<span class="spacer"></span>
+	<a class="button" href="https://chrome.google.com/webstore/detail/youtube-tracker/knnlnielflnfhdohmihofhdelgahgjdb/" target="_blank" rel="noopener">Chrome extension</a>
+	<a class="button" href="https://addons.mozilla.org/en-US/firefox/addon/youtube-tracker/" target="_blank" rel="noopener">Firefox add-on</a>
+</nav>
+<main>
+	<section class="card">
+		<div class="card-title">
+			<h2>Users</h2>
+			<span class="muted">Active in the last 14 days</span>
+		</div>
+		<div class="table-wrap">
+			<table>
+				<thead id="usersHead">
+				<tr>
+					<th class="name" rowspan="2" scope="col"><button type="button" data-col="0">User</button></th>
+					<th colspan="3" scope="colgroup">Total</th>
+					<th colspan="3" scope="colgroup">Last 7 days</th>
+					<th colspan="3" scope="colgroup">Today (<?= date('Y-m-d') ?>)</th>
+				</tr>
+				<tr>
+					<th scope="col"><button type="button" data-col="1">Opened</button></th>
+					<th scope="col"><button type="button" data-col="2">Watched</button></th>
+					<th scope="col"><button type="button" data-col="3">Count</button></th>
+					<th scope="col"><button type="button" data-col="4">Opened</button></th>
+					<th scope="col"><button type="button" data-col="5">Watched</button></th>
+					<th scope="col"><button type="button" data-col="6">Count</button></th>
+					<th scope="col"><button type="button" data-col="7">Opened</button></th>
+					<th scope="col" aria-sort="descending"><button type="button" data-col="8">Watched</button></th>
+					<th scope="col"><button type="button" data-col="9">Count</button></th>
+				</tr>
+				</thead>
+				<tbody id="usersBody">
+				<tr><td class="message" colspan="10">Loading…</td></tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
+</main>
 </body>
 </html>
