@@ -137,6 +137,32 @@ a {
 	margin-top: 8px;
 }
 
+/* One legend for the three charts: toggling a user shows or hides them everywhere. */
+.legend,
+.legend-items {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+}
+
+.legend-item {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 10px;
+}
+
+.legend-item[aria-pressed='false'] {
+	opacity: 0.45;
+	text-decoration: line-through;
+}
+
+.swatch {
+	width: 20px;
+	border-top-width: 3px;
+}
+
 .muted {
 	color: var(--muted);
 	font-size: 0.85rem;

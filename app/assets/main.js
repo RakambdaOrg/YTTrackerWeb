@@ -110,6 +110,7 @@ const HOUR = 3_600_000;
 const USER_COLORS = 8;
 // Past 8 users the colours repeat with a dash pattern, so no two users look the same.
 const DASHES = [[], [6, 4], [2, 3]];
+const DASH_STYLES = ['solid', 'dashed', 'dotted']; // the same patterns, for the legend swatches
 const CHARTS = [
 	{id: 'chartWatched', path: 'stats/watched', duration: true},
 	{id: 'chartOpened', path: 'stats/opened', duration: true},
@@ -120,6 +121,7 @@ let token;
 const charts = new Map();
 let allUuids = [];
 let loadId = 0;
+const hiddenUsers = new Set(); // UUIDs; shared by the three charts and kept across periods
 
 // Vertical line on the hovered day, as in the extension.
 const hoverLine = {
@@ -142,9 +144,11 @@ const hoverLine = {
 /** A user's style follows the user, not their rank: it comes from their place in the full user list. */
 function userStyle(uuid) {
 	const index = Math.max(0, allUuids.indexOf(uuid));
+	const pattern = Math.floor(index / USER_COLORS) % DASHES.length;
 	return {
 		color: token(`--user-${(index % USER_COLORS) + 1}`),
-		dash: DASHES[Math.floor(index / USER_COLORS) % DASHES.length],
+		dash: DASHES[pattern],
+		dashStyle: DASH_STYLES[pattern],
 	};
 }
 
@@ -156,6 +160,8 @@ function drawChart({id, duration}, users, series) {
 		const {color, dash} = userStyle(user.uuid);
 		return {
 			label: user.username,
+			uuid: user.uuid,
+			hidden: hiddenUsers.has(user.uuid),
 			data: labels.map(date => {
 				const value = byDate.get(date);
 				return value === undefined ? null : duration ? value / HOUR : value;
@@ -189,7 +195,7 @@ function drawChart({id, duration}, users, series) {
 				},
 			},
 			plugins: {
-				legend: {position: 'bottom', labels: {color: token('--text')}},
+				legend: {display: false}, // replaced by the shared #usersLegend
 				tooltip: {
 					itemSort: (a, b) => b.parsed.y - a.parsed.y,
 					filter: item => item.parsed.y !== null,
@@ -220,6 +226,7 @@ async function loadCharts() {
 			return; // A newer period was picked meanwhile.
 		}
 		CHARTS.forEach((chart, i) => drawChart(chart, users, results[i]));
+		drawLegend(users);
 	} catch (error) {
 		console.error(error);
 		status.textContent = 'Could not load the charts.';
@@ -227,16 +234,51 @@ async function loadCharts() {
 	}
 }
 
-/** Shows or hides every user in the three charts; the legend still toggles one user in one chart. */
-function setAllUsersVisible(visible) {
+/** Applies hiddenUsers to the three charts and the legend. */
+function applyVisibility() {
 	for (const chart of charts.values()) {
-		chart.data.datasets.forEach((_, i) => chart.setDatasetVisibility(i, visible));
+		chart.data.datasets.forEach((dataset, i) => chart.setDatasetVisibility(i, !hiddenUsers.has(dataset.uuid)));
 		chart.update();
+	}
+	for (const button of byId('usersLegend').children) {
+		button.setAttribute('aria-pressed', String(!hiddenUsers.has(button.dataset.uuid)));
 	}
 }
 
-byId('showAllUsers').addEventListener('click', () => setAllUsersVisible(true));
-byId('hideAllUsers').addEventListener('click', () => setAllUsersVisible(false));
+function drawLegend(users) {
+	byId('usersLegend').replaceChildren(...users.map(user => {
+		const {color, dashStyle} = userStyle(user.uuid);
+		const swatch = document.createElement('span');
+		swatch.className = 'swatch';
+		swatch.style.borderTopStyle = dashStyle;
+		swatch.style.borderTopColor = color;
+		const button = document.createElement('button');
+		button.type = 'button';
+		button.className = 'legend-item';
+		button.dataset.uuid = user.uuid;
+		button.setAttribute('aria-pressed', String(!hiddenUsers.has(user.uuid)));
+		button.append(swatch, user.username);
+		return button;
+	}));
+}
+
+byId('usersLegend').addEventListener('click', event => {
+	const uuid = event.target.closest('button')?.dataset.uuid;
+	if (uuid) {
+		if (!hiddenUsers.delete(uuid)) {
+			hiddenUsers.add(uuid);
+		}
+		applyVisibility();
+	}
+});
+byId('showAllUsers').addEventListener('click', () => {
+	hiddenUsers.clear();
+	applyVisibility();
+});
+byId('hideAllUsers').addEventListener('click', () => {
+	allUuids.forEach(uuid => hiddenUsers.add(uuid));
+	applyVisibility();
+});
 byId('period').addEventListener('change', loadCharts);
 // The charts read their colours from the CSS tokens: redraw when the theme changes.
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', loadCharts);

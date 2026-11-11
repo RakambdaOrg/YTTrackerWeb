@@ -55,8 +55,6 @@
 		<div class="card-title">
 			<h2>Charts</h2>
 			<span class="spacer"></span>
-			<button type="button" id="showAllUsers">Show all users</button>
-			<button type="button" id="hideAllUsers">Hide all users</button>
 			<label>Period
 				<select id="period">
 					<option value="7">Last 7 days</option>
@@ -68,6 +66,11 @@
 			</label>
 		</div>
 		<p class="muted" id="chartsStatus" hidden></p>
+		<div class="legend" role="group" aria-label="Users shown in the charts">
+			<button type="button" id="showAllUsers">Show all</button>
+			<button type="button" id="hideAllUsers">Hide all</button>
+			<span id="usersLegend" class="legend-items"></span>
+		</div>
 		<h3>Watched time</h3>
 		<div class="chart"><canvas id="chartWatched" role="img" aria-label="Watched time per day, one line per user. The table above has the totals."></canvas></div>
 		<h3>Opened time</h3>
