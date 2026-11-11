@@ -13,6 +13,20 @@ export function formatDuration(ms) {
 	return text.length > 0 ? text.join(' ') : '0S';
 }
 
+/** Rounded, one unit: "45s", "40min", "2h50", "3.5 days", "2.3 weeks", "7.1 years". */
+export function formatShortDuration(ms) {
+	const s = Math.max(0, Math.round(ms / 1000));
+	const one = (value, unit) => `${Number(value.toFixed(1))} ${unit}${value >= 1.05 ? 's' : ''}`;
+	if (s < 60) return `${s}s`;
+	if (s < 3600) return `${Math.floor(s / 60)}min`;
+	if (s < 86_400) return `${Math.floor(s / 3600)}h${String(Math.floor(s / 60) % 60).padStart(2, '0')}`;
+	const days = s / 86_400;
+	if (days < 7) return one(days, 'day');
+	if (days < 30) return one(days / 7, 'week');
+	if (days < 365) return one(days / 30.44, 'month');
+	return one(days / 365.25, 'year');
+}
+
 async function getJson(path) {
 	const response = await fetch(API + path);
 	if (!response.ok) {
@@ -53,8 +67,11 @@ function renderTable() {
 			if (i === 0) {
 				td.className = 'name';
 				td.textContent = value;
+			} else if (COUNT_COLUMNS.has(i)) {
+				td.textContent = String(value);
 			} else {
-				td.textContent = COUNT_COLUMNS.has(i) ? String(value) : formatDuration(value);
+				td.textContent = formatShortDuration(value);
+				td.title = formatDuration(value);
 			}
 			return td;
 		}));

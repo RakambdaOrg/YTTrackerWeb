@@ -23,6 +23,11 @@
 		<div class="card-title">
 			<h2>Users</h2>
 			<span class="muted">Active in the last 14 days</span>
+			<span class="spacer"></span>
+			<span class="help">
+				<button type="button" aria-label="Help" aria-describedby="timesHelp">?</button>
+				<span role="tooltip" id="timesHelp">Times are rounded. Hover over a time to see its exact value.</span>
+			</span>
 		</div>
 		<div class="table-wrap">
 			<table>
