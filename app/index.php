@@ -55,6 +55,8 @@
 		<div class="card-title">
 			<h2>Charts</h2>
 			<span class="spacer"></span>
+			<button type="button" id="showAllUsers">Show all users</button>
+			<button type="button" id="hideAllUsers">Hide all users</button>
 			<label>Period
 				<select id="period">
 					<option value="7">Last 7 days</option>

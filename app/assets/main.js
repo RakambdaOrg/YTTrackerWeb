@@ -227,6 +227,16 @@ async function loadCharts() {
 	}
 }
 
+/** Shows or hides every user in the three charts; the legend still toggles one user in one chart. */
+function setAllUsersVisible(visible) {
+	for (const chart of charts.values()) {
+		chart.data.datasets.forEach((_, i) => chart.setDatasetVisibility(i, visible));
+		chart.update();
+	}
+}
+
+byId('showAllUsers').addEventListener('click', () => setAllUsersVisible(true));
+byId('hideAllUsers').addEventListener('click', () => setAllUsersVisible(false));
 byId('period').addEventListener('change', loadCharts);
 // The charts read their colours from the CSS tokens: redraw when the theme changes.
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', loadCharts);

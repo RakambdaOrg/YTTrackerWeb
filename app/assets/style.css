@@ -142,6 +142,17 @@ a {
 	font-size: 0.85rem;
 }
 
+button {
+	font: inherit;
+	padding: 6px 14px;
+	border-radius: var(--radius);
+	border: 1px solid var(--border);
+	background: var(--surface);
+	color: var(--text);
+	cursor: pointer;
+	line-height: 1.25;
+}
+
 button:focus-visible,
 select:focus-visible {
 	outline: 2px solid var(--accent);

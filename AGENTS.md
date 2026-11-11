@@ -70,7 +70,7 @@ maintenance/             one-off SQL scripts for the production database, run by
 
 - The page matches the extension's pages (`src/assets/common.css` and `src/entrypoints/chart/` on `YTTracker` `rewrite/wxt`): same CSS tokens, `nav`, `.card`s, durations formatted like `formatDuration()` (`1D 2H 3M 4S`). Keep them in sync when the extension's look changes.
 - Users table: users active in the last 14 days, one `/stats` call each, sortable headers, sorted by today's watched time by default.
-- Charts: Chart.js 4.6.1 from jsdelivr (pinned, with SRI), three charts (watched, opened, opened videos), one line per user, a period selector. A user's colour comes from their place in the full `/users` list, so it doesn't change with the period. The 8 colours are the dataviz reference categorical palette (`--user-1..8`); past 8 users they repeat with a dash pattern. One y-axis per chart.
+- Charts: Chart.js 4.6.1 from jsdelivr (pinned, with SRI), three charts (watched, opened, opened videos), one line per user, a period selector, and "Show all users" / "Hide all users" buttons that apply to the three charts (the legend toggles one user in one chart). A user's colour comes from their place in the full `/users` list, so it doesn't change with the period. The 8 colours are the dataviz reference categorical palette (`--user-1..8`); past 8 users they repeat with a dash pattern. One y-axis per chart.
 - No jQuery, Bootstrap, DataTables, amCharts or FontAwesome.
 
 ## Checks
