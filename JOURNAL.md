@@ -31,6 +31,10 @@ Done (2026-11-11): plan step 5 (three Chart.js charts with a period selector; ol
 
 Done (2026-11-11): plan step 6 (README, AGENTS.md). Branch not pushed.
 
+Done (2026-11-11): `maintenance/orphan-records.sql`, the repair of the `UserId = 0` rows (inspect, match, move the unambiguous ones, optional delete of the rest), tested on `tests/compat/orphans.sql` (also run by `tests/compat/run.sh`). To run by the user on production **after** the deploy, in one session, part by part.
+
+Now (2026-11-11): the page is served for the user's check at http://192.168.1.152:8703/ (`php -S 0.0.0.0:8703` in the background + local MariaDB). Stop both when the user is done: kill the `php -S`, then `tests/db.sh stop`. Don't run `tests/compat/run.sh` meanwhile: it stops MariaDB at the end.
+
 Next: the user checks the page in a browser (see PLAN.md, Verification). To serve it locally with test data: `tests/db.sh start`, seed with `tests/db.sh sql < tests/compat/schema.sql`, then `YTT_DB_CONFIG=<config file> php -S 127.0.0.1:8703 -t app tests/compat/router.php` (config like the one `tests/compat/run.sh` writes), and `tests/db.sh stop` after. Then push and merge (merging to `master` deploys), check production, and delete `PLAN.md` and this file.
 
 ## Tasks
@@ -50,6 +54,7 @@ Next: the user checks the page in a browser (see PLAN.md, Verification). To serv
 - [ ] Check the page in a browser: table numbers, sorting, period selector, tooltips, light and dark themes, phone width.
 - [ ] Verify against production: compare old and new JSON for every GET route on a few UUIDs, then a POST on a test UUID.
 - [ ] Deploy (merge to `master` syncs by FTP).
+- [ ] After the deploy, the user runs `maintenance/orphan-records.sql` on production (parts 1-2 read-only first, then decide on 3 and 4).
 
 ## Open questions for the user
 
@@ -73,7 +78,7 @@ Next: the user checks the page in a browser (see PLAN.md, Verification). To serv
 
 - `range` on `/stats/watched` and `/stats/opened` is now read from the query string (or a header) too. The old code only took a JSON int, so `?range=7` returned 31 days. The new page's period selector needs it. Nothing else calls these routes (the extension doesn't).
 - `stats/add` with an empty `date` stores today instead of a NULL day (old `date('%Y-%m-%d')` bug).
-- `stats/add` for a UUID not in the database stores the stat under the new user. The old `DBConnection` checked `is_resource()` on a PDO object (never true), so it opened a new connection for every query, `lastInsertId()` returned 0, and that first stat went to `UserId 0`. Production probably has orphan `YTT_Records` rows with `UserId = 0` (part two: check, and decide whether to clean them up).
+- `stats/add` for a UUID not in the database stores the stat under the new user. The old `DBConnection` checked `is_resource()` on a PDO object (never true), so it opened a new connection for every query, `lastInsertId()` returned 0, and that first stat went to `UserId 0`. Production probably has orphan `YTT_Records` rows with `UserId = 0`: `maintenance/orphan-records.sql` repairs them.
 - A database error now returns `{code: 500, message: 'Failed to execute route'}` instead of a PHP fatal or a silently empty result. `stats/add` and `username` POST keep their `E2.2` and `E4` errors.
 
 ## Bugs found in the current code (keep or fix? ask before changing API behaviour)

@@ -65,6 +65,7 @@ app/
     StatsRepository.php  per-day series, summaries, add
     Http/                Request (param merge), Router (first match wins), Response (JSON, CORS)
 tests/                   not deployed
+maintenance/             one-off SQL scripts for the production database, run by hand (not deployed)
 ```
 
 - The page matches the extension's pages (`src/assets/common.css` and `src/entrypoints/chart/` on `YTTracker` `rewrite/wxt`): same CSS tokens, `nav`, `.card`s, durations formatted like `formatDuration()` (`1D 2H 3M 4S`). Keep them in sync when the extension's look changes.

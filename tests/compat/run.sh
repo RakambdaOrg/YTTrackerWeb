@@ -109,6 +109,24 @@ compare 'set username empty' /api/v2/$U/username -d username=
 compare 'set username missing' /api/v2/$U/username -X POST
 compare 'set username JSON' /api/v2/$U/username -H 'Content-Type: application/json' --data-binary '{"username": "Json"}'
 
+# maintenance/orphan-records.sql on tests/compat/orphans.sql: only the unambiguous orphans move.
+"$DB" sql < "$ROOT/tests/compat/orphans.sql"
+"$DB" sql yttracker_orphans < "$ROOT/maintenance/orphan-records.sql" > /dev/null
+got=$("$DB" sql -N yttracker_orphans -e 'SELECT UserId, Type, Stat, StatDay, Amount FROM YTT_Records WHERE UserId IN (0, 6, 7) ORDER BY UserId, StatDay, Type' | tr '\t' ' ')
+expected='0 1 90 2026-01-09 2
+0 1 110 2026-01-11 1
+6 1 2050 2026-01-05 4
+6 2 9000 2026-01-06 1
+7 1 700 2026-01-07 2
+7 2 70 2026-01-07 1'
+if [ "$got" = "$expected" ]; then
+	echo 'same  orphan records repair'
+else
+	printf 'DIFF  orphan records repair\n%s\n' "$got"
+	failures=$((failures + 1))
+fi
+"$DB" sql -e 'DROP DATABASE yttracker_orphans'
+
 if grep -qiE 'fatal|warning|deprecated' "$WORK/new.log"; then
 	echo 'PHP errors in the new code:'
 	grep -iE 'fatal|warning|deprecated' "$WORK/new.log" | head -10
