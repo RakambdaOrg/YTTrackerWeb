@@ -7,8 +7,6 @@ YTTrackerWeb is the website behind [YTTracker](https://github.com/RakambdaOrg/YT
 
 It is plain PHP, served by a shared host that runs PHP pages. There is no build step and no Composer: the content of `app/` is synced as-is to the server by FTP.
 
-If `JOURNAL.md` exists, read it first: it tracks the work in progress.
-
 ## Hosting and deployment
 
 - `.github/workflows/ftp_deploy.yml`: on a push to the default branch (`master`), syncs `app/` to `/www/subdomains/yttracker` (shared workflow from `RakambdaOrg/rakambda-github-workflows`).
@@ -82,6 +80,22 @@ tests/db.sh start|stop   # the local MariaDB alone (run.sh starts and stops it i
 ```
 
 MariaDB runs as the current user (data in `~/.local/share/yttrackerweb-mariadb`, port 3399), never as a service. Always stop it after use.
+
+## Changes from the old API (2026 rewrite)
+
+The rewrite kept the v2 API identical (checked by `tests/compat/run.sh`), except:
+
+- `range` on `/stats/watched` and `/stats/opened` is read from the query string or a header too. The old code only took a JSON int, so `?range=7` returned 31 days.
+- `stats/add` with an empty `date` stores today instead of a broken date.
+- `stats/add` for a new UUID stores the stat under the new user. The old code opened a new connection for every query (`is_resource()` on a PDO object), so `lastInsertId()` returned 0 and that first stat went to `UserId 0`. `maintenance/orphan-records.sql` repairs those rows.
+- A database error returns `{code: 500, message: 'Failed to execute route'}` instead of a PHP fatal or a silently empty result.
+
+## Known issues (not fixed yet)
+
+- `maintenance/orphan-records.sql` has to be run by hand on production, once the rewrite is deployed: in one session, parts 1-2 (read-only) first.
+- CORS: the allowed origins in `Http/Response.php` are compared literally to `https://*.rakambda.fr` and `chrome-extension://…/*`, so they never match and the header is never sent. The extension doesn't need it (host permissions).
+- `stats/add` stores any unknown `type` as-is (`StatType::fromParam()` falls back to the raw value).
+- Any request header can override a JSON body param with the same name (param merge order).
 
 ## Conventions
 

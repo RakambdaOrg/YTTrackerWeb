@@ -41,7 +41,7 @@ seed() { "$DB" sql < "$ROOT/tests/compat/schema.sql"; }
 dump() { "$DB" sql -N yttracker -e 'SELECT ID, UUID, Username FROM YTT_Users ORDER BY ID; SELECT * FROM YTT_Records ORDER BY UserId, Type, StatDay;'; }
 call() { curl -s -o - -w '\nHTTP %{http_code}\n' "$@"; }
 
-# Intended differences, see JOURNAL.md "Intended API differences".
+# Intended differences, see AGENTS.md "Changes from the old API".
 known() {
 	case "$1" in
 	'watched range' | 'watched range header' | 'watched range huge') return 0 ;; # range now read from the query/header
