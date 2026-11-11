@@ -7,8 +7,4 @@
 Webpage used to display public statistics for the chrome extension [YTTracker](https://github.com/Rakambda/YTTracker).
 
 ## Libraries
-Amcharts - [https://www.amcharts.com](https://www.amcharts.com)
-
-CSS Element Queries - [https://github.com/marcj/css-element-queries](https://github.com/marcj/css-element-queries)
-
-JQuery - [https://github.com/jquery/jquery](https://github.com/jquery/jquery)
+Chart.js - [https://www.chartjs.org](https://www.chartjs.org)
