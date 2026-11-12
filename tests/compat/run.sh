@@ -109,6 +109,27 @@ compare 'set username empty' /api/v2/$U/username -d username=
 compare 'set username missing' /api/v2/$U/username -X POST
 compare 'set username JSON' /api/v2/$U/username -H 'Content-Type: application/json' --data-binary '{"username": "Json"}'
 
+# Write key (new API only): no key passes until a key is sent, then only that key passes.
+expect() {
+	label=$1 want=$2
+	shift 2
+	got=$(curl -s -o /dev/null -w '%{http_code}' "$@")
+	if [ "$got" = "$want" ]; then echo "ok    $label"; else echo "FAIL  $label: HTTP $got, expected $want"; failures=$((failures + 1)); fi
+}
+seed
+ADD="http://127.0.0.1:$NEW/api/v2/$U/stats/add"
+expect 'key: none, user unlocked' 200 "$ADD" -d type=1 -d stat=1 -d date=2026-11-11
+expect 'key: first key locks' 200 "$ADD" -H 'X-YTT-Key: secret' -d type=1 -d stat=1 -d date=2026-11-11
+expect 'key: same key, lowercase header' 200 "$ADD" -H 'x-ytt-key: secret' -d type=1 -d stat=1 -d date=2026-11-11
+expect 'key: none, user locked' 403 "$ADD" -d type=1 -d stat=1 -d date=2026-11-11
+expect 'key: wrong key' 403 "$ADD" -H 'X-YTT-Key: other' -d type=1 -d stat=1 -d date=2026-11-11
+expect 'key: username wrong key' 403 "http://127.0.0.1:$NEW/api/v2/$U/username" -H 'X-YTT-Key: other' -d username=Eve
+expect 'key: username right key' 200 "http://127.0.0.1:$NEW/api/v2/$U/username" -H 'X-YTT-Key: secret' -d username=Bob
+expect 'key: new user with key' 200 "http://127.0.0.1:$NEW/api/v2/$X/stats/add" -H 'X-YTT-Key: k2' -d type=1 -d stat=1 -d date=2026-11-11
+expect 'key: new user locked' 403 "http://127.0.0.1:$NEW/api/v2/$X/stats/add" -d type=1 -d stat=1 -d date=2026-11-11
+stored=$("$DB" sql -N yttracker -e "SELECT COUNT(*) FROM YTT_Users WHERE UUID='$U' AND KeyHash=SHA2('secret', 256)")
+[ "$stored" = 1 ] && echo 'ok    key: stored as sha256' || { echo 'FAIL  key: stored as sha256'; failures=$((failures + 1)); }
+
 # maintenance/orphan-records.sql on tests/compat/orphans.sql: only the unambiguous orphans move.
 "$DB" sql < "$ROOT/tests/compat/orphans.sql"
 "$DB" sql yttracker_orphans < "$ROOT/maintenance/orphan-records.sql" > /dev/null

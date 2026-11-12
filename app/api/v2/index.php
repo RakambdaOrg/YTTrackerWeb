@@ -15,6 +15,9 @@ const UUID = '([0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[
 
 $users = new UserRepository();
 $stats = new StatsRepository($users);
+/** @param array<array-key, mixed> $p header names keep the client's case (lowercase over HTTP/2) */
+$key = static fn(array $p) => array_change_key_case($p)['x-ytt-key'] ?? null;
+const FORBIDDEN = ['code' => 403, 'result' => 'err', 'error' => 'Invalid key'];
 
 $router = new Router()
 	->add('GET', '/' . UUID . '\/stats$/', static fn(array $g) => $stats->summary($g[1]))
@@ -22,6 +25,7 @@ $router = new Router()
 	->add('GET', '/' . UUID . '\/stats\/opened$/', static fn(array $g, array $p) => $stats->durationSeries($g[1], StatType::Opened, StatsRepository::range($p['range'] ?? null)))
 	->add('GET', '/' . UUID . '\/stats\/opened-count$/', static fn(array $g, array $p) => $stats->countSeries($g[1], StatsRepository::range($p['range'] ?? null)))
 	->add('POST', '/' . UUID . '\/stats\/add$/', static fn(array $g, array $p) => match (true) {
+		!$users->authorize($g[1], $key($p)) => FORBIDDEN,
 		!isset($p['type'], $p['stat'], $p['date']) => ['code' => 400, 'message' => 'Missing fields'],
 		$stats->add($g[1], $p['type'], $p['stat'], (string) $p['date']) => ['code' => 200, 'result' => 'OK'],
 		default => ['code' => 400, 'result' => 'err', 'error' => 'E2.2'],
@@ -34,9 +38,9 @@ $router = new Router()
 	->add('GET', '/' . UUID . '\/username$/', static fn(array $g) => ($name = $users->username($g[1])) === null
 		? ['code' => 204, 'error' => 'UserID not found']
 		: ['code' => 200, 'username' => $name])
-	->add('POST', '/' . UUID . '\/username$/', static fn(array $g, array $p) => $users->setUsername($g[1], $p['username'] ?? null)
+	->add('POST', '/' . UUID . '\/username$/', static fn(array $g, array $p) => !$users->authorize($g[1], $key($p)) ? FORBIDDEN : ($users->setUsername($g[1], $p['username'] ?? null)
 		? ['code' => 200, 'result' => 'OK']
-		: ['code' => 500, 'result' => 'err', 'error' => 'E4']);
+		: ['code' => 500, 'result' => 'err', 'error' => 'E4']));
 
 [$status, $body] = $router->dispatch(Request::fromGlobals());
 Response::json($status, $body);
