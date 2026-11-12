@@ -22,7 +22,7 @@ Two tables (schema inferred from the queries, there is no migration file):
 
 | Table | Columns | Notes |
 |-------|---------|-------|
-| `YTT_Users` | `ID` (PK, auto), `UUID` (unique), `Username` (nullable), `LastActivity` | `UUID` is the extension's random `userId`. A null username is shown as `Anonymous`. |
+| `YTT_Users` | `ID` (PK, auto), `UUID` (unique), `Username` (nullable), `LastActivity`, `KeyHash` (nullable `CHAR(64)`) | `UUID` is the extension's random `userId`. A null username is shown as `Anonymous`. `KeyHash` is the SHA-256 of the user's write key (`maintenance/write-key.sql`). |
 | `YTT_Records` | `UserId` → `YTT_Users.ID`, `Type`, `Stat`, `StatDay` (DATE), `Amount` | One row per user, type and day (unique key, used by `ON DUPLICATE KEY UPDATE`). |
 
 - `Type`: `1` = watched, `2` = opened.
@@ -36,6 +36,8 @@ The extension (`src/lib/api.ts` on `rewrite/wxt`) uses only v2. The old v1 API w
 ### v2 (`app/api/v2/index.php`)
 
 Params are merged from the JSON body, the request headers, then `$_POST` or `$_GET`. Every response is JSON with an HTTP code copied from the `code` field.
+
+**Write key.** Both POST routes check the `X-YTT-Key` header (`UserRepository::authorize`), trust on first use: a user without `KeyHash` accepts writes without a key (old extensions send none); the first key sent is stored and locks the user; from then on a missing or wrong key gets `{code: 403, error: 'Invalid key'}`. A user locked by someone else is unlocked by setting `KeyHash` to NULL by hand. Reads stay public.
 
 | Method | Route | Params | Response |
 |--------|-------|--------|----------|
@@ -91,6 +93,8 @@ The rewrite kept the v2 API identical (checked by `tests/compat/run.sh`), except
 - A database error returns `{code: 500, message: 'Failed to execute route'}` instead of a PHP fatal or a silently empty result.
 
 ## Known issues (not fixed yet)
+
+- `maintenance/write-key.sql` must run on production **before** the write-key change is deployed: the POST routes read `KeyHash`.
 
 - `maintenance/orphan-records.sql` has to be run by hand on production, once the rewrite is deployed: in one session, parts 1-2 (read-only) first.
 - CORS: the allowed origins in `Http/Response.php` are compared literally to `https://*.rakambda.fr` and `chrome-extension://…/*`, so they never match and the header is never sent. The extension doesn't need it (host permissions).

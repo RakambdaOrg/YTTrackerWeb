@@ -60,6 +60,30 @@ final class UserRepository
 		return true;
 	}
 
+	/**
+	 * Write check, trust on first use: a user without a key accepts any write (old extensions send none),
+	 * the first key sent locks the user, then only that key is accepted.
+	 * Recovery for a user locked by someone else: set KeyHash to NULL by hand.
+	 */
+	public function authorize(string $uuid, mixed $key): bool
+	{
+		$key = is_string($key) && $key !== '' ? $key : null;
+		$stmt = Database::get()->prepare('SELECT KeyHash FROM YTT_Users WHERE UUID=:uuid');
+		$stmt->execute([':uuid' => $uuid]);
+		$stored = $stmt->fetchColumn() ?: null;
+		if ($stored !== null) {
+			return $key !== null && hash_equals($stored, hash('sha256', $key));
+		}
+		if ($key === null) {
+			return true;
+		}
+		// IFNULL: a concurrent first key wins; the re-check then rejects this one.
+		Database::get()
+			->prepare('INSERT INTO YTT_Users(`UUID`, `KeyHash`) VALUES(:uuid, :hash) ON DUPLICATE KEY UPDATE `KeyHash`=IFNULL(`KeyHash`, :hash)')
+			->execute([':uuid' => $uuid, ':hash' => hash('sha256', $key)]);
+		return $this->authorize($uuid, $key);
+	}
+
 	public function id(string $uuid): ?int
 	{
 		$stmt = Database::get()->prepare('SELECT ID FROM YTT_Users WHERE UUID=:uuid');
